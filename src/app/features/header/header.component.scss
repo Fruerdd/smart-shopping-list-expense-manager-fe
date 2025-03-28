@@ -1,6 +1,6 @@
 header {
     padding: 10px;
-    background: #14136e;
+    background: #0B3B5B;
     z-index: 999;
     position: sticky;
     top: 0;
@@ -9,7 +9,7 @@ header {
 }
 
 .logo {
-    display: flex; 
+    display: flex;
     align-items: center;
 }
 
@@ -20,10 +20,10 @@ header {
 }
 
 .company-name {
-    font-size: 1.5rem; 
-    font-weight: bold; 
-    margin-left: 10px; 
-    color: white; 
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-left: 10px;
+    color: white;
 }
 
 .desktop_menu {
@@ -61,7 +61,7 @@ header {
 
 
 .menu-icon {
-    display: block;  
+    display: block;
     color: white;
     font-size: 30px;
     cursor: pointer;
@@ -70,7 +70,7 @@ header {
 
 @media screen and (min-width: 128px) and (max-width: 900px) {
     .desktop_menu {
-        display: none;  
+        display: none;
     }
     .desktop_menu ul li {
         display: block;
@@ -93,13 +93,13 @@ header {
         border-radius: 0;
       }
     .desktop_menu.mobile_menu {
-        display: block; 
+        display: block;
         position: fixed;
         right: 0;
         top: 0;
         width: 280px;
         height: 100%;
-        background-color: #14136e;
+        background-color: #0B3B5B;
         transition: right 0.3s;
     }
 }
