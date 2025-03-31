@@ -1,0 +1,29 @@
+.all-customers-container {
+    margin-top: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  .customers-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .customers-table th,
+  .customers-table td {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .active-status {
+    color: green;
+    font-weight: 600;
+  }
+  
+  .inactive-status {
+    color: red;
+    font-weight: 600;
+  }
+  

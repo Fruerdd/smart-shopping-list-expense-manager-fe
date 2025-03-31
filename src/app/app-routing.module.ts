@@ -18,12 +18,20 @@ import { ServerRoute, RenderMode } from '@angular/ssr';
     loadComponent: () => import('./features/user-profile/user-profile.component')
       .then(m => m.UserProfileComponent)
   },
+  {
+    path: 'admin-page',
+    loadComponent: () => import('./features/admin-page/admin-page.component')
+      .then(m => m.AdminPageComponent)
+
+  },
   { path: '**', redirectTo: '/home' }
 ];
 
- export const serverRoutes: ServerRoute[] = routes
-  .filter((route): route is ServerRoute => route.path !== undefined)
-  .map(route => ({
-    ...route,
-    renderMode: RenderMode.Server
-  }));
+export const serverRoutes: ServerRoute[] = routes
+.filter((route): route is ServerRoute => route.path !== undefined)
+.map(route => {
+  if (route.path === 'admin-page') {
+    return { ...route, renderMode: RenderMode.Client };
+  }
+  return { ...route, renderMode: RenderMode.Server };
+});

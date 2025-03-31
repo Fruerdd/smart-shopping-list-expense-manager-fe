@@ -1,0 +1,10 @@
+<div class="overview-cards-container">
+    <div class="card" *ngFor="let item of overviewData">
+      <h3>{{ item.title }}</h3>
+      <p class="value">{{ item.value }}</p>
+      <p class="change" [ngClass]="{'positive': item.change.startsWith('+'), 'negative': item.change.startsWith('-')}">
+        {{ item.change }}
+      </p>
+    </div>
+  </div>
+  

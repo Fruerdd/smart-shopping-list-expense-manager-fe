@@ -1,0 +1,32 @@
+.total-savings-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin: 20px 0;
+    width: 100%;
+  }
+  
+  .chart-header {
+    text-align: left;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+  }
+  
+  .chart-header h3 {
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0;
+  }
+  
+  .chart-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .chart-body canvas {
+    width: 100% !important;
+    max-width: 100%;
+  }
+  

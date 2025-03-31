@@ -1,0 +1,12 @@
+
+.admin-page-container {
+    padding: 1rem;
+  }
+  
+  .charts-section {
+    display: flex;
+    flex-direction: column; 
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
