@@ -1,0 +1,56 @@
+<div class="product-analytics-container">
+    <div class="pie-chart-section">
+      <h4>City Allocation</h4>
+      <div class="allocation-body">
+        <div class="pie-chart-wrapper">
+          <canvas baseChart
+                  [data]="pieChartData"
+                  [options]="pieChartOptions"
+                  chartType="pie">
+          </canvas>
+        </div>
+        <div class="legend-wrapper">
+          <ul>
+            <li *ngFor="let label of pieChartData.labels; let i = index">
+              <span class="legend-color"
+                    [style.backgroundColor]="pieChartBackgroundColors[i]">
+              </span>
+              {{ label }} — {{ pieChartData.datasets[0].data[i] }}%
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  
+    <div class="bar-chart-section">
+      <h4>Product Add by Month</h4>
+      <canvas baseChart
+              [data]="barChartData"
+              [options]="barChartOptions"
+              chartType="bar">
+      </canvas>
+    </div>
+  
+    <div class="top-products-section">
+      <h4>Top Selling Products</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Product</th>
+            <th>Price (BAM)</th>
+            <th>Store</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of topProducts">
+            <td>{{ item.rank }}</td>
+            <td>{{ item.productName }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.store }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

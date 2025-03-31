@@ -1,12 +1,11 @@
-// src/app/features/home/home.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  standalone: true,  // ✅ Declared as standalone
+  standalone: true,  
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  imports: [CommonModule]  // ✅ Import CommonModule if needed
+  imports: [CommonModule]  
 })
 export class HomeComponent {}

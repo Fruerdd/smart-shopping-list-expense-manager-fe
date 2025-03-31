@@ -1,0 +1,28 @@
+<div class="all-customers-container">
+    <h3>All Customers</h3>
+    <table class="customers-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone Number</th>
+          <th>Email</th>
+          <th>City</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of customers">
+          <td>{{ customer.name }}</td>
+          <td>{{ customer.phoneNumber }}</td>
+          <td>{{ customer.email }}</td>
+          <td>{{ customer.city }}</td>
+          <td>
+            <span [ngClass]="{'active-status': customer.status === 'Active', 'inactive-status': customer.status === 'Inactive'}">
+              {{ customer.status }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
