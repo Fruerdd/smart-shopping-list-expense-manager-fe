@@ -1,0 +1,26 @@
+<div class="city-allocation-container">
+    <div class="chart-header">
+      <h3>City Allocation</h3>
+    </div>
+  
+    <div class="allocation-body">
+      <div class="chart-side">
+        <igx-pie-chart
+          #chart
+          [dataSource]="data"
+          [legend]="legend"
+          labelMemberPath="Summary"
+          legendLabelMemberPath="Company"
+          valueMemberPath="MarketShare"
+          (sliceClick)="pieSliceClickEvent($event)"
+          labelsPosition="OutsideEnd"
+          labelExtent="30"
+        >
+        </igx-pie-chart>
+      </div>
+  
+      <div class="legend-side">
+        <igx-item-legend #legend></igx-item-legend>
+      </div>
+    </div>
+  </div>

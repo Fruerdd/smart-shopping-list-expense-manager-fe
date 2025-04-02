@@ -1,27 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
-interface Customer {
-  name: string;
-  phoneNumber: string;
-  email: string;
-  city: string;
-  status: string;
-}
+import { Component, OnInit } from '@angular/core';
+import { AllCustomersService, Customer } from '../../../services/all-customers.service'; 
 
 @Component({
   selector: 'app-all-customers',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './all-customers.component.html',
-  styleUrls: ['./all-customers.component.css'],
-  standalone: true
+  styleUrls: ['./all-customers.component.css']
 })
-export class AllCustomersComponent {
+export class AllCustomersComponent implements OnInit {
+  customers: Customer[] = [];
 
-  // Fake data (needed to be deleted)
-  customers: Customer[] = [
-    { name: 'Jane Cooper', phoneNumber: '555-123-4567', email: 'jane.cooper@example.com', city: 'Sarajevo', status: 'Active' },
-    { name: 'Floyd Miles', phoneNumber: '555-987-6543', email: 'floyd.miles@example.com', city: 'Mostar', status: 'Inactive' },
-    { name: 'Ronald Richards', phoneNumber: '555-111-2222', email: 'ronald.richards@example.com', city: 'Tuzla', status: 'Active' },
-  ];
+  constructor(private allCustomersService: AllCustomersService) {}
+
+  ngOnInit(): void {
+    this.allCustomersService.getCustomers().subscribe(data => {
+      this.customers = data;
+    });
+  }
 }

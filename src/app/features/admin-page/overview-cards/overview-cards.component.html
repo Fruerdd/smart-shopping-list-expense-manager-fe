@@ -1,10 +1,25 @@
-<div class="overview-cards-container">
+<div class="overview-section">
+  <div class="overview-header">
+    <h2>Overview</h2>
+    <div class="period-selector">
+      <label for="periodSelect" class="sr-only">Select Period</label>
+      <select id="periodSelect" (change)="onPeriodChangeHandler($event)">
+        <option value="today" [selected]="selectedPeriod === 'today'">Today</option>
+        <option value="lastWeek" [selected]="selectedPeriod === 'lastWeek'">Last Week</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="overview-cards-container">
     <div class="card" *ngFor="let item of overviewData">
       <h3>{{ item.title }}</h3>
       <p class="value">{{ item.value }}</p>
-      <p class="change" [ngClass]="{'positive': item.change.startsWith('+'), 'negative': item.change.startsWith('-')}">
+      <p class="change" [ngClass]="{
+        'positive': item.change.startsWith('+'),
+        'negative': item.change.startsWith('-')
+      }">
         {{ item.change }}
       </p>
     </div>
   </div>
-  
+</div>
