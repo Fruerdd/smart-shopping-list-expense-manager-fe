@@ -1,65 +1,34 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { BaseChartDirective } from 'ng2-charts';
-import {
-  Chart,
-  CategoryScale,
-  LinearScale,
-  BarController,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ChartData,
-  ChartOptions
-} from 'chart.js';
-
-Chart.register(
-  BarController,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { IgxCategoryChartComponent, IgxCategoryChartModule } from 'igniteui-angular-charts';
+import { PopularShopsService, PopularShopDataItem } from '../../../services/popular-shops.service'; 
 
 @Component({
   selector: 'app-popular-shops',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, IgxCategoryChartModule],
   templateUrl: './popular-shops.component.html',
-  styleUrls: ['./popular-shops.component.css']
+  styleUrls: ['./popular-shops.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PopularShopsComponent implements OnInit {
-  isBrowser = false;
+export class PopularShopsComponent implements OnInit, AfterViewInit {
+  @ViewChild("chart", { static: true })
+  private chart!: IgxCategoryChartComponent;
 
-  public barChartData: ChartData<'bar'> = {
-    labels: ['Bingo', 'Mercator', 'Konzum', 'BEST', 'Amko Komerc', 'Hoše Komerc'],
-    datasets: [
-      {
-        label: 'Shops',
-        data: [10, 12, 8, 14, 9, 11],
-        backgroundColor: '#6c63ff'
-      }
-    ]
-  };
+  public popularShopsData: PopularShopDataItem[] = [];
 
-  public barChartOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    maintainAspectRatio: false, 
-    plugins: {
-      legend: { display: false }
-    },
-    scales: {
-      y: { beginAtZero: true, grace: '5%' }
-    }
-  };
+  constructor(
+    private popularShopsService: PopularShopsService,
+    private _detector: ChangeDetectorRef
+  ) {}
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
+  ngOnInit(): void {
+    this.popularShopsService.getPopularShopsData().subscribe(data => {
+      this.popularShopsData = data;
+      this._detector.markForCheck();
+    });
+  }
 
-  ngOnInit() {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-    console.log('PopularShops isBrowser:', this.isBrowser);
+  public ngAfterViewInit(): void {
   }
 }

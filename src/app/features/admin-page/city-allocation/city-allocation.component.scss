@@ -1,0 +1,53 @@
+.city-allocation-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 20px 0;
+    height: calc(250px * 1.05); 
+    display: flex;
+    flex-direction: column;
+  }
+  
+  
+  .chart-header {
+    text-align: left;
+    margin-bottom: 16px;
+    padding: 0 24px 8px; 
+  }
+  
+  .chart-header h3 {
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0;
+  }
+  
+  .allocation-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px; 
+  }
+  
+  .chart-side {
+    flex: 0 0 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .chart-side igx-pie-chart {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .legend-side {
+    flex: 0 0 40%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  

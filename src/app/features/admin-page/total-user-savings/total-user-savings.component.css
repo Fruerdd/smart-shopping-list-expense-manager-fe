@@ -7,26 +7,8 @@
     width: 100%;
   }
   
-  .chart-header {
-    text-align: left;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-  }
-  
-  .chart-header h3 {
-    font-size: 1.8rem;
-    color: #333;
-    margin: 0;
-  }
-  
   .chart-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .chart-body canvas {
-    width: 100% !important;
-    max-width: 100%;
+    width: 100%;
+    height: 300px; 
   }
   

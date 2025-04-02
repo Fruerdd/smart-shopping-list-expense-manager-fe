@@ -1,19 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { OverviewCardsService, OverviewDataItem } from '../../../services/overview-cards.service';
 
 @Component({
   selector: 'app-overview-cards',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './overview-cards.component.html',
-  styleUrls: ['./overview-cards.component.css'],
-  standalone: true  
+  styleUrls: ['./overview-cards.component.css']
 })
-export class OverviewCardsComponent {
-  // Fake
-  overviewData = [
-    { title: 'Views', value: 7265, change: '+10%' },
-    { title: 'Visits', value: 3671, change: '-5%' },
-    { title: 'New Users', value: 156, change: '-10%' },
-    { title: 'Active Users', value: 2318, change: '+3%' }
-  ];
+export class OverviewCardsComponent implements OnInit {
+  overviewData: OverviewDataItem[] = [];
+  selectedPeriod: 'today' | 'lastWeek' = 'today';
+
+  constructor(private overviewCardsService: OverviewCardsService) {}
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData(): void {
+    this.overviewCardsService.getOverviewData(this.selectedPeriod).subscribe(data => {
+      this.overviewData = data;
+    });
+  }
+
+  onPeriodChangeHandler(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const period = selectElement.value as 'today' | 'lastWeek';
+    this.selectedPeriod = period;
+    this.loadData();
+  }
 }

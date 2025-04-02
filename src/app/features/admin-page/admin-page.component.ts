@@ -5,7 +5,7 @@ import { PopularShopsComponent } from './popular-shops/popular-shops.component';
 import { TotalUserSavingsComponent } from './total-user-savings/total-user-savings.component';
 import { AllCustomersComponent } from './all-customers/all-customers.component';
 import { ProductAnalyticsComponent } from './product-analytics/product-analytics.component';
-
+import { CityAllocationComponent } from './city-allocation/city-allocation.component';
 
 @Component({
   selector: 'app-admin-page',
@@ -18,6 +18,7 @@ import { ProductAnalyticsComponent } from './product-analytics/product-analytics
     TotalUserSavingsComponent,
     AllCustomersComponent,
     ProductAnalyticsComponent,
+    CityAllocationComponent,
     CommonModule
   ]
 })

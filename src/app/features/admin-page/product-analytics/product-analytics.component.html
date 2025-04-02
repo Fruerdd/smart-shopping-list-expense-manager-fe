@@ -1,56 +1,114 @@
-<div class="product-analytics-container">
-    <div class="pie-chart-section">
-      <h4>City Allocation</h4>
-      <div class="allocation-body">
-        <div class="pie-chart-wrapper">
-          <canvas baseChart
-                  [data]="pieChartData"
-                  [options]="pieChartOptions"
-                  chartType="pie">
-          </canvas>
-        </div>
-        <div class="legend-wrapper">
-          <ul>
-            <li *ngFor="let label of pieChartData.labels; let i = index">
-              <span class="legend-color"
-                    [style.backgroundColor]="pieChartBackgroundColors[i]">
-              </span>
-              {{ label }} — {{ pieChartData.datasets[0].data[i] }}%
-            </li>
-          </ul>
-        </div>
+<div class="product-analytics-wrapper">
+
+    <div class="analytics-header">
+      <h2>Product Analytics</h2>
+      <div class="date-range">
+        <span>10-06-2024</span>
+        <span>-</span>
+        <span>10-10-2024</span>
+      </div>
+      <div class="action-buttons">
+        <button class="add-product-btn">Edit Product</button>
+        <button class="add-product-btn">+ Add Product</button>
       </div>
     </div>
   
-    <div class="bar-chart-section">
-      <h4>Product Add by Month</h4>
-      <canvas baseChart
-              [data]="barChartData"
-              [options]="barChartOptions"
-              chartType="bar">
-      </canvas>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="card-header">
+          <span class="chart-title">Total Product Searched</span>
+        </div>
+        <div class="chart-stats">
+          <h3>{{ totalProductSearched | number }}</h3>
+          <span class="new-added">+ {{ newAdded }} New Added</span>
+        </div>
+        <div class="chart-container" style="width: 100%; height: 300px;" *ngIf="isBrowser">
+            <igx-category-chart
+              width="100%"
+              height="100%"
+              chartType="Spline"
+              [dataSource]="leftChartData"
+              labelMemberPath="Day"
+              valueMemberPath="Searches"
+              isTransitionInEnabled="true"
+              isHorizontalZoomEnabled="false"
+              isVerticalZoomEnabled="false">
+            </igx-category-chart>
+          </div>
+      </div>
+
+<div class="chart-card">
+    <div class="card-header">
+      <span class="chart-title">Product Add by Month</span>
+    </div>
+    <div class="chart-container" style="width: 100%; height: 300px;" *ngIf="isBrowser">
+      <igx-data-chart
+        width="100%"
+        height="100%"
+        isHorizontalZoomEnabled="false"
+        isVerticalZoomEnabled="false">
+  
+        <igx-numeric-x-axis
+          #xAxis
+          name="xAxis"
+          minimumValue="0"
+          interval="10"
+          title="Products">
+        </igx-numeric-x-axis>
+  
+        <igx-category-y-axis
+          #yAxis
+          name="yAxis"
+          label="Month"
+          [dataSource]="rightChartData"
+          gap="0.5">
+        </igx-category-y-axis>
+  
+        <igx-bar-series
+          name="barSeries"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          valueMemberPath="Value"
+          [dataSource]="rightChartData"
+          showDefaultTooltip="true"
+          isTransitionInEnabled="true">
+        </igx-bar-series>
+  
+      </igx-data-chart>
+    </div>
+  </div>
+  
     </div>
   
-    <div class="top-products-section">
-      <h4>Top Selling Products</h4>
+    <div class="table-section">
+      <h3>Top Selling Products</h3>
       <table>
         <thead>
           <tr>
-            <th>Rank</th>
-            <th>Product</th>
+            <th>SN</th>
+            <th>Total</th>
+            <th>Name</th>
             <th>Price (BAM)</th>
-            <th>Store</th>
+            <th>Stock</th>
+            <th>Shop</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of topProducts">
-            <td>{{ item.rank }}</td>
-            <td>{{ item.productName }}</td>
-            <td>{{ item.price }}</td>
-            <td>{{ item.store }}</td>
+          <tr *ngFor="let product of topProducts">
+            <td>{{ product.rank }}</td>
+            <td>
+              <span *ngIf="product.rank === 1">🥇</span>
+              <span *ngIf="product.rank === 2">🥈</span>
+              <span *ngIf="product.rank === 3">🥉</span>
+            </td>
+            <td>{{ product.productName }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.stock }}</td>
+            <td>{{ product.store }}</td>
           </tr>
         </tbody>
       </table>
     </div>
+  
   </div>
   
