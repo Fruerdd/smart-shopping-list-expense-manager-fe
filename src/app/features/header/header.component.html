@@ -1,67 +1,92 @@
 <header>
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 col-sm-3 col-3">
-                <div class="logo d-flex align-items-center">
-    <img src="logo.png" class="logo" alt="logo">
-    <span routerLink="/home" routerLinkActive="active" class="company-name" (click)="activatePage('home')" style="cursor: pointer;">GroceryMate</span>
-</div>
-
-            </div>
-            <div class="col-md-9 col-sm-9 col-9 text-end">
-                <div 
-                    class="menu-icon"
-                    *ngIf="isMobileView"
-                    (click)="openMenu()">
-                    <i class="{{menu_icon}}"></i>
-                </div>
-            
-                <div class="desktop_menu" [class.mobile_menu]="menuValue">
-                  <ul>
-                    <li
-                      routerLink="/dashboard"
-                      routerLinkActive="active"
-                      (click)="activatePage('dashboard')"
-                      [ngClass]="{'active': activePage === 'dashboard'}"
-                    >
-                      Dashboard
-                    </li>
-                
-                    <li
-                      routerLink="/user-profile"
-                      routerLinkActive="active"
-                      (click)="activatePage('profile')"
-                      [ngClass]="{'active': activePage === 'profile'}"
-                    >
-                      My Profile
-                    </li>
-                
-                    <li
-                      (click)="activatePage('how-to-use')"
-                      [ngClass]="{'active': activePage === 'how-to-use'}"
-                    >
-                      How to Use
-                    </li>
-                
-                    <li
-                      (click)="activatePage('login')"
-                      [ngClass]="{'active': activePage === 'login'}"
-                    >
-                      Log in
-                    </li>
-                
-                    <li
-                      (click)="activatePage('sign-in')"
-                      [ngClass]="{'active': activePage === 'sign-in'}"
-                    >
-                      Sign in
-                    </li>
-                  </ul>
-                </div>
-                
-            </div>
-            
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-sm-3 col-3">
+        <div class="logo d-flex align-items-center">
+          <img src="logo.png" class="logo" alt="logo" (click)="scrollToTop()" style="cursor: pointer;" />
+          <span routerLink="/home" routerLinkActive="active" class="company-name"
+                (click)="scrollToTopAndActivateHome()" style="cursor: pointer;">
+          GroceryMate
+          </span>
         </div>
+      </div>
+      <div class="col-md-9 col-sm-9 col-9 text-end">
+        <div class="menu-icon" *ngIf="isMobileView" (click)="openMenu()">
+          <i class="{{menu_icon}}"></i>
+        </div>
+
+        <div class="desktop_menu" [class.mobile_menu]="menuValue">
+          <ul>
+            <!-- Login and Sign in links, visible only if the user is not logged in -->
+            <li *ngIf="!isLoggedIn"
+                (click)="activatePage('login')"
+                [ngClass]="{'active': activePage === 'login'}" id="log-in-button">
+              Log In
+            </li>
+            <li *ngIf="!isLoggedIn"
+                (click)="activatePage('sign-up')"
+                [ngClass]="{'active': activePage === 'sign-up'}" id="sign-up-button">
+              Sign Up
+            </li>
+
+            <!-- Home Page Links, visible only when user is logged in -->
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin"
+                routerLink="/dashboard"
+                routerLinkActive="active"
+                (click)="activatePage('dashboard')"
+                [ngClass]="{'active': activePage === 'dashboard'}">
+              Dashboard
+            </li>
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin"
+                routerLink="/user-profile"
+                routerLinkActive="active"
+                (click)="activatePage('my-profile')"
+                [ngClass]="{'active': activePage === 'my-profile'}">
+              My Profile
+            </li>
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin"
+                (click)="scrollToSection('how-it-works')"
+                [ngClass]="{'active': activePage === 'how-it-works'}">
+              How to Use
+            </li>
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && isAdmin"
+                routerLink="/admin-page"
+                routerLinkActive="active"
+                (click)="activatePage('admin-page')"
+                [ngClass]="{'active': activePage === 'admin-page'}">
+              Admin Dashboard
+            </li>
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage"
+                (click)="activatePage('log-out')"
+                [ngClass]="{'active': activePage === 'log-out'}" id="log-out-button">
+              Log Out
+            </li>
+
+            <!-- User dashboard specific links -->
+            <ng-container *ngIf="isDashboardPage">
+              <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
+              <li (click)="scrollToSection('shopping-list')" [ngClass]="{'active': activePage === 'shopping-list'}">Shopping List</li>
+              <li (click)="scrollToSection('favorites')" [ngClass]="{'active': activePage === 'favorites'}">Favorites</li>
+              <li (click)="scrollToSection('price-comparison')" [ngClass]="{'active': activePage === 'price-comparison'}">Price Comparison</li>
+            </ng-container>
+
+            <!-- My Profile specific links -->
+            <ng-container *ngIf="isMyProfilePage">
+              <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
+              <li (click)="scrollToSection('analytics')" [ngClass]="{'active': activePage === 'analytics'}">Analytics</li>
+              <li (click)="scrollToSection('notifications')" [ngClass]="{'active': activePage === 'notifications'}">Notifications</li>
+            </ng-container>
+
+            <!-- Admin page specific links -->
+            <ng-container *ngIf="isAdminPage">
+              <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
+              <li (click)="activatePage('log-out')" [ngClass]="{'active': activePage === 'log-out'}">Log Out</li>
+            </ng-container>
+
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 </header>

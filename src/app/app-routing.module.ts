@@ -3,15 +3,15 @@ import { ServerRoute, RenderMode } from '@angular/ssr';
 
  export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { 
-    path: 'home', 
+  {
+    path: 'home',
     loadComponent: () => import('./features/home/home.component')
       .then(m => m.HomeComponent)
   },
   {
-    path: 'dashboard', 
-    loadComponent: () => import('./features/dashboard/dashboard.component')
-      .then(m => m.DashboardComponent)
+    path: 'dashboard',
+    loadComponent: () => import('@app/features/user-dashboard/user-dashboard.component')
+      .then(m => m.UserDashboardComponent)
   },
   {
     path: 'user-profile',

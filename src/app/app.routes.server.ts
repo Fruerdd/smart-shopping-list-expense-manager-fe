@@ -7,7 +7,7 @@ import { routes } from './app-routing.module';
 const serverConfig: ApplicationConfig = {
   providers: [
     provideServerRendering(),
-    provideServerRouting(routes as ServerRoute[]) // ✅ Ensure TypeScript understands this is `ServerRoute[]`
+    provideServerRouting(routes as ServerRoute[])
   ]
 };
 
