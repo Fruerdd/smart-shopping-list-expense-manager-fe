@@ -1,0 +1,119 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0B3B5B;
+    padding: 20px;
+  }
+  
+  .phone-placeholder {
+    width: 300px;
+    height: 450px;
+    border-radius: 30px;
+    margin-right: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+  }
+  
+  .phone-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .login-card {
+    background-color: #fcacc4;
+    border-radius: 20px;
+    width: 320px; /* povećano za prostor teksta */
+    max-height: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    padding: 30px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: stretch;
+    overflow-y: auto;
+  }
+  
+  .login-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .login-header h2 {
+    color: #0B3B5B;
+    font-size: 22px;
+    margin: 0;
+    max-width: 85%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  .theme-toggle {
+    font-size: 20px;
+    color: #0B3B5B;
+    cursor: pointer;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  input {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+  }
+  
+  button {
+    padding: 10px;
+    background-color: #0B3B5B;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .or-divider {
+    text-align: center;
+    margin: 20px 0;
+    color: #0B3B5B;
+  }
+  
+  .signup-text {
+    text-align: center;
+    color: #0B3B5B;
+  }
+  
+  .signup-text a {
+    color: #0B3B5B;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
