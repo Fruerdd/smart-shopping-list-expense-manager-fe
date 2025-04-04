@@ -1,0 +1,24 @@
+<div class="popup-overlay">
+  <div class="popup">
+    <div class="popup-header">
+      <h3>Shared With</h3>
+    </div>
+
+    <div *ngIf="sharedWith.length > 0; else noUsers">
+      <div class="scroll-container">
+        <div class="users-container">
+          <div class="user" *ngFor="let user of sharedWith">
+            <img [ngSrc]="user.avatar" alt="{{ user.name }}" class="user-avatar" width="30" height="30">
+            <p class="user-name">{{ user.name }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noUsers>
+      <p class="no-users">This list is not shared with anyone.</p>
+    </ng-template>
+
+    <button class="ok-button" (click)="closePopup()">OK</button>
+  </div>
+</div>

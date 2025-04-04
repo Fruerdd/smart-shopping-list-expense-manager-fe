@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OverviewCardsService, OverviewDataItem } from '../../../services/overview-cards.service';
+import { OverviewCardsService, OverviewDataItem } from '@app/services/overview-cards.service';
 
 @Component({
   selector: 'app-overview-cards',

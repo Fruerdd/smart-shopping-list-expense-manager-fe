@@ -1,0 +1,34 @@
+<section id="shopping-list"></section>
+<h2>Shopping List Management</h2>
+<div class="shopping-list-container">
+  <ng-container *ngFor="let list of shoppingLists$ | async">
+    <div class="card-with-popup">
+
+      <app-shopping-list-card
+        [shoppingList]="list"
+        (viewSharedUsers)="openSharedPopup(list.sharedWith)"
+        (viewList)="showListDetails(list)">
+      </app-shopping-list-card>
+
+
+      <app-shopping-list-details
+        *ngIf="selectedList && selectedList.id === list.id"
+        class="shopping-list-details"
+        [list]="list">
+      </app-shopping-list-details>
+    </div>
+  </ng-container>
+
+  <div class="create-list-card">
+    <div class="add-button">
+      <button>+</button>
+    </div>
+    <p>Create a New List</p>
+  </div>
+
+  <app-shared-with-popup
+    *ngIf="showSharedPopup"
+    [sharedWith]="selectedSharedUsers"
+    (close)="closeSharedPopup()">
+  </app-shared-with-popup>
+</div>

@@ -1,0 +1,21 @@
+<div class="details-container">
+  <h2>{{ list.name }}</h2>
+  <p class="list-info">{{ list.description }}</p>
+
+  <div class="items-container">
+    <div class="item" *ngFor="let item of list.items">
+      <img class="item-icon" [ngSrc]="list.itemImage" alt="Item Icon" width="30" height="30" />
+      <div class="item-details">
+        <span class="item-name">{{ item.name }}</span>
+        <span class="item-price">{{ item.price }} KM</span>
+      </div>
+      <span class="item-quantity">{{ item.quantity }}</span>
+      <input type="checkbox" class="checkbox" [(ngModel)]="item.checked" (change)="toggleItemChecked(item)" />
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <button class="edit-button">Edit List</button>
+    <button class="delete-button">Delete List</button>
+  </div>
+</div>

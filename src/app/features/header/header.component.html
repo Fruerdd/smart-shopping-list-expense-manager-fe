@@ -4,10 +4,20 @@
     <div class="row">
       <div class="col-md-3 col-sm-3 col-3">
         <div class="logo d-flex align-items-center">
-          <img src="logo.png" class="logo" alt="logo" (click)="scrollToTop()" style="cursor: pointer;" />
-          <span routerLink="/home" routerLinkActive="active" class="company-name"
+          <img *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage" src="logo.png" class="logo" alt="logo" (click)="scrollToTop()" style="cursor: pointer;" />
+          <img *ngIf="isAdminPage || isMyProfilePage || isDashboardPage" src="logo.png" class="logo" alt="logo" (click)="scrollToTopAndActivateHome()" style="cursor: pointer;" />
+          <span *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage" routerLink="/home" routerLinkActive="active" class="company-name"
                 (click)="scrollToTopAndActivateHome()" style="cursor: pointer;">
           GroceryMate
+          </span>
+          <span *ngIf="isAdminPage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
+            Admin Dashboard
+          </span>
+          <span *ngIf="isMyProfilePage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
+            My Profile
+          </span>
+          <span *ngIf="isDashboardPage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
+            User Dashboard
           </span>
         </div>
       </div>
@@ -67,7 +77,7 @@
             <ng-container *ngIf="isDashboardPage">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
               <li (click)="scrollToSection('shopping-list')" [ngClass]="{'active': activePage === 'shopping-list'}">Shopping List</li>
-              <li (click)="scrollToSection('favorites')" [ngClass]="{'active': activePage === 'favorites'}">Favorites</li>
+              <li (click)="scrollToSection('favorites-section')" [ngClass]="{'active': activePage === 'favorites'}">Favorites</li>
               <li (click)="scrollToSection('price-comparison')" [ngClass]="{'active': activePage === 'price-comparison'}">Price Comparison</li>
             </ng-container>
 

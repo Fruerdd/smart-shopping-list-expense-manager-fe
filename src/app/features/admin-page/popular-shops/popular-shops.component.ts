@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IgxCategoryChartComponent, IgxCategoryChartModule } from 'igniteui-angular-charts';
-import { PopularShopsService, PopularShopDataItem } from '../../../services/popular-shops.service'; 
+import { PopularShopsService, PopularShopDataItem } from '@app/services/popular-shops.service';
 
 @Component({
   selector: 'app-popular-shops',

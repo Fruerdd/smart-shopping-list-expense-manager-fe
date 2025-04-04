@@ -4,7 +4,7 @@ import { IgxCategoryChartModule } from 'igniteui-angular-charts';
 import { IgxDataChartCoreModule, IgxDataChartCategoryModule, IgxDataChartInteractivityModule, IgxNumericXAxisModule, IgxCategoryYAxisModule, IgxBarSeriesModule, IgxDataToolTipLayerModule, IgxCalloutLayerModule } from 'igniteui-angular-charts';
 import { IgxNumericXAxisComponent } from 'igniteui-angular-charts';
 
-import { ProductService, IProduct, ILeftChartData, IRightChartData } from '../../../services/product.service'; 
+import { ProductService, IProduct, ILeftChartData, IRightChartData } from '@app/services/product.service';
 
 @Component({
   selector: 'app-product-analytics',

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IgxCategoryChartComponent, IgxCategoryChartModule } from 'igniteui-angular-charts';
-import { SavingsService, SavingsDataItem } from '../../../services/savings.service'; 
+import { SavingsService, SavingsDataItem } from '@app/services/savings.service';
 
 @Component({
   selector: 'app-total-user-savings',
@@ -13,7 +13,7 @@ import { SavingsService, SavingsDataItem } from '../../../services/savings.servi
 })
 export class TotalUserSavingsComponent implements OnInit, AfterViewInit {
   @ViewChild('chart', { static: true }) chart!: IgxCategoryChartComponent;
-  
+
   public savingsData: SavingsDataItem[] = [];
 
   constructor(private savingsService: SavingsService, private cdr: ChangeDetectorRef) {}

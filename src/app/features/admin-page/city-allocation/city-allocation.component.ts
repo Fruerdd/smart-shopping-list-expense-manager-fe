@@ -1,20 +1,20 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { IgxPieChartModule, IgxPieChartComponent, IgxItemLegendModule } from "igniteui-angular-charts";
-import { ChartDataService, IChartData } from "../../../services/chart-data.service";
+import { ChartDataService, IChartData } from "@app/services/chart-data.service";
 
 @Component({
   selector: "app-city-allocation",
   standalone: true,
   imports: [
-    CommonModule, 
-    IgxPieChartModule, 
+    CommonModule,
+    IgxPieChartModule,
     IgxItemLegendModule],
   templateUrl: "./city-allocation.component.html",
   styleUrls: ["./city-allocation.component.scss"]
 })
 export class CityAllocationComponent implements OnInit, AfterViewInit {
-  public data: any; 
+  public data: any;
 
   @ViewChild("chart", { static: true })
   public chart!: IgxPieChartComponent;
