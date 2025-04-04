@@ -1,0 +1,43 @@
+<section id="favorites-section" class="favorite-section">
+  <h2>Favorite Items</h2>
+
+  <div class="items-grid">
+    <div class="item-card" *ngFor="let product of favoriteProducts$ | async">
+      <div class="item-content">
+        <span class="item-icon">{{ product.icon }}</span>
+        <span class="item-name">{{ product.name }}</span>
+      </div>
+      <button class="remove-button" (click)="removeProduct(product.id)">
+        <span class="circle-icon">⊖</span>
+      </button>
+    </div>
+
+    <div class="item-card add-card" (click)="toggleAddForm()">
+      <div class="item-content">
+        <span class="add-text">Add a New Item</span>
+      </div>
+      <span class="circle-icon add-icon">⊕</span>
+    </div>
+  </div>
+
+  <div class="search-form" *ngIf="showAddForm">
+    <div class="search-input-container">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Type to search items..."
+        (input)="search(searchQuery)">
+      <button class="clear-button" *ngIf="searchQuery" (click)="searchQuery = ''; search('')">✕</button>
+    </div>
+
+    <div class="search-results" *ngIf="searchQuery">
+      <div class="result-item" *ngFor="let result of searchResults$ | async" (click)="addProduct(result)">
+        <span>{{ result.name }}</span>
+        <button class="favorite-button">♡</button>
+      </div>
+      <div class="no-results" *ngIf="(searchResults$ | async)?.length === 0">
+        No items found
+      </div>
+    </div>
+  </div>
+</section>

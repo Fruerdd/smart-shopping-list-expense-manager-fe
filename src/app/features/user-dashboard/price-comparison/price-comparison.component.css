@@ -1,0 +1,163 @@
+.price-comparison-container {
+  max-width: 690px;
+}
+
+h2 {
+  margin-bottom: 15px;
+}
+
+.search-section {
+  display: flex;
+  gap: 20px;
+}
+
+.search-container {
+  flex: 1;
+  position: relative;
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  background-color: #f5f7fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #0B3B5B;
+}
+
+.arrow-left-icon {
+  font-size: 18px;
+  color: #0B3B5B;
+}
+
+.search-input {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background-color: transparent;
+  color: #0B3B5B;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 130px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.search-results-list {
+  padding: 10px;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-result-item:hover {
+  background-color: #f5f7fa;
+}
+
+.item-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  border-radius: 50%;
+  font-size: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-name {
+  font-size: 14px;
+}
+
+.no-results {
+  padding: 15px;
+  text-align: center;
+  color: #0B3B5B;
+}
+
+.price-results {
+  flex: 1;
+  background-color: #FCACC4;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.price-results-header {
+  padding: 15px;
+  border-bottom: 1px solid #0B3B5B;
+}
+
+.price-results-header h3 {
+  margin: 0;
+  color: #0B3B5B;
+}
+
+.price-results-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.store-price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #0B3B5B;
+}
+
+.store-price-item:last-child {
+  border-bottom: none;
+}
+
+.store-info {
+  display: flex;
+  align-items: center;
+}
+
+.store-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.store-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0B3B5B;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 14px;
+  color: #0B3B5B;
+}

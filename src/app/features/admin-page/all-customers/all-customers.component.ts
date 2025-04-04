@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AllCustomersService, Customer } from '../../../services/all-customers.service'; 
+import { AllCustomersService, Customer } from '@app/services/all-customers.service';
 
 @Component({
   selector: 'app-all-customers',

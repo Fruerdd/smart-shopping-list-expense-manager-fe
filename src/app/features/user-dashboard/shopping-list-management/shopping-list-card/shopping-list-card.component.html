@@ -1,0 +1,28 @@
+<div class="shopping-list-card">
+  <div class="owner-info">
+    <img [ngSrc]="shoppingList.ownerAvatar" alt="Owner avatar" class="avatar" width="30" height="30">
+    <div class="owner-details">
+      <span class="owner-name">{{ shoppingList.owner }}</span>
+      <span class="list-owner">List Owner</span>
+    </div>
+    <button class="info-button" (click)="onInfoClick()">
+      <mat-icon>info</mat-icon>
+    </button>
+  </div>
+
+  <div class="list-image">
+    <img [ngSrc]="shoppingList.image" alt="List image" class="background-image" width="100" height="100">
+  </div>
+
+  <div class="list-content">
+    <h3>{{ shoppingList.name }}</h3>
+    <p class="list-category">{{ shoppingList.category }}</p>
+
+    <p class="description-text">{{ shoppingList.description }}</p>
+
+    <div class="button-group">
+      <button class="view-button" (click)="onViewListClick()">View List</button>
+      <button class="mark-done-button">Mark as Done</button>
+    </div>
+  </div>
+</div>

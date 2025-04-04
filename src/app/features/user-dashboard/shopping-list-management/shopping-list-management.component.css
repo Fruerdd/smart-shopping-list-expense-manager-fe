@@ -1,0 +1,45 @@
+h2 {
+  margin-bottom: 20px;
+}
+
+.shopping-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: flex-start;
+}
+
+.create-list-card{
+  width: 300px;
+  height: 350px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.add-button button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #0B3B5B;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+p {
+  color: #0B3B5B;
+  font-weight: bold;
+  font-size: 20px;
+}

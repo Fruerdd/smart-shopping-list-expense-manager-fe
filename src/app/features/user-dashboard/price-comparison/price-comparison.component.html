@@ -1,0 +1,52 @@
+<section id="price-comparison" class="price-comparison-container">
+  <h2>Price Comparison</h2>
+
+  <div class="search-section">
+    <div class="search-container">
+      <div class="search-input-container">
+        <button class="back-button" *ngIf="selectedItem" (click)="clearSearch()">
+          <i class="arrow-left-icon">←</i>
+        </button>
+        <input
+          type="text"
+          placeholder="Search items"
+          [(ngModel)]="searchTerm"
+          (input)="filterItems()"
+          (focus)="onSearchFocus()"
+          (blur)="onSearchBlur()"
+          class="search-input"
+        >
+      </div>
+
+      <div class="search-results" *ngIf="showSearchResults">
+        <div class="search-results-list">
+          <div *ngFor="let item of filteredItems"
+               class="search-result-item"
+               (click)="selectItem(item)">
+            <img src="assets/images/item-img-generic.png" alt="Generic item image" class="item-icon">
+            <div class="item-name">{{ item.name }}</div>
+          </div>
+          <div *ngIf="filteredItems.length === 0" class="no-results">
+            No items found
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-results" *ngIf="selectedItem && storePrices.length > 0">
+      <div class="price-results-header">
+        <h3>{{ selectedItem.name }}</h3>
+      </div>
+
+      <div class="price-results-list">
+        <div *ngFor="let storePrice of storePrices" class="store-price-item">
+          <div class="store-info">
+            <div class="store-icon" [innerHTML]="storePrice.storeIcon"></div>
+            <div class="store-name">{{ storePrice.storeName }}</div>
+          </div>
+          <div class="price">{{ storePrice.price.toFixed(2) }} KM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
