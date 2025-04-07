@@ -1,0 +1,85 @@
+.form-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.description-group {
+  flex: 2;
+}
+
+label {
+  font-size: 12px;
+  color: #0B3B5B;
+  margin-bottom: 5px;
+}
+
+input, select, textarea {
+  padding: 10px;
+  border: 1px solid #0B3B5B;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #0B3B5B;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+  color: #0B3B5B;
+}
+
+.error-message {
+  color: #FCACC4;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Share options styling */
+.share-options-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 100px;
+  overflow-y: auto;
+  border: 1px solid #0B3B5B;
+  border-radius: 4px;
+  padding: 10px;
+  scroll-behavior: smooth;
+  scrollbar-color: transparent #0B3B5B;
+}
+
+.share-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  padding: 6px 12px;
+  background: rgba(11, 59, 91, 0.1);
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.share-option.selected {
+  background: #FCACC4;
+  color: white;
+}
+
+.share-name {
+  font-size: 12px;
+  color: #0B3B5B;
+}
+

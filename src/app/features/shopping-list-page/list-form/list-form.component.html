@@ -1,0 +1,40 @@
+<div class="form-container">
+  <form [formGroup]="listForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="listName">List Name</label>
+        <input type="text" id="listName" formControlName="name" placeholder="List Name">
+        <div class="error-message" *ngIf="listForm.get('name')?.invalid && listForm.get('name')?.touched">
+          Name is required
+        </div>
+      </div>
+      <div class="form-group description-group">
+        <label for="listDescription">List Description</label>
+        <textarea id="listDescription" formControlName="description" placeholder="List Description"></textarea>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="listType">List Type</label>
+        <select id="listType" formControlName="type">
+          <option value="other">Other</option>
+          <option value="grocery">Grocery</option>
+          <option value="household">Household</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="shareWith">Share With</label>
+        <div id="shareWith" class="share-options-container">
+          <div
+            *ngFor="let option of shareOptions"
+            class="share-option"
+            [class.selected]="isShareOptionSelected(option.id)"
+            (click)="toggleShareOption(option.id)">
+            <span class="share-name">{{ option.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

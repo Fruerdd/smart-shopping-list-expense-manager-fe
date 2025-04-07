@@ -11,7 +11,14 @@ import { ServerRoute, RenderMode } from '@angular/ssr';
   {
     path: 'dashboard',
     loadComponent: () => import('@app/features/user-dashboard/user-dashboard.component')
-      .then(m => m.UserDashboardComponent)
+      .then(m => m.UserDashboardComponent),
+    children: [
+      {
+        path: 'shopping-list',
+        loadComponent: () => import('@app/features/shopping-list-page/shopping-list-page.component')
+          .then(m => m.ShoppingListPageComponent)
+      }
+      ],
   },
   {
     path: 'user-profile',

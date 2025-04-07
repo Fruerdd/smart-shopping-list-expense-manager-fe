@@ -4,6 +4,7 @@ import {ShoppingListManagementComponent} from '@app/features/user-dashboard/shop
 import {FavoriteProductsComponent} from '@app/features/user-dashboard/favorite-products/favorite-products.component';
 import {FavoriteStoresComponent} from '@app/features/user-dashboard/favorite-stores/favorite-stores.component';
 import {PriceComparisonComponent} from '@app/features/user-dashboard/price-comparison/price-comparison.component';
+import {Router, RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -15,7 +16,15 @@ import {PriceComparisonComponent} from '@app/features/user-dashboard/price-compa
     ShoppingListManagementComponent,
     FavoriteProductsComponent,
     FavoriteStoresComponent,
-    PriceComparisonComponent
+    PriceComparisonComponent,
+    RouterOutlet
   ]
 })
-export class UserDashboardComponent {}
+export class UserDashboardComponent {
+  constructor(protected router: Router) {}
+
+  navigateToShoppingList(): void {
+    this.router.navigate(['/dashboard/shopping-list']);
+  }
+
+}

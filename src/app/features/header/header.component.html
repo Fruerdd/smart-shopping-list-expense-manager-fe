@@ -4,9 +4,14 @@
     <div class="row">
       <div class="col-md-3 col-sm-3 col-3">
         <div class="logo d-flex align-items-center">
-          <img *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage" src="logo.png" class="logo" alt="logo" (click)="scrollToTop()" style="cursor: pointer;" />
-          <img *ngIf="isAdminPage || isMyProfilePage || isDashboardPage" src="logo.png" class="logo" alt="logo" (click)="scrollToTopAndActivateHome()" style="cursor: pointer;" />
-          <span *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage" routerLink="/home" routerLinkActive="active" class="company-name"
+          <img *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage && !isShoppingListPage"
+               src="logo.png" class="logo" alt="logo" (click)="scrollToTop()"
+               style="cursor: pointer;" />
+          <img *ngIf="isAdminPage || isMyProfilePage || isDashboardPage || isShoppingListPage"
+               src="logo.png" class="logo" alt="logo" (click)="scrollToTopAndActivateHome()"
+               style="cursor: pointer;" />
+          <span *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage && !isShoppingListPage"
+                routerLink="/home" routerLinkActive="active" class="company-name"
                 (click)="scrollToTopAndActivateHome()" style="cursor: pointer;">
           GroceryMate
           </span>
@@ -18,6 +23,9 @@
           </span>
           <span *ngIf="isDashboardPage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
             User Dashboard
+          </span>
+          <span *ngIf="isShoppingListPage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
+            Shopping List
           </span>
         </div>
       </div>
@@ -41,35 +49,35 @@
             </li>
 
             <!-- Home Page Links, visible only when user is logged in -->
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage"
                 routerLink="/dashboard"
                 routerLinkActive="active"
                 (click)="activatePage('dashboard')"
                 [ngClass]="{'active': activePage === 'dashboard'}">
               Dashboard
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage"
                 routerLink="/user-profile"
                 routerLinkActive="active"
                 (click)="activatePage('my-profile')"
                 [ngClass]="{'active': activePage === 'my-profile'}">
               My Profile
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage"
                 (click)="scrollToSection('how-it-works')"
                 [ngClass]="{'active': activePage === 'how-it-works'}">
               How to Use
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && isAdmin"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && isAdmin && !isShoppingListPage"
                 routerLink="/admin-page"
                 routerLinkActive="active"
                 (click)="activatePage('admin-page')"
                 [ngClass]="{'active': activePage === 'admin-page'}">
               Admin Dashboard
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isShoppingListPage"
                 (click)="activatePage('log-out')"
-                [ngClass]="{'active': activePage === 'log-out'}" id="log-out-button">
+                [ngClass]="{'active': activePage === 'log-out'}" class="log-out-button">
               Log Out
             </li>
 
@@ -92,6 +100,11 @@
             <ng-container *ngIf="isAdminPage">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
               <li (click)="activatePage('log-out')" [ngClass]="{'active': activePage === 'log-out'}">Log Out</li>
+            </ng-container>
+
+            <!-- Shopping List specific links -->
+            <ng-container *ngIf="isShoppingListPage">
+              <li routerLink="/dashboard" routerLinkActive="active" (click)="activatePage('dashboard')">Dashboard</li>
             </ng-container>
 
           </ul>

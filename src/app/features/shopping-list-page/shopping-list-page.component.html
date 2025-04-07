@@ -1,0 +1,80 @@
+<app-list-form
+  [isEditMode]="isEditMode"
+  [initialValues]="initialFormValues"
+  (formValuesChange)="onFormValuesChange($event)">
+</app-list-form>
+
+<div class="preferred-store-indicator" *ngIf="preferredStore">
+  <div class="preferred-store-badge">
+    <mat-icon>store</mat-icon>
+    <span>Shopping from: <strong>{{ preferredStore }}</strong></span>
+    <button class="clear-store-btn" (click)="changePreferredStore()">Change</button>
+  </div>
+  <p class="store-info-text">Products will be selected from {{ preferredStore }} when available</p>
+</div>
+<app-store-selection-modal
+  [show]="showStoreSelectionModal"
+  [stores]="availableStores"
+  [preferredStore]="preferredStore"
+  [isLoading]="isLoadingComparisons"
+  (closeModal)="closeStoreSelectionModal()"
+  (storeSelected)="selectPreferredStore($event)"
+  (clearStore)="preferredStore = null; closeStoreSelectionModal()">
+</app-store-selection-modal>
+
+<div class="page-container">
+
+  <app-sidebar
+    class="sidebar-container"
+    [categories]="sidebarCategories"
+    (categorySelected)="filterByCategory($event)">
+  </app-sidebar>
+
+  <div class="shopping-list-container" *ngIf="!isLoading; else loadingTemplate">
+
+    <div class="shopping-list-preview">
+      <app-selected-products
+        [selectedProducts]="selectedProducts"
+        [isEditMode]="isEditMode"
+        [preferredStore]="preferredStore"
+        [listFormValid]="listFormComponent && listFormComponent.isFormValid() || false"
+        (quantityChange)="updateItemQuantity($event)"
+        (removeProduct)="removeProduct($event)"
+        (saveList)="saveList()"
+        (cancelEdit)="cancelEdit()"
+        (changeStore)="changePreferredStore()">
+      </app-selected-products>
+    </div>
+    <div class="products-section">
+      <app-product-list
+        [categories]="categories"
+        [filteredProducts]="filteredProducts"
+        [selectedProducts]="selectedProducts"
+        [searchTerm]="searchTerm"
+        (searchChange)="searchTerm = $event; searchProducts()"
+        (toggleCategoryEvent)="toggleCategory($event)"
+        (selectProductEvent)="selectProduct($event)"
+        (comparePricesEvent)="compareStoreItems($event)">
+      </app-product-list>
+    </div>
+  </div>
+
+    <div class="modal-overlay" *ngIf="showComparisonModal" (click)="closeComparisonModal()">
+      <app-price-comparison-modal
+        [show]="showComparisonModal"
+        [isLoading]="isLoadingComparisons"
+        [storeComparisons]="storeComparisons"
+        [selectedProduct]="selectedComparisonProduct"
+        [preferredStore]="preferredStore"
+        (closeModal)="closeComparisonModal()"
+        (storeSelected)="selectStore($event)">
+      </app-price-comparison-modal>
+    </div>
+
+  <ng-template #loadingTemplate >
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p style="color: #0B3B5B">Loading shopping list data...</p>
+    </div>
+  </ng-template>
+</div>

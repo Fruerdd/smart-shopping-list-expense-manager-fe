@@ -12,9 +12,14 @@ import {FormsModule} from '@angular/forms';
 })
 export class ShoppingListDetailsComponent {
   @Input() list!: ShoppingList;
+  @Output() editList = new EventEmitter<ShoppingList>();
 
   toggleItemChecked(item: any): void {
     item.checked = !item.checked;
+  }
+
+  editShoppingList(): void {
+    this.editList.emit(this.list);
   }
 
 }
