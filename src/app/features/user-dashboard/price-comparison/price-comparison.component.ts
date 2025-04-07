@@ -13,8 +13,7 @@ type SanitizedStorePrice = Omit<StorePrice, 'storeIcon'> & { storeIcon: SafeHtml
   imports: [
     NgForOf,
     NgIf,
-    FormsModule,
-    NgOptimizedImage,
+    FormsModule
   ],
   styleUrls: ['./price-comparison.component.css']
 })
