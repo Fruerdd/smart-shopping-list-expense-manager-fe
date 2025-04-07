@@ -1,1 +1,20 @@
-<p>user-profile works!</p>
+<h2>Korisnički profil</h2>
+<div *ngIf="user">
+    <h2>{{ user.name }}</h2>
+    <p>Email: {{ user.email }}</p>
+    <p>Telefon: {{ user.phone }}</p>
+    <p>Loyalty poeni: {{ user.loyaltyPoints }}</p>
+    <p>Kredit: {{ user.creditsAvailable }} KM</p>
+    <p>Omiljena trgovina: {{ user.favoriteStore }}</p>
+    <div class="chart-row">
+      <app-money-spent-chart [spendingOverTime]="user.spendingOverTime"></app-money-spent-chart>
+      <app-average-price-chart [priceAverages]="user.priceAverages"></app-average-price-chart>
+    </div>
+  </div>
+  
+  <div *ngIf="!user">
+    <p>Učitavanje profila...</p>
+  </div>
+
+
+  

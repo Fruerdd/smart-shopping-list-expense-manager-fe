@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { ServerRoute, RenderMode } from '@angular/ssr';
 
+
  export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   {
@@ -24,6 +25,27 @@ import { ServerRoute, RenderMode } from '@angular/ssr';
       .then(m => m.AdminPageComponent)
 
   },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'signup',
+    loadComponent: () =>
+      import('./features/signup/signup.component').then(m => m.SignupComponent)
+  },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./features/user-profile/user-profile.component').then(m => m.UserProfileComponent)
+  },
+  {
+    path: 'profile/:id',
+    loadComponent: () =>
+      import('./features/user-profile/user-profile.component').then(m => m.UserProfileComponent)
+  },
+
   { path: '**', redirectTo: '/home' }
 ];
 

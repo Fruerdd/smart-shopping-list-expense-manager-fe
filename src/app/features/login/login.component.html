@@ -1,0 +1,48 @@
+<div class="login-page">
+  <div class="phone-placeholder">
+    <img [src]="imageUrl" alt="Example Image" />
+  </div>
+
+  <div class="login-card">
+    <div class="login-header">
+      <h2>GroceryMate</h2>
+      <span class="theme-toggle">⚙️</span>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input
+        type="text"
+        formControlName="email"
+        placeholder="Username or Email"
+      />
+      <div
+        *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        class="error"
+      >
+        Email is required.
+      </div>
+
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Password"
+      />
+      <div
+        *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        class="error"
+      >
+        Password is required.
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">Log in</button>
+    </form>
+
+    <div class="or-divider">OR</div>
+
+    <p class="signup-text">
+      Don’t have an account?
+      <a routerLink="/signup" href="/signup">Sign up</a>
+    </p>
+  </div>
+</div>
+

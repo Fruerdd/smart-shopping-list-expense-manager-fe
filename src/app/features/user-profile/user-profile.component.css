@@ -1,0 +1,8 @@
+.chart-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem; /* razmak između grafikona */
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap; 
+  }

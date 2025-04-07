@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { environment } from './environments/environment';
 import { AppComponent } from '@app/app.component';
 import { routes } from '@app/app-routing.module';
+import { appConfig } from './app/app.config';
 
 import {
   Chart,
@@ -19,6 +20,4 @@ if (environment.production) {
   enableProdMode();
 }
 
-bootstrapApplication(AppComponent, {
-  providers: [provideRouter(routes)]
-});
+bootstrapApplication(AppComponent, appConfig);
