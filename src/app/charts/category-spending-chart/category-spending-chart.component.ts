@@ -5,13 +5,13 @@ import { ChartConfiguration } from 'chart.js';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 
 @Component({
-  selector: 'app-average-price-chart',
+  selector: 'app-category-spending-chart',
   standalone: true,
   imports: [CommonModule, NgChartsModule],
-  templateUrl: './average-price-chart.component.html',
-  styleUrls: ['./average-price-chart.component.css']
+  templateUrl: './category-spending-chart.component.html',
+  styleUrls: ['./category-spending-chart.component.css']
 })
-export class AveragePriceChartComponent implements OnInit {
+export class CategorySpendingChartComponent implements OnInit {
   @Input() userId!: number;
 
   public barChartData: ChartConfiguration<'bar'>['data'] = {
@@ -21,9 +21,14 @@ export class AveragePriceChartComponent implements OnInit {
 
   public barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
-    indexAxis: 'y', // ukloni ako želiš vertikalni graf
+    indexAxis: 'y', // horizontalni prikaz
     plugins: {
       legend: { display: false }
+    },
+    scales: {
+      x: {
+        beginAtZero: true
+      }
     }
   };
 
@@ -34,16 +39,18 @@ export class AveragePriceChartComponent implements OnInit {
   ngOnInit(): void {
     if (this.userId) {
       this.userProfileService.getUserProfile(this.userId).subscribe(user => {
-        const priceAverages = user.priceAverages;
+        const spending = user.categorySpending;
+
         this.barChartData = {
-          labels: priceAverages.map((p: any) => p.item),
+          labels: spending.map((c: any) => c.category),
           datasets: [
             {
-              data: priceAverages.map((p: any) => p.price),
-              label: 'Avg. Price (KM)',
-              backgroundColor: 'rgba(54, 162, 235, 0.6)',
-              borderColor: 'rgba(54, 162, 235, 1)',
-              borderWidth: 1
+              data: spending.map((c: any) => c.amount),
+              label: 'KM',
+              backgroundColor: 'rgba(75, 192, 192, 0.6)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1,
+              barThickness: 20 // 👈 tanje linije
             }
           ]
         };

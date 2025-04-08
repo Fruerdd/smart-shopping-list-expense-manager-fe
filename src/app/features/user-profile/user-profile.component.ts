@@ -1,26 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // 👈 ovo dodaj
+import { CommonModule } from '@angular/common'; 
 import { UserProfileService } from '../../services/user-profile.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { MoneySpentChartComponent } from '../../charts/money-spent-chart/money-spent-chart.component';
 import { AveragePriceChartComponent } from '../../charts/average-price-chart/average-price-chart.component';
+import { ExpensesByStoreChartComponent } from '../../charts/expenses-by-store-chart/expenses-by-store-chart.component';
+import { AverageSavedChartComponent } from '../../charts/average-saved-chart/average-saved-chart.component';
+import { CategorySpendingChartComponent } from '../../charts/category-spending-chart/category-spending-chart.component';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
+import { QRCodeComponent } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
   imports: [
     CommonModule,
+    QRCodeComponent,  
     MoneySpentChartComponent,
-    AveragePriceChartComponent
+    AveragePriceChartComponent,
+    ExpensesByStoreChartComponent,
+    AverageSavedChartComponent,
+    CategorySpendingChartComponent
   ],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
 })
 export class UserProfileComponent implements OnInit {
-  user: any;
+  user: any;  
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,

@@ -1,16 +1,84 @@
-<h2>Korisnički profil</h2>
-<div *ngIf="user">
-    <h2>{{ user.name }}</h2>
-    <p>Email: {{ user.email }}</p>
-    <p>Telefon: {{ user.phone }}</p>
-    <p>Loyalty poeni: {{ user.loyaltyPoints }}</p>
-    <p>Kredit: {{ user.creditsAvailable }} KM</p>
-    <p>Omiljena trgovina: {{ user.favoriteStore }}</p>
-    <div class="chart-row">
-      <app-money-spent-chart [spendingOverTime]="user.spendingOverTime"></app-money-spent-chart>
-      <app-average-price-chart [priceAverages]="user.priceAverages"></app-average-price-chart>
+<div *ngIf="user" class="profile-header">
+  <div class="profile-banner">
+    <div class="profile-info">
+      <img class="profile-image" [src]="'/assets/avatar-placeholder.png'" alt="Profile photo" />
+      <div>
+        <h2>Welcome, {{ user.username || user.name }}!</h2>
+        <p><i class="fa fa-map-marker-alt"></i> Sarajevo</p>
+      </div>
     </div>
+    <button class="edit-button">Edit Profile</button>
   </div>
+
+  <div class="profile-grid">
+    <!-- About Me -->
+    <div class="card">
+      <h4>About Me</h4>
+      <p><strong>Name:</strong> {{ user.name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Phone:</strong> {{ user.phone }}</p>
+    </div>
+
+    <!-- Coupon Code -->
+    <div class="card">
+      <h4>Your coupon Code:</h4>
+      <input type="text" [value]="user.couponCode" readonly />
+      <!-- <button (click)="copyCoupon(user.couponCode)">📋</button> -->
+      <h4>Enter coupon Code:</h4>
+      <input type="text" placeholder="Coupon code" />
+    </div>
+
+    <!-- Friends -->
+    <div class="card">
+      <h4>Friends</h4>
+      <ul>
+        <li *ngFor="let friend of user.friends">{{ friend }}</li>
+      </ul>
+      <button class="see-all-button">See All</button>
+    </div>
+
+    <!-- Loyalty & QR -->
+    <div class="card">
+      <h4>Loyalty Points</h4>
+      <p><strong>{{ user.loyaltyPoints }}</strong> points</p>
+      <p>Credits Available: {{ user.creditsAvailable | currency:'EUR':'symbol-narrow' }}</p>
+      <qrcode
+        [qrdata]="user.qrCodeValue"
+        [width]="120"
+        [errorCorrectionLevel]="'M'">
+      </qrcode>
+    </div>
+
+    <!-- Info Box 
+    <div class="info-box">
+      <p>
+        Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns you points which can then be used for discounts by scanning your unique QR code in any of the supported stores!
+      </p>
+      <button>Got it!</button>
+    </div>-->
+  </div>
+</div>
+  
+    <div class="charts-grid">
+      <!-- Prvi red -->
+      <div class="grid-item grid-span-2">
+        <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>
+      </div>
+      <div class="grid-item">
+        <app-category-spending-chart *ngIf="user" [userId]="user.id"></app-category-spending-chart>
+      </div>
+    
+      <!-- Drugi red -->
+      <div class="grid-item">
+        <app-average-price-chart *ngIf="user" [userId]="user.id"></app-average-price-chart>
+      </div>
+      <div class="grid-item">
+        <app-expenses-by-store-chart *ngIf="user" [userId]="user.id"></app-expenses-by-store-chart>
+      </div>
+      <div class="grid-item">
+        <app-average-saved-chart *ngIf="user" [userId]="user.id"></app-average-saved-chart>
+      </div>
+    </div>
   
   <div *ngIf="!user">
     <p>Učitavanje profila...</p>

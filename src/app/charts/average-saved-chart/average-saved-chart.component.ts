@@ -5,23 +5,22 @@ import { ChartConfiguration } from 'chart.js';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 
 @Component({
-  selector: 'app-average-price-chart',
+  selector: 'app-average-saved-chart',
   standalone: true,
   imports: [CommonModule, NgChartsModule],
-  templateUrl: './average-price-chart.component.html',
-  styleUrls: ['./average-price-chart.component.css']
+  templateUrl: './average-saved-chart.component.html',
+  styleUrls: ['./average-saved-chart.component.css']
 })
-export class AveragePriceChartComponent implements OnInit {
+export class AverageSavedChartComponent implements OnInit {
   @Input() userId!: number;
 
   public barChartData: ChartConfiguration<'bar'>['data'] = {
-    labels: [],
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: []
   };
 
   public barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
-    indexAxis: 'y', // ukloni ako želiš vertikalni graf
     plugins: {
       legend: { display: false }
     }
@@ -34,15 +33,16 @@ export class AveragePriceChartComponent implements OnInit {
   ngOnInit(): void {
     if (this.userId) {
       this.userProfileService.getUserProfile(this.userId).subscribe(user => {
-        const priceAverages = user.priceAverages;
+        const savedData = user.averageSavedPerMonth;
+
         this.barChartData = {
-          labels: priceAverages.map((p: any) => p.item),
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
           datasets: [
             {
-              data: priceAverages.map((p: any) => p.price),
-              label: 'Avg. Price (KM)',
-              backgroundColor: 'rgba(54, 162, 235, 0.6)',
-              borderColor: 'rgba(54, 162, 235, 1)',
+              data: savedData,
+              label: 'KM Saved',
+              backgroundColor: 'rgba(255, 159, 64, 0.6)',
+              borderColor: 'rgba(255, 159, 64, 1)',
               borderWidth: 1
             }
           ]

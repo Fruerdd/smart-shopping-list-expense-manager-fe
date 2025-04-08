@@ -1,0 +1,11 @@
+<div class="chart-wrapper" *ngIf="doughnutChartData.datasets?.length">
+
+  <h2>Spending by store</h2>
+    <canvas
+      baseChart
+      [data]="doughnutChartData"
+      [type]="'doughnut'"
+      [options]="doughnutChartOptions">
+    </canvas>
+  </div>
+  
