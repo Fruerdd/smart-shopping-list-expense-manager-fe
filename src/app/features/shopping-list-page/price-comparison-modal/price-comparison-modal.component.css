@@ -1,0 +1,159 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #0B3B5B;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #0B3B5B;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #0B3B5B;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #0B3B5B;
+}
+
+.product-image {
+  margin-right: 15px;
+}
+
+.product-details h4 {
+  margin: 0;
+  color: #0B3B5B;
+  font-size: 18px;
+}
+
+.store-options h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #0B3B5B;
+}
+
+.store-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.store-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border: 1px solid #0B3B5B;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.store-item:hover {
+  background-color: rgba(11, 59, 91, 0.1);
+  border-color: #0B3B5B;
+}
+
+.store-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.store-logo {
+  display: flex;
+  width: 24px;
+  height: 24px;
+}
+
+.store-name {
+  font-weight: 500;
+  color: #0B3B5B;
+}
+
+.store-price {
+  font-weight: bold;
+  color: #FCACC4;
+}
+
+.loading-container.small {
+  padding: 30px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #FCACC4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.store-preference-note {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: rgba(11, 59, 91, 0.1);
+  border-radius: 4px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.store-preference-note mat-icon {
+  color: #0B3B5B;
+}
+
+.store-preference-note p {
+  margin: 0;
+  font-size: 14px;
+  color: #0B3B5B;
+}

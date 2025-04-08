@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 260px;
   max-height: 350px;
-  border: 1px solid #ddd;
+  border: 1px solid #0B3B5B;
   border-radius: 8px;
   margin-top: 20px;
   margin-left: 20px;
@@ -17,7 +17,7 @@ h2 {
 }
 
 .list-info {
-  color: #666;
+  color: #0B3B5B;
   width: 100%;
   height: 115px;
   font-size: 14px;
@@ -101,6 +101,6 @@ h2 {
 }
 
 .delete-button {
-  background-color: #f0f0f0;
+  background-color: rgba(11, 59, 91, 0.1);
   color: #0B3B5B;
 }

@@ -14,14 +14,15 @@
       <app-shopping-list-details
         *ngIf="selectedList && selectedList.id === list.id"
         class="shopping-list-details"
-        [list]="list">
+        [list]="list"
+        (editList)="editShoppingList($event)">
       </app-shopping-list-details>
     </div>
   </ng-container>
 
   <div class="create-list-card">
     <div class="add-button">
-      <button>+</button>
+      <button (click)="createShoppingList()">+</button>
     </div>
     <p>Create a New List</p>
   </div>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PriceComparisonService } from '@app/services/price-comparison.service';
 import { Item, StorePrice } from '@app/services/price-comparison.service';
-import {NgForOf, NgIf, NgOptimizedImage} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
@@ -13,7 +13,7 @@ type SanitizedStorePrice = Omit<StorePrice, 'storeIcon'> & { storeIcon: SafeHtml
   imports: [
     NgForOf,
     NgIf,
-    FormsModule
+    FormsModule,
   ],
   styleUrls: ['./price-comparison.component.css']
 })

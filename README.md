@@ -11,10 +11,10 @@ The **Smart Shopping List & Expense Manager** is a web application designed to h
 
 ## Technology Stack
 
-- **Backend:** Java, Spring  
-- **Frontend:** Angular  
-- **Database:** PostgreSQL / MySQL  
-- **Hosting:** Netlify/Heroku  
+- **Backend:** Java Spring 
+- **Frontend:** Angular 
+- **Database:** PostgreSQL/MySQL (or any other SQL database)  
+- **Hosting:** Netlify/Heroku 
 
 ## Team Members & Feature Assignment
 
@@ -35,7 +35,7 @@ The **Smart Shopping List & Expense Manager** is a web application designed to h
 
 ## Site Map
 
-![sitemao](https://github.com/Fruerdd/smart-shopping-list-expense-manager-issues/blob/main/sitemap.jpg)
+![sitemap](https://github.com/Fruerdd/smart-shopping-list-expense-manager-issues/blob/main/sitemap.jpg)
 
 
 ## Mockups
@@ -43,7 +43,8 @@ The **Smart Shopping List & Expense Manager** is a web application designed to h
 - Visual mockups and wireframes will be designed using Figma.
 - Each feature will have an associated wireframe illustrating its UI/UX.
 - Mockups will be stored in the `mockups/` folder in the repository.
-- [View the Figma Design](https://www.figma.com/design/XnMqWbvwiok3RbDHW1Vm1q/SE-Project?node-id=434-428&t=ghnVfiVUUWDewfmv-1)
+- [View the Figma Design](https://www.figma.com/design/XnMqWbvwiok3RbDHW1Vm1q/SE-Project?node-id=434-428&t=ghnVfiVUUWDewfmv-1) (Contains additional updates compared to the screenshots, but the core design remains the same. 
+Some of the design is subject to change as we progress with the implementation.)
 
 ## Data Source for Markets & Items
 

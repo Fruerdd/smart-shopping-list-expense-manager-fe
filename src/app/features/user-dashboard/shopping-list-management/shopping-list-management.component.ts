@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 import { ShoppingListService, ShoppingList } from '@app/services/shopping-list.service';
 import { ShoppingListCardComponent } from './shopping-list-card/shopping-list-card.component';
 import { SharedWithPopupComponent } from './shared-with-popup/shared-with-popup.component';
@@ -25,6 +25,16 @@ export class ShoppingListManagementComponent implements OnInit {
   showSharedPopup = false;
   selectedSharedUsers: { name: string; avatar: string }[] = [];
   selectedList: ShoppingList | null = null;
+
+  @Output() editList = new EventEmitter<ShoppingList>();
+  editShoppingList(list: ShoppingList): void {
+    this.editList.emit(list);
+  }
+
+  @Output() createAList = new EventEmitter<ShoppingList>();
+  createShoppingList(): void {
+    this.createAList.emit();
+  }
 
   constructor(private shoppingListService: ShoppingListService) {}
 

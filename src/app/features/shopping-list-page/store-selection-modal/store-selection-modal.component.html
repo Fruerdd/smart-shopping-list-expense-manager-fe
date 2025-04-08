@@ -1,0 +1,42 @@
+<div class="modal-overlay" *ngIf="show" (click)="onBackdropClick()">
+  <div class="modal-content store-selection-modal" (click)="onContentClick($event)">
+    <div class="modal-header">
+      <h3>Select Preferred Store</h3>
+      <button class="close-btn" (click)="onClose()">×</button>
+    </div>
+    <div class="modal-body" *ngIf="!isLoading; else loadingStores">
+      <p class="store-selection-info">
+        Choose your preferred store. All products in your list will be updated to this store when available.
+      </p>
+
+      <div class="store-options">
+        <div class="store-list">
+          <div class="store-item" *ngFor="let store of stores"
+               [class.selected]="store.storeName === preferredStore"
+               (click)="onStoreSelect(store.storeName)">
+            <div class="store-info">
+              <span [innerHTML]="getSafeSvg(store.storeIcon)" [title]="store.storeName" class="store-logo"></span>
+              <span class="store-name">{{ store.storeName }}</span>
+            </div>
+            <div class="store-selection-indicator" *ngIf="store.storeName === preferredStore">
+              <mat-icon>check_circle</mat-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="store-selection-actions">
+        <button *ngIf="preferredStore" class="clear-store-btn" (click)="onClearStore()">
+          Clear Store Preference
+        </button>
+      </div>
+    </div>
+
+    <ng-template #loadingStores>
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p style="color: #0B3B5B">Loading stores...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

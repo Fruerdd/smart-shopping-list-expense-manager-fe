@@ -1,0 +1,50 @@
+ <div class="search-box">
+    <p class="item-count">{{ filteredProducts.length }} Products</p>
+    <div class="search-input">
+      <input type="text" [(ngModel)]="searchTerm" (input)="onSearchInput()" placeholder="Search Products">
+      <mat-icon class="search-icon">search</mat-icon>
+    </div>
+  </div>
+
+  <!-- Categories and Products -->
+  <div class="categories-container">
+    <!-- Categories -->
+    <div class="category" *ngFor="let category of categories">
+      <div class="category-header" (click)="toggleCategory(category)">
+        <h3 class="category-title">
+          <ng-container [ngSwitch]="category.id">
+            <mat-icon *ngSwitchCase="'favorite'" class="category-icon">favorite</mat-icon>
+            <mat-icon *ngSwitchCase="'best-price'" class="category-icon">attach_money</mat-icon>
+            <mat-icon *ngSwitchCase="'peoples-choice'" class="category-icon">group</mat-icon>
+            <mat-icon *ngSwitchDefault class="category-icon">category</mat-icon>
+          </ng-container>
+          {{ category.name }}
+        </h3>
+        <mat-icon class="expand-icon">{{ isCategoryExpanded(category) ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </div>
+      <!--Products-->
+      <div class="products-container" *ngIf="isCategoryExpanded(category)">
+        <div class="product-row">
+          <div class="product-item" *ngFor="let product of category.products"
+               [class.selected]="isProductSelected(product.id)"
+               (click)="selectProduct(product)">
+            <div class="product-image">
+              <img [ngSrc]="product.image" [alt]="product.name" height="100" width="100">
+            </div>
+            <div class="product-details">
+              <p class="product-name">{{ product.name }}</p>
+              <p class="product-store" *ngIf="product.storeName">{{ product.storeName }}</p>
+              <p class="product-price" *ngIf="product.price">{{ product.price }} KM</p>
+              <button class="compare-btn" *ngIf="product.price" (click)="compareStoreItems(product.id, $event)">
+                Compare prices
+              </button>
+            </div>
+            <div class="selection-indicator" *ngIf="isProductSelected(product.id)">
+              {{ getProductQuantity(product.id) || 1 }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+

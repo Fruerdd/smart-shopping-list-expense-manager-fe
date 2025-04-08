@@ -17,6 +17,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   isMobileView: boolean = false;
   isLoggedIn: boolean = true; // Mimic logged-in state
   isDashboardPage: boolean = false;
+  isShoppingListPage: boolean = false;
   isMyProfilePage: boolean = false;
   isAdminPage: boolean = false;
   isAdmin: boolean = false; // Mimic admin state
@@ -35,6 +36,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.isDashboardPage = event.url === '/dashboard';
       this.isMyProfilePage = event.url === '/user-profile';
       this.isAdminPage = event.url === '/admin-page';
+      this.isShoppingListPage = event.url === '/dashboard/shopping-list';
     });
   }
 
