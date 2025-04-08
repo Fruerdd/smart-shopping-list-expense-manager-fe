@@ -34,7 +34,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.isDashboardPage = event.url === '/dashboard';
-      this.isMyProfilePage = event.url === '/user-profile';
+      this.isMyProfilePage = event.url === '/user-profile' || event.url.startsWith('/user-profile/');
       this.isAdminPage = event.url === '/admin-page';
       this.isShoppingListPage = event.url === '/dashboard/shopping-list';
     });
