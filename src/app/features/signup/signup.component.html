@@ -10,20 +10,6 @@
       </div>
   
       <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-        <!-- Username -->
-        <input
-          type="text"
-          formControlName="username"
-          placeholder="Username"
-        />
-        <div
-          *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched"
-          class="error"
-        >
-          Username is required.
-        </div>
-  
-        <!-- Email -->
         <input
           type="email"
           formControlName="email"
@@ -35,8 +21,6 @@
         >
           Valid email is required.
         </div>
-  
-        <!-- Password -->
         <input
           type="password"
           formControlName="password"
@@ -70,8 +54,6 @@
         >
           First name is required.
         </div>
-  
-        <!-- OPTIONAL: Last Name -->
         <input
           type="text"
           formControlName="lastName"
@@ -83,8 +65,6 @@
         >
           Last name is required.
         </div>
-  
-        <!-- OPTIONAL: Phone -->
         <input
           type="tel"
           formControlName="phone"

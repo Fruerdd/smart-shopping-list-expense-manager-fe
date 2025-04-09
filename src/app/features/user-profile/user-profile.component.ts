@@ -36,7 +36,10 @@ export class UserProfileComponent implements OnInit {
     private userProfileService: UserProfileService,
     private router: Router
   ) {}
-
+  setDefaultImage(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = '/assets/images/avatar.png';
+  }
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       const routeId = Number(this.route.snapshot.paramMap.get('id'));

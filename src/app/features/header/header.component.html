@@ -30,15 +30,21 @@
           <ul>
             <!-- Login and Sign in links, visible only if the user is not logged in -->
             <li *ngIf="!isLoggedIn"
+                routerLink="/login"
+                routerLinkActive="active"
                 (click)="activatePage('login')"
-                [ngClass]="{'active': activePage === 'login'}" id="log-in-button">
+                [ngClass]="{'active': activePage === 'login'}">
               Log In
             </li>
+          
             <li *ngIf="!isLoggedIn"
+                routerLink="/signup"
+                routerLinkActive="active"
                 (click)="activatePage('sign-up')"
-                [ngClass]="{'active': activePage === 'sign-up'}" id="sign-up-button">
+                [ngClass]="{'active': activePage === 'sign-up'}">
               Sign Up
             </li>
+      
 
             <!-- Home Page Links, visible only when user is logged in -->
             <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin"
@@ -67,9 +73,9 @@
                 [ngClass]="{'active': activePage === 'admin-page'}">
               Admin Dashboard
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage"
-                (click)="activatePage('log-out')"
-                [ngClass]="{'active': activePage === 'log-out'}" id="log-out-button">
+            <li *ngIf="isLoggedIn"
+                  (click)="activatePage('log-out')"
+                  [ngClass]="{'active': activePage === 'log-out'}">
               Log Out
             </li>
 
