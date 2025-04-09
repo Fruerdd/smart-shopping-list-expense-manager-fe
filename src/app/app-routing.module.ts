@@ -20,7 +20,7 @@ import { ServerRoute, RenderMode } from '@angular/ssr';
           .then(m => m.ShoppingListPageComponent)
       }
       ],
-  },
+},
   // {
   //   path: 'user-profile',
   //   loadComponent: () => import('./features/user-profile/user-profile.component')
