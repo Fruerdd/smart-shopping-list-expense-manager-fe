@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
-import { UserProfileService } from '../../services/user-profile.service';
+import { CommonModule } from '@angular/common';
+import { UserProfileService } from '@app/services/user-profile.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { MoneySpentChartComponent } from '../../charts/money-spent-chart/money-spent-chart.component';
-import { AveragePriceChartComponent } from '../../charts/average-price-chart/average-price-chart.component';
-import { ExpensesByStoreChartComponent } from '../../charts/expenses-by-store-chart/expenses-by-store-chart.component';
-import { AverageSavedChartComponent } from '../../charts/average-saved-chart/average-saved-chart.component';
-import { CategorySpendingChartComponent } from '../../charts/category-spending-chart/category-spending-chart.component';
+import { MoneySpentChartComponent } from '@app/charts/money-spent-chart/money-spent-chart.component';
+import { AveragePriceChartComponent } from '@app/charts/average-price-chart/average-price-chart.component';
+import { ExpensesByStoreChartComponent } from '@app/charts/expenses-by-store-chart/expenses-by-store-chart.component';
+import { AverageSavedChartComponent } from '@app/charts/average-saved-chart/average-saved-chart.component';
+import { CategorySpendingChartComponent } from '@app/charts/category-spending-chart/category-spending-chart.component';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { QRCodeComponent } from 'angularx-qrcode';
@@ -17,7 +17,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
   standalone: true,
   imports: [
     CommonModule,
-    QRCodeComponent,  
+    QRCodeComponent,
     MoneySpentChartComponent,
     AveragePriceChartComponent,
     ExpensesByStoreChartComponent,
@@ -28,7 +28,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
   styleUrls: ['./user-profile.component.css'],
 })
 export class UserProfileComponent implements OnInit {
-  user: any;  
+  user: any;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -43,22 +43,22 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       const routeId = Number(this.route.snapshot.paramMap.get('id'));
-      const storedUser = localStorage.getItem('loggedInUser');
-  
-      if (!storedUser) {
-        alert('Niste prijavljeni');
-        this.router.navigate(['/login']);
-        return;
-      }
-  
-      const loggedInUser = JSON.parse(storedUser);
-  
-      if (Number(loggedInUser.id) !== routeId) {
-        alert('Nemate pristup ovom profilu!');
-        this.router.navigate(['/profile', loggedInUser.id]);
-        return;
-      }
-  
+      // const storedUser = localStorage.getItem('loggedInUser');
+      //
+      // if (!storedUser) {
+      //   alert('Niste prijavljeni');
+      //   this.router.navigate(['/login']);
+      //   return;
+      // }
+      //
+      // const loggedInUser = JSON.parse(storedUser);
+      //
+      // if (Number(loggedInUser.id) !== routeId) {
+      //   alert('Nemate pristup ovom profilu!');
+      //   this.router.navigate(['/user-profile', loggedInUser.id]);
+      //   return;
+      // }
+
       this.userProfileService.getUserProfile(routeId).subscribe((data) => {
         this.user = data;
       });

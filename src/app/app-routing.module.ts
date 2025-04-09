@@ -12,13 +12,20 @@ import { ServerRoute, RenderMode } from '@angular/ssr';
   {
     path: 'dashboard',
     loadComponent: () => import('@app/features/user-dashboard/user-dashboard.component')
-      .then(m => m.UserDashboardComponent)
+      .then(m => m.UserDashboardComponent),
+    children: [
+      {
+        path: 'shopping-list',
+        loadComponent: () => import('@app/features/shopping-list-page/shopping-list-page.component')
+          .then(m => m.ShoppingListPageComponent)
+      }
+      ],
   },
-  {
-    path: 'user-profile',
-    loadComponent: () => import('./features/user-profile/user-profile.component')
-      .then(m => m.UserProfileComponent)
-  },
+  // {
+  //   path: 'user-profile',
+  //   loadComponent: () => import('./features/user-profile/user-profile.component')
+  //     .then(m => m.UserProfileComponent)
+  // },
   {
     path: 'admin-page',
     loadComponent: () => import('./features/admin-page/admin-page.component')
@@ -36,12 +43,12 @@ import { ServerRoute, RenderMode } from '@angular/ssr';
       import('./features/signup/signup.component').then(m => m.SignupComponent)
   },
   {
-    path: 'profile',
+    path: 'user-profile',
     loadComponent: () =>
       import('./features/user-profile/user-profile.component').then(m => m.UserProfileComponent)
   },
   {
-    path: 'profile/:id',
+    path: 'user-profile/:id',
     loadComponent: () =>
       import('./features/user-profile/user-profile.component').then(m => m.UserProfileComponent)
   },

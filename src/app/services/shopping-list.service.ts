@@ -10,6 +10,7 @@ export interface ShoppingList {
   itemImage: string;
   category: string;
   description: string;
+  store: string;
   sharedWith: { name: string; avatar: string }[];
   items: { name: string; quantity: number; price: number, checked?: boolean }[];
 }
@@ -31,6 +32,7 @@ export class ShoppingListService {
       itemImage: 'assets/images/item-img-generic.png',
       category: 'Home',
       description: 'Groceries for the week. Get everything on the list.',
+      store: 'Mercator',
       sharedWith: [
         { name: 'Eric', avatar: 'assets/avatars/avatar-generic.png' },
         { name: 'Selena', avatar: 'assets/avatars/avatar-generic.png' },
@@ -53,6 +55,7 @@ export class ShoppingListService {
       itemImage: 'assets/images/item-img-generic.png',
       category: 'Work',
       description: 'Office groceries for the next week. Make sure to get the best quality. lipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      store: 'Lidl',
       sharedWith: [],
       items: [
         { name: 'Crisps', quantity: 4, price: 0.99, checked: false },

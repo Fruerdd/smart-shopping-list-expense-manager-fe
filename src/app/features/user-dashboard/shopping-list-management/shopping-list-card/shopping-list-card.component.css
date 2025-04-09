@@ -1,7 +1,7 @@
 .shopping-list-card {
   width: 300px;
   height: 350px;
-  border: 1px solid #ddd;
+  border: 1px solid #0B3B5B;
   border-radius: 8px;
   overflow: hidden;
   display: flex;
@@ -35,7 +35,7 @@
 
 .list-owner {
   font-size: 12px;
-  color: #666;
+  color: #0B3B5B;
 }
 
 .info-button {
@@ -53,7 +53,6 @@
   font-size: 25px;
   color: #0B3B5B;
 }
-
 
 .list-image {
   height: 120px;
@@ -73,7 +72,13 @@
 .list-content h3 {
   margin-top: 0;
   margin-bottom: 5px;
-  color: #333;
+  color: #0B3B5B;
+}
+
+.list-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
 }
 
 .list-category {
@@ -85,13 +90,22 @@
 .description-text {
   font-size: 12px;
   height: 45px;
-  color: #666;
+  color: #0B3B5B;
   margin-bottom: 15px;
   overflow: auto;
   scroll-behavior: smooth;
   scrollbar-color: transparent white;
   scrollbar-width: thin;
   text-overflow: ellipsis;
+}
+
+.list-store {
+  font-size: 12px;
+  color: #0B3B5B;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .button-group {

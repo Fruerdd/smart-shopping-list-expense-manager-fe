@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ShoppingList } from '@app/services/shopping-list.service';
-import { NgIf } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
 

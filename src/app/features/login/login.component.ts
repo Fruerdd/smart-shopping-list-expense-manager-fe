@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -18,7 +18,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService 
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -35,7 +35,7 @@ export class LoginComponent {
           localStorage.setItem('loggedInUser', JSON.stringify(user));
           console.log('Korisnik sačuvan u localStorage:', JSON.parse(localStorage.getItem('loggedInUser')!));
 
-          this.router.navigate(['/profile', user.id]);
+          this.router.navigate(['/user-profile', user.id]);
         } else {
           alert('Either your username or password is wrong');
         }

@@ -57,39 +57,40 @@
           </qrcode>
         </div>
 
-        <!-- Info Box 
-        <div class="info-box">
-          <p>
-            Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns you points which can then be used for discounts by scanning your unique QR code in any of the supported stores!
-          </p>
-          <button>Got it!</button>
-        </div>-->
+    <!-- Info Box
+    <div class="info-box">
+      <p>
+        Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns you points which can then be used for discounts by scanning your unique QR code in any of the supported stores!
+      </p>
+      <button>Got it!</button>
+    </div>-->
+  </div>
+</div>
+
+    <div id="analytics" class="charts-grid">
+      <!-- Prvi red -->
+      <div class="grid-item grid-span-2">
+        <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>
+      </div>
+      <div class="grid-item">
+        <app-category-spending-chart *ngIf="user" [userId]="user.id"></app-category-spending-chart>
       </div>
 
-        <div class="charts-grid">
-          <!-- Prvi red -->
-          <div class="grid-item grid-span-2">
-            <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>
-          </div>
-          <div class="grid-item">
-            <app-category-spending-chart *ngIf="user" [userId]="user.id"></app-category-spending-chart>
-          </div>
-        
-          <!-- Drugi red -->
-          <div class="grid-item">
-            <app-average-price-chart *ngIf="user" [userId]="user.id"></app-average-price-chart>
-          </div>
-          <div class="grid-item">
-            <app-expenses-by-store-chart *ngIf="user" [userId]="user.id"></app-expenses-by-store-chart>
-          </div>
-          <div class="grid-item">
-            <app-average-saved-chart *ngIf="user" [userId]="user.id"></app-average-saved-chart>
-          </div>
-        </div>
+      <!-- Drugi red -->
+      <div class="grid-item">
+        <app-average-price-chart *ngIf="user" [userId]="user.id"></app-average-price-chart>
       </div>
-  </div>
-    
-    <div *ngIf="!user">
-      <p>Učitavanje profila...</p>
+      <div class="grid-item">
+        <app-expenses-by-store-chart *ngIf="user" [userId]="user.id"></app-expenses-by-store-chart>
+      </div>
+      <div class="grid-item">
+        <app-average-saved-chart *ngIf="user" [userId]="user.id"></app-average-saved-chart>
+      </div>
     </div>
+
+  <div *ngIf="!user">
+    <p>Učitavanje profila...</p>
+  </div>
+
+
 

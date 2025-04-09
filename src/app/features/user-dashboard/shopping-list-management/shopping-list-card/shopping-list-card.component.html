@@ -16,7 +16,13 @@
 
   <div class="list-content">
     <h3>{{ shoppingList.name }}</h3>
-    <p class="list-category">{{ shoppingList.category }}</p>
+    <div class="list-details">
+      <p class="list-category">{{ shoppingList.category }}</p>
+      <p class="list-store">
+        <mat-icon>store</mat-icon>
+        {{ shoppingList.store }}
+      </p>
+    </div>
 
     <p class="description-text">{{ shoppingList.description }}</p>
 
