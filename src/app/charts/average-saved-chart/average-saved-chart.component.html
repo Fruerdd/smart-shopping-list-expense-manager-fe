@@ -1,0 +1,9 @@
+<div class="chart-wrapper" *ngIf="barChartData.datasets?.length">
+    <h2>Average monthly saving</h2>
+    <canvas
+      baseChart
+      [data]="barChartData"
+      [options]="barChartOptions"
+      [type]="barChartType">
+    </canvas>
+  </div>

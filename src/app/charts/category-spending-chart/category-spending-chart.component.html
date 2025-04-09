@@ -1,0 +1,10 @@
+<div class="chart-wrapper" *ngIf="barChartData.datasets?.length">
+  <h2>Spending by item categories</h2>  
+  <canvas
+      baseChart
+      [data]="barChartData"
+      [type]="barChartType"
+      [options]="barChartOptions">
+    </canvas>
+  </div>
+  

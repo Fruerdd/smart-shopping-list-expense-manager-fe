@@ -1,0 +1,492 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "edin@example.com",
+      "password": "123456"
+    },
+    {
+      "id": "2",
+      "email": "ana@example.com",
+      "password": "ana123"
+    },
+    {
+      "id": "3",
+      "email": "aldijana@example.com",
+      "password": "aldijana321"
+    },
+    {
+      "id": "4",
+      "email": "maja@example.com",
+      "password": "maja456"
+    },
+    {
+      "id": "5",
+      "email": "leon@example.com",
+      "password": "leon789"
+    },
+    {
+      "id": "cd09",
+      "username": "darko",
+      "email": "darko@gmail.com",
+      "firstName": "Darko",
+      "lastName": "Misic",
+      "phone": "0661223122",
+      "password": "darko123"
+    },
+    {
+      "id": "e56b",
+      "email": "aminag03@gmail.com",
+      "firstName": "Amina",
+      "lastName": "Gusic",
+      "phone": "84735475348",
+      "password": "123456"
+    }
+  ],
+  "userProfiles": [
+    {
+      "id": "1",
+      "name": "Edin Fazlić",
+      "email": "edin@example.com",
+      "profileImageUrl": "assets/profile-images/1.jpg",
+      "phone": "+387 61 111 111",
+      "couponCode": "SAVE10",
+      "qrCodeValue": "e0d1a5-12fb7a-92xv9",
+      "friends": [
+        "Ana",
+        "Aldijana"
+      ],
+      "loyaltyPoints": 1200,
+      "creditsAvailable": 25.5,
+      "totalShoppingLists": 15,
+      "totalExpensesThisMonth": 187.9,
+      "newItemsAddedToLists": 8,
+      "favoriteStore": "Mercator",
+      "averageSavedPerMonth": [
+        5,
+        7,
+        6,
+        8,
+        9,
+        10
+      ],
+      "spendingOverTime": {
+        "currentYear": [
+          100,
+          120,
+          110,
+          130,
+          140,
+          125
+        ],
+        "previousYear": [
+          90,
+          100,
+          95,
+          115,
+          120,
+          110,
+          90,
+          80,
+          75,
+          60,
+          85,
+          105
+        ]
+      },
+      "categorySpending": [
+        {
+          "category": "Hrana",
+          "amount": 120
+        },
+        {
+          "category": "Kozmetika",
+          "amount": 60
+        },
+        {
+          "category": "Tehnika",
+          "amount": 80
+        }
+      ],
+      "priceAverages": [
+        {
+          "item": "Mlijeko",
+          "price": 2.3
+        },
+        {
+          "item": "Hljeb",
+          "price": 1.1
+        },
+        {
+          "item": "Jaja",
+          "price": 3.5
+        }
+      ],
+      "storeExpenses": [
+        {
+          "store": "Mercator",
+          "percentage": 45
+        },
+        {
+          "store": "Bingo",
+          "percentage": 30
+        },
+        {
+          "store": "Konzum",
+          "percentage": 25
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Ana Anić",
+      "email": "ana@example.com",
+      "profileImageUrl": "assets/profile-images/2.jpg",
+      "phone": "+387 62 222 222",
+      "couponCode": "WELCOME5",
+      "qrCodeValue": "a9c21b-f813a0-8qxzm",
+      "friends": [
+        "Edin",
+        "Maja"
+      ],
+      "loyaltyPoints": 980,
+      "creditsAvailable": 12,
+      "totalShoppingLists": 9,
+      "totalExpensesThisMonth": 143.5,
+      "newItemsAddedToLists": 4,
+      "favoriteStore": "Bingo",
+      "averageSavedPerMonth": [
+        4,
+        5,
+        6,
+        5,
+        6,
+        7
+      ],
+      "spendingOverTime": {
+        "currentYear": [
+          90,
+          100,
+          95,
+          110,
+          115,
+          105
+        ],
+        "previousYear": [
+          85,
+          90,
+          92,
+          100,
+          105,
+          98,
+          60,
+          50,
+          45,
+          20,
+          15,
+          85
+        ]
+      },
+      "categorySpending": [
+        {
+          "category": "Hrana",
+          "amount": 100
+        },
+        {
+          "category": "Lična njega",
+          "amount": 40
+        },
+        {
+          "category": "Ostalo",
+          "amount": 35
+        }
+      ],
+      "priceAverages": [
+        {
+          "item": "Ulje",
+          "price": 3.5
+        },
+        {
+          "item": "Mlijeko",
+          "price": 2.2
+        },
+        {
+          "item": "Banane",
+          "price": 2
+        }
+      ],
+      "storeExpenses": [
+        {
+          "store": "Bingo",
+          "percentage": 50
+        },
+        {
+          "store": "Konzum",
+          "percentage": 35
+        },
+        {
+          "store": "Mercator",
+          "percentage": 15
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Aldijana Avdić",
+      "email": "aldijana@example.com",
+      "profileImageUrl": "assets/profile-images/3.jpg",
+      "phone": "+387 63 333 333",
+      "couponCode": "SPRING20",
+      "qrCodeValue": "b3fe8e-c931c0-62yv4",
+      "friends": [
+        "Edin",
+        "Leon"
+      ],
+      "loyaltyPoints": 500,
+      "creditsAvailable": 5.5,
+      "totalShoppingLists": 4,
+      "totalExpensesThisMonth": 79.2,
+      "newItemsAddedToLists": 2,
+      "favoriteStore": "Konzum",
+      "averageSavedPerMonth": [
+        2,
+        3,
+        2,
+        4,
+        3,
+        4
+      ],
+      "spendingOverTime": {
+        "currentYear": [
+          40,
+          60,
+          55,
+          70,
+          65,
+          50
+        ],
+        "previousYear": [
+          30,
+          50,
+          45,
+          20,
+          15,
+          15,
+          20,
+          35,
+          40,
+          35,
+          55
+        ]
+      },
+      "categorySpending": [
+        {
+          "category": "Hrana",
+          "amount": 60
+        },
+        {
+          "category": "Kućne potrepštine",
+          "amount": 19.2
+        }
+      ],
+      "priceAverages": [
+        {
+          "item": "Hljeb, 450 gr",
+          "price": 1.6
+        },
+        {
+          "item": "Sok, 1l",
+          "price": 2.8
+        },
+        {
+          "item": "Kafa, 200 gr",
+          "price": 4.8
+        },
+        {
+          "item": "Mlijeko, 1 lit",
+          "price": 3
+        }
+      ],
+      "storeExpenses": [
+        {
+          "store": "Konzum",
+          "percentage": 70
+        },
+        {
+          "store": "Mercator",
+          "percentage": 30
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Maja Majstorović",
+      "email": "maja@example.com",
+      "profileImageUrl": "assets/profile-images/4.jpg",
+      "phone": "+387 64 444 444",
+      "couponCode": "FALL15",
+      "qrCodeValue": "c741ea-06e1e9-41kxs",
+      "friends": [
+        "Ana",
+        "Aldijana"
+      ],
+      "loyaltyPoints": 1500,
+      "creditsAvailable": 30,
+      "totalShoppingLists": 18,
+      "totalExpensesThisMonth": 212.6,
+      "newItemsAddedToLists": 10,
+      "favoriteStore": "Bingo",
+      "averageSavedPerMonth": [
+        6,
+        8,
+        7,
+        9,
+        10,
+        11
+      ],
+      "spendingOverTime": {
+        "currentYear": [
+          110,
+          130,
+          125,
+          140,
+          155,
+          135,
+          150,
+          70,
+          85,
+          80,
+          105,
+          75
+        ],
+        "previousYear": [
+          100,
+          110,
+          105,
+          120,
+          130,
+          115
+        ]
+      },
+      "categorySpending": [
+        {
+          "category": "Hrana",
+          "amount": 140
+        },
+        {
+          "category": "Odeća",
+          "amount": 72.6
+        }
+      ],
+      "priceAverages": [
+        {
+          "item": "Sir",
+          "price": 4.1
+        },
+        {
+          "item": "Jogurt",
+          "price": 1.9
+        }
+      ],
+      "storeExpenses": [
+        {
+          "store": "Bingo",
+          "percentage": 60
+        },
+        {
+          "store": "Konzum",
+          "percentage": 25
+        },
+        {
+          "store": "Mercator",
+          "percentage": 15
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Leon Lukić",
+      "email": "leon@example.com",
+      "profileImageUrl": "assets/profile-images/5.jpg",
+      "phone": "+387 65 555 555",
+      "couponCode": "WINTER30",
+      "qrCodeValue": "dd32b6-572eb5-77tjm",
+      "friends": [
+        "Aldijana",
+        "Edin"
+      ],
+      "loyaltyPoints": 350,
+      "creditsAvailable": 8.2,
+      "totalShoppingLists": 7,
+      "totalExpensesThisMonth": 96.4,
+      "newItemsAddedToLists": 5,
+      "favoriteStore": "Mercator",
+      "averageSavedPerMonth": [
+        3,
+        4,
+        4,
+        5,
+        6,
+        6
+      ],
+      "spendingOverTime": {
+        "currentYear": [
+          60,
+          80,
+          75,
+          90,
+          95,
+          85
+        ],
+        "previousYear": [
+          50,
+          70,
+          65,
+          80,
+          85,
+          75,
+          50,
+          60,
+          35,
+          30,
+          40,
+          65
+        ]
+      },
+      "categorySpending": [
+        {
+          "category": "Hrana",
+          "amount": 80
+        },
+        {
+          "category": "Piće",
+          "amount": 16.4
+        }
+      ],
+      "priceAverages": [
+        {
+          "item": "Kafa",
+          "price": 4.8
+        },
+        {
+          "item": "Čokolada",
+          "price": 2.5
+        }
+      ],
+      "storeExpenses": [
+        {
+          "store": "Mercator",
+          "percentage": 55
+        },
+        {
+          "store": "Bingo",
+          "percentage": 30
+        },
+        {
+          "store": "Konzum",
+          "percentage": 15
+        }
+      ]
+    }
+  ]
+}

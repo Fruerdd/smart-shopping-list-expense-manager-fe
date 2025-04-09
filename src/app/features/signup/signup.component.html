@@ -1,0 +1,92 @@
+<div class="login-page">
+    <div class="phone-placeholder">
+      <img [src]="imageUrl" alt="Example Image" />
+    </div>
+  
+    <div class="login-card">
+      <div class="login-header">
+        <h2>GroceryMate</h2>
+        <span class="theme-toggle">⚙️</span>
+      </div>
+  
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="Email"
+        />
+        <div
+          *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+          class="error"
+        >
+          Valid email is required.
+        </div>
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="Password"
+        />
+        <div
+          *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+          class="error"
+        >
+          Password is required.
+        </div>
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          placeholder="Confirm Password"
+        />
+        <div
+          *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched"
+          class="error"
+        >
+          Confirming password is required.
+        </div>
+        <input
+          type="text"
+          formControlName="firstName"
+          placeholder="First Name"
+        />
+        <div
+          *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched"
+          class="error"
+        >
+          First name is required.
+        </div>
+        <input
+          type="text"
+          formControlName="lastName"
+          placeholder="Last Name"
+        />
+        <div
+          *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched"
+          class="error"
+        >
+          Last name is required.
+        </div>
+        <input
+          type="tel"
+          formControlName="phone"
+          placeholder="Phone Number"
+        />
+        <div
+          *ngIf="signupForm.get('phone')?.invalid && signupForm.get('phone')?.touched"
+          class="error"
+        >
+          Phone number is required.
+        </div>
+  
+        <!-- Submit Button -->
+        <button type="submit" [disabled]="signupForm.invalid">Sign up</button>
+      </form>
+  
+      <div class="or-divider">OR</div>
+  
+      <p class="signup-text">
+        Already have an account?
+        <a routerLink="/login" href="/login">Log in</a>
+      </p>
+    </div>
+  </div>
+  

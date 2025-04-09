@@ -3,6 +3,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {Router, NavigationEnd, RouterLink, RouterLinkActive} from '@angular/router';
 import { filter } from 'rxjs/operators';
 
+
+
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -11,11 +14,11 @@ import { filter } from 'rxjs/operators';
   imports: [CommonModule, RouterLink, RouterLinkActive]
 })
 export class HeaderComponent implements AfterViewInit, OnInit {
+  
   activePage: string = 'home';
   menuValue: boolean = false;
   menu_icon: string = 'bx bx-menu';
   isMobileView: boolean = false;
-  isLoggedIn: boolean = true; // Mimic logged-in state
   isDashboardPage: boolean = false;
   isShoppingListPage: boolean = false;
   isMyProfilePage: boolean = false;
@@ -27,6 +30,13 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     private router: Router
   ) {}
 
+  get isLoggedIn(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      return !!localStorage.getItem('loggedInUser');
+    }
+    return false;
+  }
+
   ngOnInit(): void {
     this.checkViewport();
 
@@ -34,7 +44,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.isDashboardPage = event.url === '/dashboard';
-      this.isMyProfilePage = event.url === '/user-profile';
+      this.isMyProfilePage = event.url === '/user-profile' || event.url.startsWith('/user-profile/');
       this.isAdminPage = event.url === '/admin-page';
       this.isShoppingListPage = event.url === '/dashboard/shopping-list';
     });
@@ -70,6 +80,11 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   activatePage(page: string): void {
     this.activePage = page;
+    if (page === 'log-out') {
+      this.logout();
+      return;
+    }
+
     if (this.isMobileView) {
       this.closeMenu();
     }
@@ -99,5 +114,9 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   closeMenu(): void {
     this.menuValue = false;
     this.menu_icon = 'bx bx-menu';
+  }
+  logout(): void {
+    localStorage.removeItem('loggedInUser');
+    this.router.navigate(['/login']);
   }
 }
