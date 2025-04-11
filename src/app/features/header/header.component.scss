@@ -1,142 +1,148 @@
 header {
-    padding: 10px;
-    background: #0B3B5B;
-    z-index: 999;
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
+  padding: 10px;
+  background: #0B3B5B;
+  z-index: 999;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .logo-image {
-    width: 60px;
-    height: auto;
-    cursor: pointer;
+  width: 60px;
+  height: auto;
+  cursor: pointer;
 }
 
 .log-out-button {
-    background-color: red;
-    color: white;
-    cursor: pointer;
-    padding: 0 8px;
-    border-radius: 50px;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 50px;
 }
 
 #sign-up-button {
-    background-color: white;
-    color: #0B3B5B;
-    cursor: pointer;
-    padding: 0 8px;
-    border-radius: 30px;
+  background-color: white;
+  color: #0B3B5B;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 30px;
 }
 
 #log-in-button {
-    background-color: #FCACC4;
-    color: #0B3B5B;
-    cursor: pointer;
-    padding: 0 8px;
-    border-radius: 30px;
+  background-color: #FCACC4;
+  color: #0B3B5B;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 30px;
 }
 
 .company-name {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-left: 10px;
-    color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-left: 10px;
+  color: white;
 }
 
 .desktop_menu {
-    margin-top: 24px;
+  margin-top: 24px;
 }
 
 .desktop_menu ul {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .desktop_menu ul li {
-    list-style-type: none;
-    color: white;
-    display: inline-block;
-    font-size: 18px;
-    margin-left: 26px;
-    font-weight: 500;
-    padding: 0 8px;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
+  list-style-type: none;
+  color: white;
+  display: inline-block;
+  font-size: 18px;
+  margin-left: 26px;
+  font-weight: 500;
+  padding: 0 8px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
 }
 
 .desktop_menu ul li:hover {
-    font-size: 18px;
-    font-weight: bold;
-    padding: 0 8px;
-    cursor: pointer;
-    color: #0B3B5B;
-    transition: 0.2s ease-in-out;
-    background-color: white;
-    border-radius: 50px;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 0 8px;
+  cursor: pointer;
+  color: #0B3B5B;
+  transition: 0.2s ease-in-out;
+  background-color: white;
+  border-radius: 50px;
+}
+
+.log-out-button:hover {
+  background-color: darkred !important;
+  color: white !important;
+  transition: 0.2s ease-in-out;
 }
 
 .desktop_menu ul li.active {
-    border: 2px solid white;
-    border-radius: 30px;
-    color: #0B3B5B;
-    background-color: white;
-    transition: all 0.3s ease-in-out;
+  border: 2px solid white;
+  border-radius: 30px;
+  color: #0B3B5B;
+  background-color: white;
+  transition: all 0.3s ease-in-out;
 }
 
 .menu-icon {
-    display: block;
-    color: white;
-    font-size: 30px;
-    cursor: pointer;
-    padding-top: 10px;
+  display: block;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  padding-top: 10px;
 }
 
 @media screen and (min-width: 128px) and (max-width: 900px) {
     .desktop_menu {
-        display: none;
+      display: none;
     }
     .desktop_menu ul li {
-        display: block;
-        text-align: left;
-        margin: 0;
-        padding: 10px 0 10px 26px;
-        border-bottom: 1px solid white;
+      display: block;
+      text-align: left;
+      margin: 0;
+      padding: 10px 0 10px 26px;
+      border-bottom: 1px solid white;
     }
     .menu-icon {
-        display: block;
-        color: white;
-        font-size: 40px;
-        padding-top: 10px;
+      display: block;
+      color: white;
+      font-size: 40px;
+      padding-top: 10px;
     }
     .mobile_menu {
-        right: 0;
-        transition: 0.4s ease-in-out;
+      right: 0;
+      transition: 0.4s ease-in-out;
     }
     .desktop_menu ul li.active {
-        border-radius: 0;
-      }
+      border-radius: 0;
+    }
     .desktop_menu.mobile_menu {
-        display: block;
-        position: fixed;
-        right: 0;
-        top: 0;
-        width: 280px;
-        height: 100%;
-        background-color: #0B3B5B;
-        transition: right 0.3s;
+      display: block;
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 280px;
+      height: 100%;
+      background-color: #0B3B5B;
+      transition: right 0.3s;
     }
     .desktop_menu.mobile_menu ul li {
-        display: block;
-        text-align: left;
-        margin: 0;
-        padding: 10px 0 10px 26px;
-        border-bottom: 1px solid white;
+      display: block;
+      text-align: left;
+      margin: 0;
+      padding: 10px 0 10px 26px;
+      border-bottom: 1px solid white;
     }
 }

@@ -1,32 +1,26 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration } from 'chart.js';
+import { IgxCategoryChartModule } from 'igniteui-angular-charts';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 
 @Component({
   selector: 'app-average-saved-chart',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, IgxCategoryChartModule],
   templateUrl: './average-saved-chart.component.html',
   styleUrls: ['./average-saved-chart.component.css']
 })
 export class AverageSavedChartComponent implements OnInit {
   @Input() userId!: number;
 
-  public barChartData: ChartConfiguration<'bar'>['data'] = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: []
-  };
+  public chartData: any[] = [];
+  public brushes: string[] = ['rgba(255, 159, 64, 0.8)'];
+  public outlines: string[] = ['rgba(255, 159, 64, 1)'];
 
-  public barChartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: true,
-    plugins: {
-      legend: { display: false }
-    }
+  public chartOptions = {
+    yAxisTitle: 'Amount Saved (KM)',
+    xAxisTitle: 'Month',
   };
-
-  public barChartType: 'bar' = 'bar';
 
   constructor(private userProfileService: UserProfileService) {}
 
@@ -34,19 +28,12 @@ export class AverageSavedChartComponent implements OnInit {
     if (this.userId) {
       this.userProfileService.getUserProfile(this.userId).subscribe(user => {
         const savedData = user.averageSavedPerMonth;
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
-        this.barChartData = {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          datasets: [
-            {
-              data: savedData,
-              label: 'KM Saved',
-              backgroundColor: 'rgba(255, 159, 64, 0.6)',
-              borderColor: 'rgba(255, 159, 64, 1)',
-              borderWidth: 1
-            }
-          ]
-        };
+        this.chartData = months.map((month, index) => ({
+          month: month,
+          saved: savedData[index] || 0
+        }));
       });
     }
   }

@@ -3,9 +3,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {Router, NavigationEnd, RouterLink, RouterLinkActive} from '@angular/router';
 import { filter } from 'rxjs/operators';
 
-
-
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -14,8 +11,8 @@ import { filter } from 'rxjs/operators';
   imports: [CommonModule, RouterLink, RouterLinkActive]
 })
 export class HeaderComponent implements AfterViewInit, OnInit {
-  
-  activePage: string = 'home';
+
+  activePage: string = '';
   menuValue: boolean = false;
   menu_icon: string = 'bx bx-menu';
   isMobileView: boolean = false;
@@ -24,6 +21,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   isMyProfilePage: boolean = false;
   isAdminPage: boolean = false;
   isAdmin: boolean = false; // Mimic admin state
+  loggedInUserId: number | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
@@ -40,14 +38,45 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.checkViewport();
 
+    if (isPlatformBrowser(this.platformId) && this.isLoggedIn) {
+      const storedUser = localStorage.getItem('loggedInUser');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        this.loggedInUserId = user.id;
+      }
+      }
+
+    const currentUrl = this.router.url;
+    this.updateActivePageFromUrl(currentUrl);
+
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      this.isDashboardPage = event.url === '/dashboard';
-      this.isMyProfilePage = event.url === '/user-profile' || event.url.startsWith('/user-profile/');
-      this.isAdminPage = event.url === '/admin-page';
-      this.isShoppingListPage = event.url === '/dashboard/shopping-list';
+      this.updateActivePageFromUrl(event.url);
     });
+  }
+
+  private updateActivePageFromUrl(url: string): void {
+    this.isDashboardPage = url === '/dashboard';
+    this.isMyProfilePage = url === '/user-profile' || url.startsWith('/user-profile/');
+    this.isAdminPage = url === '/admin-page';
+    this.isShoppingListPage = url === '/dashboard/shopping-list';
+
+    if (url === '/') {
+      this.activePage = 'home';
+    } else if (url === '/dashboard') {
+      this.activePage = 'dashboard';
+    } else if (url.startsWith('/user-profile')) {
+      this.activePage = 'user-profile';
+    } else if (url === '/admin-page') {
+      this.activePage = 'admin';
+    } else if (url === '/login') {
+      this.activePage = 'login';
+    } else if (url === '/about') {
+      this.activePage = 'about';
+    } else if (url === '/dashboard/shopping-list') {
+      this.activePage = 'shopping-list';
+    }
   }
 
   ngAfterViewInit(): void {
@@ -117,6 +146,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
   logout(): void {
     localStorage.removeItem('loggedInUser');
+    this.loggedInUserId = null;
     this.router.navigate(['/login']);
   }
 }

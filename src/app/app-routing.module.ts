@@ -21,11 +21,6 @@ import { ServerRoute, RenderMode } from '@angular/ssr';
       }
       ],
 },
-  // {
-  //   path: 'user-profile',
-  //   loadComponent: () => import('./features/user-profile/user-profile.component')
-  //     .then(m => m.UserProfileComponent)
-  // },
   {
     path: 'admin-page',
     loadComponent: () => import('./features/admin-page/admin-page.component')

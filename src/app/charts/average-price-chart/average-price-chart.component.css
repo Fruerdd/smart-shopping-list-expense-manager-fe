@@ -1,8 +1,18 @@
 :host {
   display: block;
-  max-width: 400px;
+  max-width: 500px;
+  height: 500px;
   margin: auto;
 }
-.chart-wrapper {
-  height: 300px;
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  height: 470px;
+  width: 450px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

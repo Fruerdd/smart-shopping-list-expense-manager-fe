@@ -9,11 +9,7 @@ export class UserProfileService {
   private apiUrl = 'http://localhost:3000/userProfiles';
   constructor(private http: HttpClient) {}
 
-  getUserProfile(id: number): Observable<any> {
+  getUserProfile(id: number | string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
-  }
-
-  getAllProfiles(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
   }
 }
