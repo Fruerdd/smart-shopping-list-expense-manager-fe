@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartConfiguration } from 'chart.js';
-import { NgChartsModule } from 'ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 
 @Component({
   selector: 'app-money-spent-chart',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, BaseChartDirective],
   templateUrl: './money-spent-chart.component.html',
   styleUrls: ['./money-spent-chart.component.css']
 })

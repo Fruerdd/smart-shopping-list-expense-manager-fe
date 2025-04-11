@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgChartsModule } from 'ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 
 @Component({
   selector: 'app-average-price-chart',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule,BaseChartDirective],
   templateUrl: './average-price-chart.component.html',
   styleUrls: ['./average-price-chart.component.css']
 })
