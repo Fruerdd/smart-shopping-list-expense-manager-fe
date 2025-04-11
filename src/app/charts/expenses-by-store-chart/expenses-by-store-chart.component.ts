@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgChartsModule } from 'ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
 import { ChartType, ChartConfiguration, ChartData } from 'chart.js'; // ✅ dodaj ChartData
 import { UserProfileService } from 'src/app/services/user-profile.service';
 
 @Component({
   selector: 'app-expenses-by-store-chart',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, BaseChartDirective],
   templateUrl: './expenses-by-store-chart.component.html',
   styleUrls: ['./expenses-by-store-chart.component.css']
 })
