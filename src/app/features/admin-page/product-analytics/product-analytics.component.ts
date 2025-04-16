@@ -3,6 +3,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { IgxCategoryChartModule } from 'igniteui-angular-charts';
 import { IgxDataChartCoreModule, IgxDataChartCategoryModule, IgxDataChartInteractivityModule, IgxNumericXAxisModule, IgxCategoryYAxisModule, IgxBarSeriesModule, IgxDataToolTipLayerModule, IgxCalloutLayerModule } from 'igniteui-angular-charts';
 import { IgxNumericXAxisComponent } from 'igniteui-angular-charts';
+import { RouterModule } from '@angular/router';
+
 
 import { ProductService, IProduct, ILeftChartData, IRightChartData } from '@app/services/product.service';
 
@@ -19,7 +21,8 @@ import { ProductService, IProduct, ILeftChartData, IRightChartData } from '@app/
     IgxCategoryYAxisModule,
     IgxBarSeriesModule,
     IgxDataToolTipLayerModule,
-    IgxCalloutLayerModule
+    IgxCalloutLayerModule,
+    RouterModule
   ],
   templateUrl: './product-analytics.component.html',
   styleUrls: ['./product-analytics.component.css']

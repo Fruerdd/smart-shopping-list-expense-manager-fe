@@ -1,4 +1,8 @@
 <div class="admin-page-container">
+  <!-- Router outlet at the top for sub-view content -->
+  <router-outlet></router-outlet>
+  <!-- Main admin dashboard content – you might choose to hide this when a child route is active -->
+  <ng-container *ngIf="!childRouteActive">
     <app-overview-cards></app-overview-cards>
     <div class="charts-section">
       <app-popular-shops></app-popular-shops>
@@ -7,5 +11,5 @@
     <app-all-customers></app-all-customers>
     <app-city-allocation></app-city-allocation>
     <app-product-analytics></app-product-analytics>
-  </div>
-  
+  </ng-container>
+</div>
