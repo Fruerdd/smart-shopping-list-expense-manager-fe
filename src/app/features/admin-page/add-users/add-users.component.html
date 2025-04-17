@@ -1,7 +1,44 @@
-<form [formGroup]="usersForm" (ngSubmit)="onSubmit()">
+<div class="mb-4">
+    <h4>Import Users via CSV</h4>
+    <input
+      type="file"
+      accept=".csv"
+      class="form-control"
+      (change)="onCsvFileChange($event)"
+    />
+    <button
+      *ngIf="isCsvPreviewVisible"
+      class="btn btn-success mt-2"
+      (click)="uploadCsv()"
+    >
+      Upload CSV Users
+    </button>
+  </div>
+  
+  <!-- CSV Preview Table -->
+  <div *ngIf="isCsvPreviewVisible" class="mb-4">
+    <h5>Preview CSV Data</h5>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th *ngFor="let h of csvHeaders">{{ h }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of csvUsers">
+            <td *ngFor="let h of csvHeaders">{{ u[h] }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Manual Add‑Users Form -->
+  <form [formGroup]="usersForm" (ngSubmit)="onSubmit()">
     <div formArrayName="users">
       <div
-        *ngFor="let user of users.controls; let i = index"
+        *ngFor="let userCtrl of users.controls; let i = index"
         [formGroupName]="i"
         class="card mb-3 shadow-sm"
       >
@@ -9,12 +46,12 @@
           <h5 class="mb-0">User {{ i + 1 }}</h5>
         </div>
         <div class="card-body">
+          <!-- name / email row -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="name{{ i }}" class="form-label">Name</label>
+              <label class="form-label">Name</label>
               <input
                 type="text"
-                id="name{{ i }}"
                 formControlName="name"
                 class="form-control"
                 placeholder="Enter name"
@@ -22,10 +59,9 @@
               />
             </div>
             <div class="col-md-6">
-              <label for="email{{ i }}" class="form-label">Email</label>
+              <label class="form-label">Email</label>
               <input
                 type="email"
-                id="email{{ i }}"
                 formControlName="email"
                 class="form-control"
                 placeholder="Enter email"
@@ -33,125 +69,120 @@
               />
             </div>
           </div>
+  
+          <!-- password / phoneNumber -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="password{{ i }}" class="form-label">Password</label>
+              <label class="form-label">Password</label>
               <input
                 type="password"
-                id="password{{ i }}"
                 formControlName="password"
                 class="form-control"
                 placeholder="Enter password"
               />
             </div>
             <div class="col-md-6">
-              <label for="phoneNumber{{ i }}" class="form-label">Phone Number</label>
+              <label class="form-label">Phone Number</label>
               <input
                 type="text"
-                id="phoneNumber{{ i }}"
                 formControlName="phoneNumber"
                 class="form-control"
                 placeholder="Enter phone number"
               />
             </div>
           </div>
+  
+          <!-- referral / promo / bonusPoints -->
           <div class="row mb-3">
             <div class="col-md-4">
-              <label for="referralCode{{ i }}" class="form-label">Referral Code</label>
+              <label class="form-label">Referral Code</label>
               <input
                 type="text"
-                id="referralCode{{ i }}"
                 formControlName="referralCode"
                 class="form-control"
                 placeholder="Referral code"
               />
             </div>
             <div class="col-md-4">
-              <label for="promoCode{{ i }}" class="form-label">Promo Code</label>
+              <label class="form-label">Promo Code</label>
               <input
                 type="text"
-                id="promoCode{{ i }}"
                 formControlName="promoCode"
                 class="form-control"
                 placeholder="Promo code"
               />
             </div>
             <div class="col-md-4">
-              <label for="bonusPoints{{ i }}" class="form-label">Bonus Points</label>
+              <label class="form-label">Bonus Points</label>
               <input
                 type="number"
-                id="bonusPoints{{ i }}"
                 formControlName="bonusPoints"
                 class="form-control"
-                placeholder="Bonus points"
               />
             </div>
           </div>
+  
+          <!-- deviceInfo / location / userType -->
           <div class="row mb-3">
             <div class="col-md-4">
-              <label for="deviceInfo{{ i }}" class="form-label">Device Info</label>
+              <label class="form-label">Device Info</label>
               <input
                 type="text"
-                id="deviceInfo{{ i }}"
                 formControlName="deviceInfo"
                 class="form-control"
-                placeholder="Device info"
               />
             </div>
             <div class="col-md-4">
-              <label for="location{{ i }}" class="form-label">Location</label>
+              <label class="form-label">Location</label>
               <input
                 type="text"
-                id="location{{ i }}"
                 formControlName="location"
                 class="form-control"
-                placeholder="Location"
               />
             </div>
             <div class="col-md-4">
-              <label for="userType{{ i }}" class="form-label">User Type</label>
+              <label class="form-label">User Type</label>
               <input
                 type="text"
-                id="userType{{ i }}"
                 formControlName="userType"
                 class="form-control"
-                placeholder="User type"
               />
             </div>
           </div>
+  
+          <!-- isActive switch -->
           <div class="form-check form-switch mb-3">
             <input
               class="form-check-input"
               type="checkbox"
-              id="isActive{{ i }}"
               formControlName="isActive"
+              id="isActive{{ i }}"
             />
             <label class="form-check-label" for="isActive{{ i }}">
               Active
             </label>
           </div>
+  
+          <!-- reviewScore / reviewContext -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="reviewScore{{ i }}" class="form-label">Review Score</label>
+              <label class="form-label">Review Score</label>
               <input
                 type="number"
-                id="reviewScore{{ i }}"
                 formControlName="reviewScore"
                 class="form-control"
-                placeholder="Review score"
               />
             </div>
             <div class="col-md-6">
-              <label for="reviewContext{{ i }}" class="form-label">Review Context</label>
+              <label class="form-label">Review Context</label>
               <input
                 type="text"
-                id="reviewContext{{ i }}"
                 formControlName="reviewContext"
                 class="form-control"
-                placeholder="Review context"
               />
             </div>
           </div>
+  
           <div class="d-flex justify-content-end">
             <button
               type="button"
@@ -165,8 +196,13 @@
         </div>
       </div>
     </div>
+  
     <div class="d-flex justify-content-between">
-      <button type="button" class="btn btn-primary" (click)="addUser()">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="addUser()"
+      >
         + Add Another User
       </button>
       <button type="submit" class="btn btn-success">

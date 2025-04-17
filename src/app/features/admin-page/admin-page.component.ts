@@ -29,12 +29,14 @@ export class AdminPageComponent {
   childRouteActive = false;
 
   constructor(private router: Router) {
-    // Listen to router events to determine if a child route is active
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        // Adjust the logic as needed—for example, if the URL contains "add-users"
-        this.childRouteActive = event.urlAfterRedirects.includes('/admin-page/add-users');
-        this.childRouteActive = event.urlAfterRedirects.includes('/admin-page/add-products');
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe((e: NavigationEnd) => {
+        const url = e.urlAfterRedirects;
+        // now set true if we're on *either* child route
+        this.childRouteActive =
+          url.includes('/admin-page/add-users') ||
+          url.includes('/admin-page/add-products');
       });
   }
 }

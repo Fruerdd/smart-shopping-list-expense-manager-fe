@@ -1,15 +1,14 @@
-<div class="admin-page-container">
-  <!-- Router outlet at the top for sub-view content -->
-  <router-outlet></router-outlet>
-  <!-- Main admin dashboard content – you might choose to hide this when a child route is active -->
-  <ng-container *ngIf="!childRouteActive">
-    <app-overview-cards></app-overview-cards>
-    <div class="charts-section">
-      <app-popular-shops></app-popular-shops>
-      <app-total-user-savings></app-total-user-savings>
-    </div>
-    <app-all-customers></app-all-customers>
-    <app-city-allocation></app-city-allocation>
-    <app-product-analytics></app-product-analytics>
-  </ng-container>
-</div>
+<!-- this renders your AddUsers/AddProducts component when on a child route -->
+<router-outlet></router-outlet>
+
+<!-- only show the “main dashboard” when no child is active -->
+<ng-container *ngIf="!childRouteActive">
+  <app-overview-cards></app-overview-cards>
+  <div class="charts-section">
+    <app-popular-shops></app-popular-shops>
+    <app-total-user-savings></app-total-user-savings>
+  </div>
+  <app-all-customers></app-all-customers>
+  <app-city-allocation></app-city-allocation>
+  <app-product-analytics></app-product-analytics>
+</ng-container>
