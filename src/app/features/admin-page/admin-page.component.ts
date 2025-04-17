@@ -6,6 +6,8 @@ import { TotalUserSavingsComponent } from './total-user-savings/total-user-savin
 import { AllCustomersComponent } from './all-customers/all-customers.component';
 import { ProductAnalyticsComponent } from './product-analytics/product-analytics.component';
 import { CityAllocationComponent } from './city-allocation/city-allocation.component';
+import { RouterModule, NavigationEnd, Router } from '@angular/router'; 
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-admin-page',
@@ -19,7 +21,20 @@ import { CityAllocationComponent } from './city-allocation/city-allocation.compo
     AllCustomersComponent,
     ProductAnalyticsComponent,
     CityAllocationComponent,
-    CommonModule
+    CommonModule,
+    RouterModule
   ]
 })
-export class AdminPageComponent {}
+export class AdminPageComponent {
+  childRouteActive = false;
+
+  constructor(private router: Router) {
+    // Listen to router events to determine if a child route is active
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        // Adjust the logic as needed—for example, if the URL contains "add-users"
+        this.childRouteActive = event.urlAfterRedirects.includes('/admin-page/add-users');
+        this.childRouteActive = event.urlAfterRedirects.includes('/admin-page/add-products');
+      });
+  }
+}
