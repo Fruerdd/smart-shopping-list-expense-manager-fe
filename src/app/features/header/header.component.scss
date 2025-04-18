@@ -8,9 +8,84 @@ header {
   width: 100%;
 }
 
+.music-controls {
+  button[mat-icon-button] {
+    color: #0B3B5B;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:active,
+  .music-controls input[type="range"]::-moz-range-thumb:active {
+    background: #0B3B5B;
+    color: #0B3B5B;
+  }
+
+  input[type="range"]::-moz-range-track {
+    background: linear-gradient(to right, #FCACC4, #0B3B5B);
+    height: 10px;
+    border-radius: 10px;
+    border: none;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #FCACC4, #0B3B5B);
+    height: 10px;
+    border-radius: 10px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ddd;
+    border-radius: 10px;
+    height: 10px;
+  }
+
+}
+
+.music-popup {
+  position: absolute;
+  top: 80px;
+  right: 55px;
+  background-color: #FCACC4;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.music-icon-li mat-icon {
+  vertical-align: middle;
+  font-size: 24px;
+  color: white;
+}
+
 .logo {
   display: flex;
   align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
 }
 
 .logo-image {
@@ -57,14 +132,18 @@ header {
 .desktop_menu ul {
   padding: 0;
   margin: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .desktop_menu ul li {
   list-style-type: none;
   color: white;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-size: 18px;
-  margin-left: 26px;
+  margin-left: 15px;
   font-weight: 500;
   padding: 0 8px;
   cursor: pointer;
@@ -108,6 +187,11 @@ header {
     .desktop_menu {
       display: none;
     }
+
+    .desktop_menu ul{
+      display: block;
+    }
+
     .desktop_menu ul li {
       display: block;
       text-align: left;
@@ -144,5 +228,75 @@ header {
       margin: 0;
       padding: 10px 0 10px 26px;
       border-bottom: 1px solid white;
+    }
+
+    .mobile-music-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+    }
+
+    .mobile-music-controls button[mat-icon-button] {
+      color: #FCACC4;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-music-controls mat-icon {
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+      line-height: 24px;
+    }
+
+    .mobile-music-controls input[type="range"] {
+      width: 100px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #ddd;
+      border-radius: 5px;
+      height: 5px;
+      vertical-align: middle;
+    }
+
+    .mobile-music-controls input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      background: #FCACC4; /* Pink thumb */
+      border-radius: 50%;
+      cursor: pointer;
+      margin-top: -5px;
+    }
+
+    .mobile-music-controls input[type="range"]::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      background: #FCACC4;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+   }
+
+    .mobile-music-controls input[type="range"]::-webkit-slider-thumb:active,
+    .mobile-music-controls input[type="range"]::-moz-range-thumb:active {
+      background: #0B3B5B;
+    }
+
+    .mobile-music-controls input[type="range"]::-webkit-slider-runnable-track {
+      background: linear-gradient(to right, #0B3B5B, #FCACC4);
+      height: 5px;
+      border-radius: 5px;
+    }
+
+    .mobile-music-controls input[type="range"]::-moz-range-track {
+      background: linear-gradient(to right, #0B3B5B, #FCACC4);
+      height: 5px;
+      border-radius: 5px;
+      border: none;
     }
 }

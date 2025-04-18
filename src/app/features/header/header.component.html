@@ -5,10 +5,10 @@
       <div class="col-md-3 col-sm-3 col-3">
         <div class="logo d-flex align-items-center">
           <img *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage && !isShoppingListPage"
-               src="logo.png" class="logo" alt="logo" (click)="scrollToTop()"
+               src="app_logo.jpg" class="logo" alt="logo" (click)="scrollToTop()"
                style="cursor: pointer;" />
           <img *ngIf="isAdminPage || isMyProfilePage || isDashboardPage || isShoppingListPage"
-               src="logo.png" class="logo" alt="logo" (click)="scrollToTopAndActivateHome()"
+               src="app_logo.jpg" class="logo" alt="logo" (click)="scrollToTopAndActivateHome()"
                style="cursor: pointer;" />
           <span *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage && !isShoppingListPage"
                 routerLink="/home" routerLinkActive="active" class="company-name"
@@ -86,6 +86,10 @@
                 [ngClass]="{'active': activePage === 'log-out'}" class="log-out-button">
               Log Out
             </li>
+            <!-- Music Player -->
+            <li *ngIf="!isMobileView && !isAdminPage && !isMyProfilePage && !isDashboardPage && !isShoppingListPage">
+              <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
+            </li>
 
             <!-- User dashboard specific links -->
             <ng-container *ngIf="isDashboardPage">
@@ -93,6 +97,9 @@
               <li (click)="scrollToSection('shopping-list')" [ngClass]="{'active': activePage === 'shopping-list'}">Shopping List</li>
               <li (click)="scrollToSection('favorites-section')" [ngClass]="{'active': activePage === 'favorites'}">Favorites</li>
               <li (click)="scrollToSection('price-comparison')" [ngClass]="{'active': activePage === 'price-comparison'}">Price Comparison</li>
+              <li class="music-icon-li" *ngIf="!isMobileView">
+                <mat-icon (click)="toggleMusicPopup()">music_note</mat-icon>
+              </li>
             </ng-container>
 
             <!-- My Profile specific links -->
@@ -100,22 +107,65 @@
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
               <li (click)="scrollToSection('analytics')" [ngClass]="{'active': activePage === 'analytics'}">Analytics</li>
               <li (click)="scrollToSection('notifications')" [ngClass]="{'active': activePage === 'notifications'}">Notifications</li>
+              <li *ngIf="!isMobileView">
+                <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
+              </li>
             </ng-container>
 
             <!-- Admin page specific links -->
             <ng-container *ngIf="isAdminPage">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
               <li (click)="activatePage('log-out')" [ngClass]="{'active': activePage === 'log-out'}" class="log-out-button">Log Out</li>
+              <li *ngIf="!isMobileView">
+                <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
+              </li>
             </ng-container>
 
             <!-- Shopping List specific links -->
             <ng-container *ngIf="isShoppingListPage">
               <li routerLink="/dashboard" routerLinkActive="active" (click)="activatePage('dashboard')">Dashboard</li>
+              <li *ngIf="!isMobileView">
+                <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
+              </li>
             </ng-container>
 
           </ul>
         </div>
+        <div class="music-controls music-popup" *ngIf="isMusicPopupVisible && !isMobileView" #musicPopupDiv>
+          <button mat-icon-button (click)="togglePlay()">
+            <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+          </button>
+          <input
+            type="range"
+            id="volume"
+            min="0"
+            max="1"
+            step="0.05"
+            [(ngModel)]="volume"
+          />
+        </div>
+
+        <div class="music-controls mobile-music-controls" *ngIf="isMobileView">
+          <button mat-icon-button (click)="togglePlay()">
+            <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+          </button>
+          <input
+            type="range"
+            id="volume-mobile"
+            min="0"
+            max="1"
+            step="0.05"
+            [(ngModel)]="volume"
+          />
+        </div>
       </div>
     </div>
   </div>
+  <audio
+    #backgroundMusic
+    src="/assets/music/background_tune.mp3"
+    loop
+    [volume]="volume"
+    muted
+  ></audio>
 </header>
