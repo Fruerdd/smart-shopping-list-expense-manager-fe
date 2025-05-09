@@ -36,6 +36,8 @@ export class AdminPageComponent {
         // now set true if we're on *either* child route
         this.childRouteActive =
           url.includes('/admin-page/add-users') ||
+          url.includes('/admin-page/edit-users') ||
+          url.includes('/admin-page/edit-products') ||
           url.includes('/admin-page/add-products');
       });
   }

@@ -1,33 +1,41 @@
 import { Component } from '@angular/core';
 import {
-  FormArray,
+  CommonModule
+} from '@angular/common';
+import {
+  ReactiveFormsModule,
+  FormsModule,
   FormBuilder,
   FormGroup,
-  Validators,
-  ReactiveFormsModule
+  FormArray,
+  Validators
 } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+
+import { UsersService, UserDTO } from '@app/services/users.service';
 
 @Component({
   selector: 'app-add-users',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
   templateUrl: './add-users.component.html',
   styleUrls: ['./add-users.component.css']
 })
 export class AddUsersComponent {
   usersForm: FormGroup;
-
-  // CSV upload state
   csvHeaders: string[] = [];
-  csvUsers: any[] = [];
-  isCsvPreviewVisible = false;
+  csvUsers:  UserDTO[] = [];
+  isCsvPreviewVisible  = false;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder,
+    private usersSvc: UsersService
+  ) {
     this.usersForm = this.fb.group({
-      users: this.fb.array([this.createUserGroup()])
+      users: this.fb.array([ this.createUserGroup() ])
     });
   }
 
@@ -37,104 +45,83 @@ export class AddUsersComponent {
 
   private createUserGroup(): FormGroup {
     return this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: [''],
-      phoneNumber: [''],
-      referralCode: [''],
-      promoCode: [''],
-      bonusPoints: [0],
-      deviceInfo: [''],
-      location: [''],
-      userType: [''],
-      isActive: [true],
-      reviewScore: [0],
+      name:          ['', Validators.required],
+      email:         ['', [Validators.required, Validators.email]],
+      password:      [''],
+      phoneNumber:   [''],
+      referralCode:  [''],
+      promoCode:     [''],
+      bonusPoints:   [0],
+      deviceInfo:    [''],
+      location:      [''],
+      userType:      ['user'],     // default "user"
+      isActive:      [true],
+      reviewScore:   [0],
       reviewContext: ['']
     });
   }
 
-  addUser(): void {
+  addUser() {
     this.users.push(this.createUserGroup());
   }
 
-  removeUser(i: number): void {
+  removeUser(i: number) {
     this.users.removeAt(i);
   }
 
-  onSubmit(): void {
-    if (!this.usersForm.valid) return;
-    const usersData = this.usersForm.value.users;
-    this.http
-      .post('http://localhost:8080/api/users/bulk', usersData, {
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .subscribe({
-        next: () => alert('Users added successfully'),
-        error: err => {
-          console.error(err);
-          alert(`Error: ${err.message || err.status}`);
-        }
-      });
+  onSubmit() {
+    if (this.usersForm.invalid) { return; }
+    const payload: UserDTO[] = this.usersForm.value.users;
+    this.usersSvc.bulkAddUsers(payload).subscribe({
+      next: ()  => alert('Users added successfully'),
+      error: e => alert(`Error: ${e.message || e.status}`)
+    });
   }
-
-  // —— CSV Upload Handlers —— //
 
   onCsvFileChange(evt: Event) {
     const input = evt.target as HTMLInputElement;
-    if (!input.files?.length) return;
-    const file = input.files[0];
+    if (!input.files?.length) { return; }
     const reader = new FileReader();
     reader.onload = () => {
-      const text = reader.result as string;
-      const lines = text.split(/\r\n|\n/).filter(l => l.trim());
-      if (lines.length < 2) return;
-
-      const headers = lines[0].split(',').map(h => h.trim());
-      this.csvHeaders = headers;
-
-      this.csvUsers = lines.slice(1).map(line => {
-        const cols = line.split(',').map(v => v.trim());
+      const lines = (reader.result as string)
+        .split(/\r?\n/)
+        .filter(l => l.trim());
+      this.csvHeaders = lines.shift()!
+        .split(',').map(h => h.trim());
+      this.csvUsers = lines.map(line => {
+        const cols = line.split(',').map(c => c.trim());
         const obj: any = {};
-        headers.forEach((h, idx) => {
-          let val: any = cols[idx] ?? '';
-          // coerce types
+        this.csvHeaders.forEach((h, idx) => {
+          let v: any = cols[idx] ?? '';
           if (h === 'bonusPoints' || h === 'reviewScore') {
-            val = Number(val) || 0;
+            v = Number(v) || 0;
           } else if (h === 'isActive') {
-            val = val.toLowerCase() === 'true' || val === '1';
+            v = v.toLowerCase() === 'true' || v === '1';
           }
-          obj[h] = val;
+          obj[h] = v;
         });
-        return obj;
+        // ensure at least default userType if missing
+        obj.userType = obj.userType || 'user';
+        return obj as UserDTO;
       });
-
       this.isCsvPreviewVisible = true;
     };
-    reader.readAsText(file);
+    reader.readAsText(input.files[0]);
   }
 
   uploadCsv() {
-    if (!this.csvUsers.length) return;
-    this.http
-      .post('http://localhost:8080/api/users/bulk', this.csvUsers, {
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .subscribe({
-        next: () => {
-          alert('CSV users uploaded successfully');
-          // clear preview & reset form
-          this.isCsvPreviewVisible = false;
-          this.csvUsers = [];
-          this.csvHeaders = [];
-          while (this.users.length) {
-            this.users.removeAt(0);
-          }
-          this.users.push(this.createUserGroup());
-        },
-        error: err => {
-          console.error(err);
-          alert(`CSV upload error: ${err.message || err.status}`);
-        }
-      });
+    if (!this.csvUsers.length) { return; }
+    this.usersSvc.bulkAddUsers(this.csvUsers).subscribe({
+      next: () => {
+        alert('CSV users uploaded successfully');
+        this.csvUsers = [];
+        this.csvHeaders = [];
+        this.isCsvPreviewVisible = false;
+        // reset manual form
+        this.users.clear();
+        this.users.push(this.createUserGroup());
+      },
+      error: e => alert(`CSV upload error: ${e.message || e.status}`)
+    });
   }
 }

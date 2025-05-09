@@ -1,93 +1,107 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
-  FormGroup,
   FormArray,
-  Validators
+  FormGroup,
+  Validators,
+  ReactiveFormsModule
 } from '@angular/forms';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import {
+  StoreService,
+  StoreDTO,
+  StoreDetailsDTO,
+  StorePriceDTO
+} from '../../../services/store.service';
+import {
+  ProductService,
+  AddProductPayload
+} from '../../../services/product.service';
 
 @Component({
   selector: 'app-add-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+
+  // ← Add these so *ngIf, *ngFor, pipes, ngModel, formGroup, etc. all work
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+
   templateUrl: './add-products.component.html',
   styleUrls: ['./add-products.component.css']
 })
 export class AddProductsComponent implements OnInit {
-  // manual‐entry form
   productsForm!: FormGroup;
+  csvProducts: AddProductPayload[] = [];
 
-  // CSV buffer
-  csvProducts: AddProductCsv[] = [];
-
-  // stores + store context
   storeId: string | null = null;
-  store: any;
-  stores: any[] = [];
-  existingProducts: any[] = [];
-  searchQuery = '';
+  store: StoreDetailsDTO | null = null;
+  stores: StoreDTO[] = [];
+  existingProducts: StorePriceDTO[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private storeSvc: StoreService,
+    private productSvc: ProductService
   ) {}
 
   ngOnInit(): void {
-    // build the manual form
+    // 1) build form before subscribing
     this.productsForm = this.fb.group({
-      products: this.fb.array([this.createProductGroup()])
+      products: this.fb.array([ this.createProductGroup() ])
     });
 
-    // check route for a preselected store
-    this.storeId = this.route.snapshot.paramMap.get('storeId');
-    if (this.storeId) {
-      this.loadStore(this.storeId);
-      this.loadExisting(this.storeId);
-      this.preFillStoreId();
-    } else {
-      // otherwise load all stores for dropdown
-      this.http
-        .get<any[]>('http://localhost:8080/api/stores')
-        .subscribe(data => (this.stores = data));
-    }
+    // 2) load store list
+    this.storeSvc.getStores().subscribe(list => this.stores = list);
+
+    // 3) react to route changes
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('storeId');
+      if (id) {
+        this.storeId = id;
+        this.loadStore(id);
+        this.loadExisting(id);
+        this.patchStoreIdToForm(id);
+      } else {
+        this.storeId = null;
+        this.store = null;
+        this.existingProducts = [];
+      }
+    });
   }
 
-  // manual form helpers
   get productsArray(): FormArray {
     return this.productsForm.get('products') as FormArray;
   }
 
-  createProductGroup(): FormGroup {
+  private createProductGroup(): FormGroup {
     return this.fb.group({
-      storeId: [this.storeId || null, Validators.required],
+      storeId:     [this.storeId, Validators.required],
       productName: ['', Validators.required],
-      category: [''],
+      category:    [''],
       description: [''],
-      isActive: [true],
-      price: [0, [Validators.required, Validators.min(0)]],
-      barcode: ['']
+      price:       [0, [Validators.required, Validators.min(0)]],
+      barcode:     [''],
+      isActive:    [true]
     });
   }
 
-  preFillStoreId(): void {
-    this.productsArray.controls.forEach(ctrl => {
-      ctrl.patchValue({ storeId: this.storeId });
-      ctrl.get('storeId')?.disable();
-    });
+  private patchStoreIdToForm(storeId: string) {
+    this.productsArray.controls.forEach(ctrl =>
+      ctrl.patchValue({ storeId })
+    );
   }
 
   addProductRow(): void {
     const group = this.createProductGroup();
-    if (this.storeId) {
-      group.patchValue({ storeId: this.storeId });
-      group.get('storeId')?.disable();
-    }
+    if (this.storeId) group.patchValue({ storeId: this.storeId });
     this.productsArray.push(group);
   }
 
@@ -95,94 +109,68 @@ export class AddProductsComponent implements OnInit {
     this.productsArray.removeAt(i);
   }
 
-  onSearch(): void {
-    // optional: filter existingProducts or stores
-    console.log('search:', this.searchQuery);
-  }
-
   onStoreSelected(id: string): void {
-    this.router.navigate(['/admin-page/add-products', id]);
+    if (!id) {
+      this.router.navigate(['/admin-page/add-products']);
+    } else {
+      this.router.navigate(['/admin-page/add-products', id]);
+    }
   }
 
   onSubmit(): void {
     if (!this.productsForm.valid) return;
-    // re‐enable storeId fields
-    this.productsArray.controls.forEach(c => c.get('storeId')?.enable());
-    const payload = this.productsForm.value.products;
-    this.http
-      .post('http://localhost:8080/api/products/bulk', payload)
-      .subscribe({
-        next: () => alert('Manual products added'),
-        error: e => alert('Error: ' + e.message)
-      });
+    const payload: AddProductPayload[] = this.productsForm.value.products;
+    this.productSvc.bulkAddProducts(payload).subscribe({
+      next: () => alert('Manual products added'),
+      error: e => alert('Error: ' + e.message)
+    });
   }
 
-  // CSV upload
   onFileSelected(evt: Event) {
     const file = (evt.target as HTMLInputElement).files?.[0];
-    if (!file) return;
+    if (!file || !this.storeId) return;
 
     const reader = new FileReader();
     reader.onload = () => {
       const text = reader.result as string;
       const lines = text.split(/\r?\n/).filter(l => l.trim());
-      const headers = lines.shift()!
-        .split(',')
-        .map(h => h.trim());
+      const headers = lines.shift()!.split(',').map(h => h.trim());
 
       this.csvProducts = lines.map(line => {
         const cols = line.split(',').map(c => c.trim());
         const obj: any = {};
-        headers.forEach((h, i) => (obj[h] = cols[i] || ''));
-
+        headers.forEach((h, i) => obj[h] = cols[i] || '');
         return {
-          storeId: this.storeId!,
+          storeId:     this.storeId!,
           productName: obj['productName'],
-          category: obj['category'],
+          category:    obj['category'],
           description: obj['description'],
-          price: parseFloat(obj['price']) || 0,
-          barcode: obj['barcode'],
-          isActive: obj['isActive']?.toLowerCase() === 'true'
-        } as AddProductCsv;
+          price:       parseFloat(obj['price']) || 0,
+          barcode:     obj['barcode'],
+          isActive:    obj['isActive']?.toLowerCase() === 'true'
+        } as AddProductPayload;
       });
     };
     reader.readAsText(file);
   }
 
-  onSubmitCsv() {
+  onSubmitCsv(): void {
     if (!this.csvProducts.length) return;
-    this.http
-      .post('http://localhost:8080/api/products/bulk', this.csvProducts)
-      .subscribe({
-        next: () => {
-          alert('CSV products uploaded');
-          this.csvProducts = [];
-        },
-        error: e => alert('CSV upload error: ' + e.message)
-      });
+    this.productSvc.bulkAddProducts(this.csvProducts).subscribe({
+      next: () => {
+        alert('CSV products uploaded');
+        this.csvProducts = [];
+      },
+      error: e => alert('CSV upload error: ' + e.message)
+    });
   }
 
-  // data loaders
   private loadStore(id: string) {
-    this.http
-      .get<any>(`http://localhost:8080/api/stores/${id}`)
-      .subscribe(s => (this.store = s));
+    this.storeSvc.getStore(id).subscribe(s => this.store = s);
   }
 
   private loadExisting(id: string) {
-    this.http
-      .get<any[]>(`http://localhost:8080/api/stores/${id}/products`)
-      .subscribe(list => (this.existingProducts = list));
+    this.storeSvc.getStoreProducts(id)
+      .subscribe(list => this.existingProducts = list);
   }
-}
-
-// match your AddProductDTO on the backend
-interface AddProductCsv {
-  storeId: string;
-  productName: string;
-  category: string;
-  description: string;
-  price: number;
-  barcode: string;
-  isActive: boolean;
 }
