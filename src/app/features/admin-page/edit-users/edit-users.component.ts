@@ -20,8 +20,13 @@ export class EditUsersComponent implements OnInit {
   constructor(private usersSvc: UsersService) {}
 
   ngOnInit() {
-    this.usersSvc.getUsers()
-      .subscribe(list => this.users = list);
+    this.usersSvc.getUsers().subscribe(list => {
+      this.users = list.map(u => ({
+        ...u,
+        // default any null / undefined userType → 'USER'
+        userType: (u.userType as 'USER' | 'ADMIN') ?? 'USER'
+      }));
+    });
   }
 
   /** filtered by name/email */

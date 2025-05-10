@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 export interface UserDTO {
   [key: string]: any;
 
-  userId?:       string;
+  id?:       string;
   name:          string;
   email:         string;
   password?:     string;
@@ -20,7 +20,7 @@ export interface UserDTO {
   bonusPoints?:  number;
   deviceInfo?:   string;
   location?:     string;
-  userType?:     'user' | 'admin';
+  userType: 'USER' | 'ADMIN'; 
   isActive:      boolean;
   reviewScore?:  number;
   reviewContext?:string;

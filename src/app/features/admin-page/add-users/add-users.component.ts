@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
   FormsModule,
@@ -10,6 +8,10 @@ import {
   FormArray,
   Validators
 } from '@angular/forms';
+
+// RxJS imports for filtering out existing users
+import { EMPTY } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { UsersService, UserDTO } from '@app/services/users.service';
 
@@ -26,9 +28,9 @@ import { UsersService, UserDTO } from '@app/services/users.service';
 })
 export class AddUsersComponent {
   usersForm: FormGroup;
-  csvHeaders: string[] = [];
-  csvUsers:  UserDTO[] = [];
-  isCsvPreviewVisible  = false;
+  csvHeaders:   string[]   = [];
+  csvUsers:     UserDTO[]  = [];
+  isCsvPreviewVisible = false;
 
   constructor(
     private fb: FormBuilder,
@@ -54,7 +56,7 @@ export class AddUsersComponent {
       bonusPoints:   [0],
       deviceInfo:    [''],
       location:      [''],
-      userType:      ['user'],     // default "user"
+      userType:      ['user'],
       isActive:      [true],
       reviewScore:   [0],
       reviewContext: ['']
@@ -73,7 +75,7 @@ export class AddUsersComponent {
     if (this.usersForm.invalid) { return; }
     const payload: UserDTO[] = this.usersForm.value.users;
     this.usersSvc.bulkAddUsers(payload).subscribe({
-      next: ()  => alert('Users added successfully'),
+      next: () => alert('Users added successfully'),
       error: e => alert(`Error: ${e.message || e.status}`)
     });
   }
@@ -100,7 +102,6 @@ export class AddUsersComponent {
           }
           obj[h] = v;
         });
-        // ensure at least default userType if missing
         obj.userType = obj.userType || 'user';
         return obj as UserDTO;
       });
@@ -109,19 +110,40 @@ export class AddUsersComponent {
     reader.readAsText(input.files[0]);
   }
 
+  /** 
+   * 1) GET existing users 
+   * 2) Filter out any CSV-email that already exists 
+   * 3) POST only the truly new users 
+   */
   uploadCsv() {
     if (!this.csvUsers.length) { return; }
-    this.usersSvc.bulkAddUsers(this.csvUsers).subscribe({
+
+    this.usersSvc.getUsers().pipe(
+      map(existing => {
+        const seen = new Set(existing.map(u => u.email));
+        return this.csvUsers.filter(u => !seen.has(u.email));
+      }),
+      switchMap(newUsers => {
+        if (!newUsers.length) {
+          alert('No new users to add');
+          return EMPTY;
+        }
+        return this.usersSvc.bulkAddUsers(newUsers);
+      })
+    ).subscribe({
       next: () => {
         alert('CSV users uploaded successfully');
+        // reset preview & manual form:
         this.csvUsers = [];
         this.csvHeaders = [];
         this.isCsvPreviewVisible = false;
-        // reset manual form
         this.users.clear();
         this.users.push(this.createUserGroup());
       },
-      error: e => alert(`CSV upload error: ${e.message || e.status}`)
+      error: err => {
+        console.error('CSV upload error:', err);
+        alert(`CSV upload error: ${err.status} – ${err.error?.message || err.message}`);
+      }
     });
   }
 }
