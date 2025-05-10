@@ -1,123 +1,176 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormArray,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import {
+  StoreService,
+  StoreDTO,
+  StoreDetailsDTO,
+  StorePriceDTO
+} from '../../../services/store.service';
+import {
+  ProductService,
+  AddProductPayload
+} from '../../../services/product.service';
 
 @Component({
   selector: 'app-add-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+
+  // ← Add these so *ngIf, *ngFor, pipes, ngModel, formGroup, etc. all work
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+
   templateUrl: './add-products.component.html',
   styleUrls: ['./add-products.component.css']
 })
 export class AddProductsComponent implements OnInit {
   productsForm!: FormGroup;
-  // If a store is preselected from the route parameter:
+  csvProducts: AddProductPayload[] = [];
+
   storeId: string | null = null;
-  // Store details for a preselected store:
-  store: any;
-  // List of stores (if no store is preselected):
-  stores: any[] = [];  
-  existingProducts: any[] = [];
-  searchQuery = '';
+  store: StoreDetailsDTO | null = null;
+  stores: StoreDTO[] = [];
+  existingProducts: StorePriceDTO[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router  // Import Router for navigation
+    private router: Router,
+    private storeSvc: StoreService,
+    private productSvc: ProductService
   ) {}
 
   ngOnInit(): void {
+    // 1) build form before subscribing
     this.productsForm = this.fb.group({
-      products: this.fb.array([this.createProductGroup()])
+      products: this.fb.array([ this.createProductGroup() ])
     });
 
-    // Check if a storeId is in the URL:
-    this.storeId = this.route.snapshot.paramMap.get('storeId');
+    // 2) load store list
+    this.storeSvc.getStores().subscribe(list => this.stores = list);
 
-    if (this.storeId) {
-      // Preselected store: fetch its details
-      this.http.get<any>(`http://localhost:8080/api/stores/${this.storeId}`)
-        .subscribe(data => this.store = data);
-
-      // Fetch existing products for this store
-      this.http.get<any[]>(`http://localhost:8080/api/stores/${this.storeId}/products`)
-        .subscribe(data => this.existingProducts = data);
-
-      // Pre-fill the storeId in the form and disable changes
-      this.preFillStoreId();
-    } else {
-      // No preselected store: fetch list of stores for selection
-      this.http.get<any[]>('http://localhost:8080/api/stores')
-        .subscribe(data => this.stores = data);
-    }
+    // 3) react to route changes
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('storeId');
+      if (id) {
+        this.storeId = id;
+        this.loadStore(id);
+        this.loadExisting(id);
+        this.patchStoreIdToForm(id);
+      } else {
+        this.storeId = null;
+        this.store = null;
+        this.existingProducts = [];
+      }
+    });
   }
 
   get productsArray(): FormArray {
     return this.productsForm.get('products') as FormArray;
   }
 
-  createProductGroup(): FormGroup {
+  private createProductGroup(): FormGroup {
     return this.fb.group({
-      storeId: [this.storeId || null, Validators.required],
+      storeId:     [this.storeId, Validators.required],
       productName: ['', Validators.required],
-      category: [''],
+      category:    [''],
       description: [''],
-      isActive: [true],
-      price: [0, [Validators.required, Validators.min(0)]],
-      barcode: ['']
+      price:       [0, [Validators.required, Validators.min(0)]],
+      barcode:     [''],
+      isActive:    [true]
     });
   }
 
-  preFillStoreId(): void {
-    this.productsArray.controls.forEach(control => {
-      control.patchValue({ storeId: this.storeId });
-      control.get('storeId')?.disable();
-    });
+  private patchStoreIdToForm(storeId: string) {
+    this.productsArray.controls.forEach(ctrl =>
+      ctrl.patchValue({ storeId })
+    );
   }
 
   addProductRow(): void {
     const group = this.createProductGroup();
-    if (this.storeId) {
-      group.patchValue({ storeId: this.storeId });
-      group.get('storeId')?.disable();
-    }
+    if (this.storeId) group.patchValue({ storeId: this.storeId });
     this.productsArray.push(group);
   }
 
-  removeProductRow(index: number): void {
-    this.productsArray.removeAt(index);
+  removeProductRow(i: number): void {
+    this.productsArray.removeAt(i);
   }
 
-  onSearch(): void {
-    console.log('Search query:', this.searchQuery);
-    // Implement filtering logic if necessary
-  }
-
-  // This method is triggered when a user selects a store from the dropdown.
-  onStoreSelected(selectedStoreId: string): void {
-    if (selectedStoreId) {
-      // Navigate to the route with the storeId parameter
-      this.router.navigate(['/admin-page/add-products', selectedStoreId]);
+  onStoreSelected(id: string): void {
+    if (!id) {
+      this.router.navigate(['/admin-page/add-products']);
+    } else {
+      this.router.navigate(['/admin-page/add-products', id]);
     }
   }
 
   onSubmit(): void {
-    if (this.productsForm.valid) {
-      // Re-enable storeId controls before submission
-      this.productsArray.controls.forEach(control => {
-        control.get('storeId')?.enable();
+    if (!this.productsForm.valid) return;
+    const payload: AddProductPayload[] = this.productsForm.value.products;
+    this.productSvc.bulkAddProducts(payload).subscribe({
+      next: () => alert('Manual products added'),
+      error: e => alert('Error: ' + e.message)
+    });
+  }
+
+  onFileSelected(evt: Event) {
+    const file = (evt.target as HTMLInputElement).files?.[0];
+    if (!file || !this.storeId) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result as string;
+      const lines = text.split(/\r?\n/).filter(l => l.trim());
+      const headers = lines.shift()!.split(',').map(h => h.trim());
+
+      this.csvProducts = lines.map(line => {
+        const cols = line.split(',').map(c => c.trim());
+        const obj: any = {};
+        headers.forEach((h, i) => obj[h] = cols[i] || '');
+        return {
+          storeId:     this.storeId!,
+          productName: obj['productName'],
+          category:    obj['category'],
+          description: obj['description'],
+          price:       parseFloat(obj['price']) || 0,
+          barcode:     obj['barcode'],
+          isActive:    obj['isActive']?.toLowerCase() === 'true'
+        } as AddProductPayload;
       });
-      const productData = this.productsForm.value.products;
-      console.log('Submitting products:', productData);
-      this.http.post('http://localhost:8080/api/products/bulk', productData)
-        .subscribe({
-          next: () => alert('Products added successfully'),
-          error: (err) => alert('Error: ' + err.message)
-        });
-    }
+    };
+    reader.readAsText(file);
+  }
+
+  onSubmitCsv(): void {
+    if (!this.csvProducts.length) return;
+    this.productSvc.bulkAddProducts(this.csvProducts).subscribe({
+      next: () => {
+        alert('CSV products uploaded');
+        this.csvProducts = [];
+      },
+      error: e => alert('CSV upload error: ' + e.message)
+    });
+  }
+
+  private loadStore(id: string) {
+    this.storeSvc.getStore(id).subscribe(s => this.store = s);
+  }
+
+  private loadExisting(id: string) {
+    this.storeSvc.getStoreProducts(id)
+      .subscribe(list => this.existingProducts = list);
   }
 }

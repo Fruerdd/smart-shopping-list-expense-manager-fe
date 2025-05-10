@@ -1,18 +1,24 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
 export interface IChartData {
-    labels: string[];
-    datasets: {
-    data: number[];
-    backgroundColor: string[];
-  }[];
+  labels: string[];
+  datasets: { data: number[]; backgroundColor: string[] }[];
+}
+
+export interface CityAllocationDTO {
+  labels: string[];
+  data: number[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChartDataService {
+  private readonly statsUrl = 'http://localhost:8080/api/stats';
+
+  constructor (private http: HttpClient) {}
   getPopularShopsData(): Observable<IChartData> {
     return of({
       labels: ['Bingo', 'Mercator', 'Konzum', 'BEST', 'Amko Komerc', 'Hoše Komerc'],
@@ -26,15 +32,26 @@ export class ChartDataService {
   }
 
   getCityAllocationData(): Observable<IChartData> {
-    return of({
-      labels: ['Sarajevo', 'Mostar', 'Tuzla', 'Zenica', 'Banja Luka'],
-      datasets: [
-        {
-          data: [25, 20, 15, 25, 15],
-          backgroundColor: ['#6c63ff', '#f3722c', '#f9c74f', '#43aa8b', '#577590']
-        }
-      ]
-    });
+    return this.http
+      .get<CityAllocationDTO>(`${this.statsUrl}/city-allocation`)
+      .pipe(
+        map(dto => ({
+          labels: dto.labels,
+          datasets: [
+            {
+              data: dto.data,
+              // you can choose colors however you like, or generate them dynamically
+              backgroundColor: [
+                '#6c63ff',
+                '#f3722c',
+                '#f9c74f',
+                '#43aa8b',
+                '#577590'
+              ]
+            }
+          ]
+        }))
+      );
   }
 
   getProductAddData(): Observable<IChartData> {

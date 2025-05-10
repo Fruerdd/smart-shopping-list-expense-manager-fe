@@ -31,6 +31,11 @@ export const routes: Routes = [
           .then(m => m.AddUsersComponent)
         },
         {
+          path: 'edit-users',
+          loadComponent: () => import('./features/admin-page/edit-users/edit-users.component')
+          .then(m => m.EditUsersComponent)
+        },
+        {
           path: 'add-products',
           loadComponent: () => import('./features/admin-page/add-products/add-products.component')
           .then( m=> m.AddProductsComponent)
@@ -38,7 +43,19 @@ export const routes: Routes = [
         {
           path: 'add-products/:storeId',
           loadComponent: () => import('./features/admin-page/add-products/add-products.component').then(m => m.AddProductsComponent)
-        }
+        },
+        {
+          path: 'edit-products',
+          loadComponent: () =>
+            import('./features/admin-page/edit-products/edit-products.component')
+              .then(m => m.EditProductsComponent)
+        },
+        {
+          path: 'edit-products/:storeId',
+          loadComponent: () =>
+            import('./features/admin-page/edit-products/edit-products.component')
+              .then(m => m.EditProductsComponent)
+        },
       ]
   },
   {
