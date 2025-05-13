@@ -1,0 +1,66 @@
+<h2>Edit User Profile</h2>
+
+<div *ngIf="user" class="profile-image-wrapper">
+  <img
+    [src]="user.profileImageUrl || 'assets/images/avatar.png'"
+    (error)="setDefaultImage($event)"
+    alt="Profile Picture"
+    width="150"
+    height="150"
+  /><br />
+
+  <button type="button" disabled title="Coming soon">Change Profile Picture</button>
+
+  <input
+    type="file"
+    accept="image/*"
+    style="display: none"
+  />
+</div>
+
+<form *ngIf="user" (ngSubmit)="onSubmit()">
+  <!-- Editable Fields -->
+  <label>
+    Name:
+    <input type="text" [(ngModel)]="user.name" name="name" required />
+  </label><br />
+
+  <label>
+    Email:
+    <input type="email" [(ngModel)]="user.email" name="email" required />
+  </label><br />
+
+  <label>
+    Phone:
+    <input type="text" [(ngModel)]="user.phone" name="phone" />
+  </label><br />
+
+  <label>
+    Favorite Store:
+    <select [(ngModel)]="user.favoriteStore" name="favoriteStore">
+      <option value="Mercator">Mercator</option>
+      <option value="Bingo">Bingo</option>
+      <option value="Konzum">Konzum</option>
+    </select>
+  </label><br />
+
+  <!-- Read-Only Fields (Display Only) -->
+  <fieldset disabled>
+    <label>
+      Coupon Code:
+      <input type="text" [value]="user.couponCode" />
+    </label><br />
+
+    <label>
+      Loyalty Points:
+      <input type="number" [value]="user.loyaltyPoints" />
+    </label><br />
+
+    <label>
+      Credits Available:
+      <input type="number" [value]="user.creditsAvailable" />
+    </label><br />
+  </fieldset>
+
+  <button type="submit">Save Changes</button>
+</form>
