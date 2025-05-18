@@ -29,6 +29,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
 })
 export class UserProfileComponent implements OnInit {
   user: any;
+  
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -39,6 +40,12 @@ export class UserProfileComponent implements OnInit {
   setDefaultImage(event: Event) {
     const target = event.target as HTMLImageElement;
     target.src = '/assets/images/avatar.png';
+  }
+
+  navigateToEditProfile(): void {
+    if (this.user?.id) {
+      this.router.navigate(['/user-profiles/edit', this.user.id]); 
+    }
   }
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -61,6 +68,8 @@ export class UserProfileComponent implements OnInit {
 
       this.userProfileService.getUserProfile(routeId).subscribe((data) => {
         this.user = data;
+
+      
       });
     }
   }
