@@ -4,8 +4,8 @@
     <div class="period-selector">
       <label for="periodSelect" class="sr-only">Select Period</label>
       <select id="periodSelect" (change)="onPeriodChangeHandler($event)">
-        <option value="today" [selected]="selectedPeriod === 'today'">Today</option>
-        <option value="lastWeek" [selected]="selectedPeriod === 'lastWeek'">Last Week</option>
+        <option value="today"    [selected]="selectedPeriod==='today'">Today</option>
+        <option value="lastWeek" [selected]="selectedPeriod==='lastWeek'">Last Week</option>
       </select>
     </div>
   </div>

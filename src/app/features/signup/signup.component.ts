@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterLink],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
@@ -29,15 +29,15 @@ export class SignupComponent {
   onSubmit() {
     if (this.signupForm.valid) {
       const { password, confirmPassword, ...userData } = this.signupForm.value;
-  
+
       if (password !== confirmPassword) {
         alert('Passwords do not match!');
         return;
       }
-  
+
       // Merge password into final object
       const newUser = { ...userData, password };
-  
+
       // Send to JSON Server
       this.http.post('http://localhost:3000/users', newUser).subscribe({
         next: () => {

@@ -1,10 +1,15 @@
-<div class="chart-wrapper" *ngIf="barChartData.datasets?.length">
-  <h2>Spending by item categories</h2>  
-  <canvas
-      baseChart
-      [data]="barChartData"
-      [type]="barChartType"
-      [options]="barChartOptions">
-    </canvas>
-  </div>
-  
+<div class="chart-card" *ngIf="chartData.length">
+  <h3>Spending by Item Categories</h3>
+  <igx-category-chart
+    [dataSource]="chartData"
+    chartType="column"
+    [yAxisTitle]="chartOptions.yAxisTitle"
+    [xAxisTitle]="chartOptions.xAxisTitle"
+    [yAxisLabelLeftMargin]="chartOptions.yAxisLabelLeftMargin"
+    [xAxisLabelTopMargin]="chartOptions.xAxisLabelTopMargin"
+    height="100%"
+    width="100%"
+    [brushes]="brushes"
+    [outlines]="outlines">
+  </igx-category-chart>
+</div>

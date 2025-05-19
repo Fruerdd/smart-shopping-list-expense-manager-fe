@@ -1,0 +1,96 @@
+<!-- src/app/features/admin-page/edit-products/edit-products.component.html -->
+<div class="container mt-4">
+  <h2>Edit Products</h2>
+
+  <!-- 1) Store selector -->
+  <div class="mb-3 col-md-4">
+    <label class="form-label">Store</label>
+    <select
+      class="form-select"
+      [(ngModel)]="selectedStoreId"
+      (ngModelChange)="onStoreChange($event)"
+      name="storeSelect"
+    >
+      <option value="">-- Select a store --</option>
+      <option *ngFor="let s of stores" [value]="s.storeId">
+        {{ s.name }}
+      </option>
+    </select>
+  </div>
+
+  <!-- 2) Editable table -->
+  <table *ngIf="products.length" class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th class="text-center">Active</th>
+        <th>Price</th>
+        <th>Barcode</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of products; let i = index">
+        <td>{{ p.productName }}</td>
+        <td>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            [(ngModel)]="p.category"
+            name="category{{i}}"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            [(ngModel)]="p.description"
+            name="description{{i}}"
+          />
+        </td>
+        <td class="text-center">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            [(ngModel)]="p.isActive"
+            name="active{{i}}"
+          />
+        </td>
+        <td style="max-width: 100px;">
+          <input
+            type="number"
+            class="form-control form-control-sm"
+            [(ngModel)]="p.price"
+            name="price{{i}}"
+          />
+        </td>
+        <td style="max-width: 120px;">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            [(ngModel)]="p.barcode"
+            name="barcode{{i}}"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 3) Submit button -->
+  <button
+    *ngIf="products.length"
+    class="btn btn-primary mt-2"
+    (click)="submitChanges()"
+  >
+    Submit Changes
+  </button>
+
+  <!-- 4) No products message -->
+  <div
+    *ngIf="selectedStoreId && !products.length"
+    class="alert alert-info mt-2"
+  >
+    No products for this store.
+  </div>
+</div>

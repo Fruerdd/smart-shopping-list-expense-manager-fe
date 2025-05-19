@@ -50,21 +50,21 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       const routeId = Number(this.route.snapshot.paramMap.get('id'));
-      // const storedUser = localStorage.getItem('loggedInUser');
-      //
-      // if (!storedUser) {
-      //   alert('Niste prijavljeni');
-      //   this.router.navigate(['/login']);
-      //   return;
-      // }
-      //
-      // const loggedInUser = JSON.parse(storedUser);
-      //
-      // if (Number(loggedInUser.id) !== routeId) {
-      //   alert('Nemate pristup ovom profilu!');
-      //   this.router.navigate(['/user-profile', loggedInUser.id]);
-      //   return;
-      // }
+      const storedUser = localStorage.getItem('loggedInUser');
+
+      if (!storedUser) {
+        alert("You're not logged in!");
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      const loggedInUser = JSON.parse(storedUser);
+
+      if (Number(loggedInUser.id) !== routeId) {
+        alert("You don't have access to this profile!");
+        this.router.navigate(['/user-profile', loggedInUser.id]);
+        return;
+      }
 
       this.userProfileService.getUserProfile(routeId).subscribe((data) => {
         this.user = data;

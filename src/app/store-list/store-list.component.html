@@ -1,0 +1,12 @@
+<div class="container mt-3">
+    <h2>Select a Store to Add Products</h2>
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let store of stores">
+        <!-- Navigate to child route with storeId as parameter -->
+        <a [routerLink]="['/admin-page/add-products', store.storeId]">
+          {{ store.name }}
+        </a>
+      </li>
+    </ul>
+  </div>
+  

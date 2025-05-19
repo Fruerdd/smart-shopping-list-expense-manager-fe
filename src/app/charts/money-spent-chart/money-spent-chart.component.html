@@ -1,11 +1,16 @@
-<div class="chart-card">
+<div class="chart-card" *ngIf="chartData.length">
   <h3>Money Spent Over Time</h3>
-  <div class="canvas-wrapper">
-    <canvas
-      baseChart
-      [data]="lineChartData"
-      [options]="lineChartOptions"
-      [type]="lineChartType">
-    </canvas>
-  </div>
+  <igx-financial-chart
+    [dataSource]="chartData"
+    chartType="line"
+    [yAxisTitle]="chartOptions.yAxisTitle"
+    [xAxisTitle]="chartOptions.xAxisTitle"
+    [thickness]="chartOptions.thickness"
+    [isVerticalZoomEnabled]="chartOptions.isVerticalZoomEnabled"
+    [isHorizontalZoomEnabled]="chartOptions.isHorizontalZoomEnabled"
+    height="100%"
+    width="100%"
+    brushes="#4bc0c0, #9966ff"
+    outlines="#4bc0c0, #9966ff">
+  </igx-financial-chart>
 </div>

@@ -1,21 +1,35 @@
-import { Component, HostListener, Inject, PLATFORM_ID, AfterViewInit, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+  AfterViewInit,
+  OnInit,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {Router, NavigationEnd, RouterLink, RouterLinkActive} from '@angular/router';
 import { filter } from 'rxjs/operators';
-
-
-
+import {FormsModule} from '@angular/forms';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive]
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, MatIconButton, MatIcon, MatIconModule]
 })
 export class HeaderComponent implements AfterViewInit, OnInit {
-  
-  activePage: string = 'home';
+  @ViewChild('backgroundMusic') backgroundMusicRef!: ElementRef;
+  @ViewChild('musicPopupDiv') musicPopupDivRef!: ElementRef;
+  isPlaying = false;
+  volume = 0.5;
+  isMusicPopupVisible = false;
+
+  activePage: string = '';
   menuValue: boolean = false;
   menu_icon: string = 'bx bx-menu';
   isMobileView: boolean = false;
@@ -24,6 +38,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   isMyProfilePage: boolean = false;
   isAdminPage: boolean = false;
   isAdmin: boolean = false; // Mimic admin state
+  loggedInUserId: number | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
@@ -40,14 +55,76 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.checkViewport();
 
+    if (isPlatformBrowser(this.platformId) && this.isLoggedIn) {
+      const storedUser = localStorage.getItem('loggedInUser');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        this.loggedInUserId = user.id;
+      }
+      }
+
+    const currentUrl = this.router.url;
+    this.updateActivePageFromUrl(currentUrl);
+
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      this.isDashboardPage = event.url === '/dashboard';
-      this.isMyProfilePage = event.url === '/user-profile' || event.url.startsWith('/user-profile/');
-      this.isAdminPage = event.url === '/admin-page';
-      this.isShoppingListPage = event.url === '/dashboard/shopping-list';
+      this.updateActivePageFromUrl(event.url);
     });
+  }
+
+  togglePlay(): void {
+    this.isPlaying = !this.isPlaying;
+    if (this.isPlaying) {
+      this.playMusic();
+      this.backgroundMusicRef.nativeElement.muted = true; // Mute the music
+    } else {
+      this.pauseMusic();
+    }
+  }
+
+  playMusic(): void {
+    this.backgroundMusicRef.nativeElement.muted = false;
+    this.backgroundMusicRef.nativeElement.play().then(() => {
+      this.backgroundMusicRef.nativeElement.muted = false;
+      this.backgroundMusicRef.nativeElement.volume = this.volume;
+      this.isPlaying = true;
+    }).catch((error: any) => {
+      console.error('Autoplay prevented:', error);
+      this.isPlaying = false;
+    });
+  }
+
+  pauseMusic(): void {
+    this.backgroundMusicRef.nativeElement.pause();
+    this.isPlaying = false;
+  }
+
+  toggleMusicPopup(): void {
+    this.isMusicPopupVisible = !this.isMusicPopupVisible;
+  }
+
+  private updateActivePageFromUrl(url: string): void {
+    this.isDashboardPage = url === '/dashboard';
+    this.isMyProfilePage = url === '/user-profile' || url.startsWith('/user-profile/');
+    this.isAdminPage = url === '/admin-page';
+    this.isShoppingListPage = url === '/dashboard/shopping-list';
+
+    if (url === '/') {
+      this.activePage = 'home';
+    } else if (url === '/dashboard') {
+      this.activePage = 'dashboard';
+    } else if (url.startsWith('/user-profile')) {
+      this.activePage = 'user-profile';
+    } else if (url === '/admin-page') {
+      this.activePage = 'admin';
+    } else if (url === '/login') {
+      this.activePage = 'login';
+    } else if (url === '/about') {
+      this.activePage = 'about';
+    } else if (url === '/dashboard/shopping-list') {
+      this.activePage = 'shopping-list';
+    }
   }
 
   ngAfterViewInit(): void {
@@ -63,13 +140,22 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     }
   }
 
-  @HostListener('document:click', ['$event'])
-  onClick(event: MouseEvent): void {
+@HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent): void {
+  if (this.menuValue && this.isMobileView) {
     const clickedInsideMenu = event.target instanceof Element && event.target.closest('.desktop_menu');
     const clickedInsideMenuIcon = event.target instanceof Element && event.target.closest('.menu-icon');
-    if (this.menuValue && !clickedInsideMenu && !clickedInsideMenuIcon) {
+    if (!clickedInsideMenu && !clickedInsideMenuIcon) {
       this.closeMenu();
     }
+  }
+  // if (this.isMusicPopupVisible && !this.isMobileView) {
+  //     const clickedInsidePopup = this.musicPopupDivRef?.nativeElement.contains(event.target);
+  //     if (!clickedInsidePopup) {
+  //       this.isMusicPopupVisible = false;
+  //     }
+  //
+  //   }
   }
 
   checkViewport(): void {
@@ -117,6 +203,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
   logout(): void {
     localStorage.removeItem('loggedInUser');
+    this.loggedInUserId = null;
     this.router.navigate(['/login']);
   }
 }

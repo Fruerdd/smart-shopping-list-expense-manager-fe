@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {Router, RouterLink} from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@app/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +33,7 @@ export class LoginComponent {
       this.authService.login(email, password).subscribe(user => {
         if (user) {
           localStorage.setItem('loggedInUser', JSON.stringify(user));
-          console.log('Korisnik sačuvan u localStorage:', JSON.parse(localStorage.getItem('loggedInUser')!));
+          console.log('User stored in the localStorage:', JSON.parse(localStorage.getItem('loggedInUser')!));
 
           this.router.navigate(['/user-profile', user.id]);
         } else {

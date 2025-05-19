@@ -13,7 +13,7 @@
       <input
         type="text"
         formControlName="email"
-        placeholder="Username or Email"
+        placeholder="Email"
       />
       <div
         *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
@@ -34,7 +34,7 @@
         Password is required.
       </div>
 
-      <button type="submit">Log in</button> 
+      <button type="submit">Log in</button>
     </form>
 
     <div class="or-divider">OR</div>
