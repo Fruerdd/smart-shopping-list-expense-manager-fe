@@ -78,6 +78,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/user-profile/user-profile.component')
       .then(m => m.UserProfileComponent)
   },
+  {
+  path: 'user-profiles/edit/:id',
+  loadComponent: () =>
+    import('./features/user-edit/user-edit.component').then(m => m.UserEditComponent)
+},
+
   { path: '**', redirectTo: '/home' }
 ];
 
