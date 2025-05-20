@@ -1,28 +1,36 @@
+// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, tap } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+export interface LoginResponse {
+  token: string;
+  userType: 'USER' | 'ADMIN';
+  // …any other fields…
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/users';
+  private apiUrl = 'http://localhost:8080/user';
+  private storageKey = 'jwt';
 
   constructor(private http: HttpClient) {}
 
-  login(email: string, password: string): Observable<any | null> {
-    return this.http.get<any[]>(`${this.apiUrl}?email=${email}`).pipe(
-      map(users => {
-        const user = users[0];
-        if (user && user.password === password) {
-          return user; // contains ID and email
-        }
-        return null;
-      })
-    );
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/login`, { email, password })
+      .pipe(
+        tap(res => {
+          localStorage.setItem(this.storageKey, res.token);
+        })
+      );
   }
+
   logout() {
-    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem(this.storageKey);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.storageKey);
   }
 }
