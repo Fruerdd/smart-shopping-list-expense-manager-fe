@@ -9,11 +9,12 @@ import {
   ViewChild
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {Router, NavigationEnd, RouterLink, RouterLinkActive} from '@angular/router';
+import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import {FormsModule} from '@angular/forms';
-import {MatIconButton} from '@angular/material/button';
-import {MatIcon, MatIconModule} from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { AuthService } from '@app/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -36,18 +37,21 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   isDashboardPage: boolean = false;
   isShoppingListPage: boolean = false;
   isMyProfilePage: boolean = false;
+  isEditProfilePage: boolean = false;
   isAdminPage: boolean = false;
   isAdmin: boolean = false; // Mimic admin state
   loggedInUserId: number | null = null;
+  userType: string | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   get isLoggedIn(): boolean {
     if (isPlatformBrowser(this.platformId)) {
-      return !!localStorage.getItem('loggedInUser');
+      return this.authService.isLoggedIn();
     }
     return false;
   }
@@ -56,12 +60,9 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.checkViewport();
 
     if (isPlatformBrowser(this.platformId) && this.isLoggedIn) {
-      const storedUser = localStorage.getItem('loggedInUser');
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        this.loggedInUserId = user.id;
-      }
-      }
+      // Try to get user information from token or localStorage
+      this.parseUserInfo();
+    }
 
     const currentUrl = this.router.url;
     this.updateActivePageFromUrl(currentUrl);
@@ -71,6 +72,33 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     ).subscribe((event: any) => {
       this.updateActivePageFromUrl(event.url);
     });
+  }
+
+  parseUserInfo(): void {
+    try {
+      // Get user information from JWT token if possible
+      const token = this.authService.getToken();
+      if (token) {
+        // Basic parsing of JWT token to get user info
+        const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+        if (tokenPayload) {
+          this.loggedInUserId = tokenPayload.id || tokenPayload.userId || null;
+          this.userType = tokenPayload.userType || null;
+          this.isAdmin = this.userType === 'ADMIN';
+        }
+      }
+
+      // If you have additional user info in localStorage, parse it here
+      const storedUser = localStorage.getItem('userInfo');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        this.loggedInUserId = user.id || this.loggedInUserId;
+        this.userType = user.userType || this.userType;
+        this.isAdmin = this.userType === 'ADMIN' || this.isAdmin;
+      }
+    } catch (error) {
+      console.error('Error parsing user information:', error);
+    }
   }
 
   togglePlay(): void {
@@ -109,6 +137,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.isMyProfilePage = url === '/user-profile' || url.startsWith('/user-profile/');
     this.isAdminPage = url === '/admin-page';
     this.isShoppingListPage = url === '/dashboard/shopping-list';
+    this.isEditProfilePage = url.startsWith('/user-profiles/edit');
 
     if (url === '/') {
       this.activePage = 'home';
@@ -116,6 +145,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.activePage = 'dashboard';
     } else if (url.startsWith('/user-profile')) {
       this.activePage = 'user-profile';
+    } else if (url.startsWith('/user-profiles/edit')) {
+      this.activePage = 'user-edit';
     } else if (url === '/admin-page') {
       this.activePage = 'admin';
     } else if (url === '/login') {
@@ -140,22 +171,22 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     }
   }
 
-@HostListener('document:click', ['$event'])
-onDocumentClick(event: MouseEvent): void {
-  if (this.menuValue && this.isMobileView) {
-    const clickedInsideMenu = event.target instanceof Element && event.target.closest('.desktop_menu');
-    const clickedInsideMenuIcon = event.target instanceof Element && event.target.closest('.menu-icon');
-    if (!clickedInsideMenu && !clickedInsideMenuIcon) {
-      this.closeMenu();
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.menuValue && this.isMobileView) {
+      const clickedInsideMenu = event.target instanceof Element && event.target.closest('.desktop_menu');
+      const clickedInsideMenuIcon = event.target instanceof Element && event.target.closest('.menu-icon');
+      if (!clickedInsideMenu && !clickedInsideMenuIcon) {
+        this.closeMenu();
+      }
     }
-  }
-  // if (this.isMusicPopupVisible && !this.isMobileView) {
-  //     const clickedInsidePopup = this.musicPopupDivRef?.nativeElement.contains(event.target);
-  //     if (!clickedInsidePopup) {
-  //       this.isMusicPopupVisible = false;
-  //     }
-  //
-  //   }
+    // if (this.isMusicPopupVisible && !this.isMobileView) {
+    //     const clickedInsidePopup = this.musicPopupDivRef?.nativeElement.contains(event.target);
+    //     if (!clickedInsidePopup) {
+    //       this.isMusicPopupVisible = false;
+    //     }
+    //
+    //   }
   }
 
   checkViewport(): void {
@@ -201,9 +232,12 @@ onDocumentClick(event: MouseEvent): void {
     this.menuValue = false;
     this.menu_icon = 'bx bx-menu';
   }
+
   logout(): void {
-    localStorage.removeItem('loggedInUser');
+    this.authService.logout();
     this.loggedInUserId = null;
+    this.userType = null;
+    this.isAdmin = false;
     this.router.navigate(['/login']);
   }
 }

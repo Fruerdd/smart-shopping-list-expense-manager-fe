@@ -37,9 +37,8 @@ export class LoginComponent {
 
   onSubmit() {
     if (!this.loginForm.valid) return;
-    const { email, password } = this.loginForm.value;
-  
-    this.authService.login(email, password).subscribe({
+
+    this.authService.login(this.loginForm.value).subscribe({
       next: res => {
         localStorage.setItem(this.authService['storageKey'], res.token);
         if (res.userType === 'ADMIN') {
