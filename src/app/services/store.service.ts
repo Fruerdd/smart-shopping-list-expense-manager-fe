@@ -1,3 +1,5 @@
+// src/app/services/store.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -34,11 +36,21 @@ export interface StorePriceDTO {
   barcode?:     string;
 }
 
+/** payload shape for create/update (no storeId, no createdAt) */
+export interface StoreUpsertPayload {
+  name:     string;
+  icon:     string;
+  location: string;
+  contact:  string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class StoreService {
   private readonly base = 'http://localhost:8080/api/stores';
 
   constructor(private http: HttpClient) {}
+
+  /** — existing methods — */
 
   getStores(): Observable<StoreDTO[]> {
     return this.http
@@ -50,9 +62,14 @@ export class StoreService {
 
   getStore(id: string): Observable<StoreDetailsDTO> {
     return this.http
-      .get<{ id: string; name: string; icon: string; location: string; contact: string; createdAt: string }>(
-        `${this.base}/${id}`
-      )
+      .get<{
+        id: string;
+        name: string;
+        icon: string;
+        location: string;
+        contact: string;
+        createdAt: string;
+      }>(`${this.base}/${id}`)
       .pipe(map(dto => ({
         storeId:   dto.id,
         name:      dto.name,
@@ -66,5 +83,61 @@ export class StoreService {
   /** Now returns the extended StorePriceDTO shape */
   getStoreProducts(id: string): Observable<StorePriceDTO[]> {
     return this.http.get<StorePriceDTO[]>(`${this.base}/${id}/products`);
+  }
+
+  /** — new methods — */
+
+  /**
+   * Create a new store.
+   * @param payload  name, icon, location, contact
+   * @returns         the created StoreDetailsDTO
+   */
+  createStore(payload: StoreUpsertPayload): Observable<StoreDetailsDTO> {
+    return this.http
+      .post<{
+        id: string;
+        name: string;
+        icon: string;
+        location: string;
+        contact: string;
+        createdAt: string;
+      }>(this.base, payload)
+      .pipe(map(dto => ({
+        storeId:   dto.id,
+        name:      dto.name,
+        icon:      dto.icon,
+        location:  dto.location,
+        contact:   dto.contact,
+        createdAt: dto.createdAt
+      })));
+  }
+
+  /**
+   * Update an existing store.
+   * @param id       UUID of the store to update
+   * @param payload  name, icon, location, contact
+   * @returns        the updated StoreDetailsDTO
+   */
+  updateStore(
+    id: string,
+    payload: StoreUpsertPayload
+  ): Observable<StoreDetailsDTO> {
+    return this.http
+      .put<{
+        id: string;
+        name: string;
+        icon: string;
+        location: string;
+        contact: string;
+        createdAt: string;
+      }>(`${this.base}/${id}`, payload)
+      .pipe(map(dto => ({
+        storeId:   dto.id,
+        name:      dto.name,
+        icon:      dto.icon,
+        location:  dto.location,
+        contact:   dto.contact,
+        createdAt: dto.createdAt
+      })));
   }
 }

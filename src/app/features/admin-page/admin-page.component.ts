@@ -38,6 +38,7 @@ export class AdminPageComponent {
           url.includes('/admin-page/add-users') ||
           url.includes('/admin-page/edit-users') ||
           url.includes('/admin-page/edit-products') ||
+          url.includes('/admin-page/add-edit-store') ||
           url.includes('/admin-page/add-products');
       });
   }

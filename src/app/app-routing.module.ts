@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ServerRoute, RenderMode } from '@angular/ssr';
+import { AddEditStoreComponent } from './features/admin-page/add-edit-store/add-edit-store.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -35,6 +36,7 @@ export const routes: Routes = [
           loadComponent: () => import('./features/admin-page/add-users/add-users.component')
           .then(m => m.AddUsersComponent)
         },
+        { path: 'add-edit-store', component: AddEditStoreComponent },
         {
           path: 'edit-users',
           loadComponent: () => import('./features/admin-page/edit-users/edit-users.component')
