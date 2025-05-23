@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IgxCategoryChartModule } from 'igniteui-angular-charts';
-import { UserProfileService } from 'src/app/services/user-profile.service';
+import { UserProfileService } from '@app/services/user-profile.service';
+import { UserStatisticsDTO } from '@app/models/user-statistics.dto';
 
 @Component({
   selector: 'app-category-spending-chart',
@@ -11,13 +12,11 @@ import { UserProfileService } from 'src/app/services/user-profile.service';
   styleUrls: ['./category-spending-chart.component.css']
 })
 export class CategorySpendingChartComponent implements OnInit {
-  @Input() userId!: number;
-
-  public chartData: any[] = [];
-  public brushes: string[] = ['rgba(75, 192, 192, 0.8)'];
-  public outlines: string[] = ['rgba(75, 192, 192, 1)'];
-
-  public chartOptions = {
+  @Input() userId!: string;
+  chartData: any[] = [];
+  brushes: string[] = ['rgba(75, 192, 192, 0.8)'];
+  outlines: string[] = ['rgba(75, 192, 192, 1)'];
+  chartOptions = {
     yAxisTitle: 'Amount (KM)',
     xAxisTitle: 'Categories',
     yAxisLabelLeftMargin: 5,
@@ -26,15 +25,23 @@ export class CategorySpendingChartComponent implements OnInit {
 
   constructor(private userProfileService: UserProfileService) {}
 
-  ngOnInit(): void {
-    if (this.userId) {
-      this.userProfileService.getUserProfile(this.userId).subscribe(user => {
-        const spending = user.categorySpending || [];
+  ngOnInit() {
+    this.loadChartData();
+  }
 
-        this.chartData = spending.map((c: any) => ({
-          category: c.category,
-          amount: c.amount
-        }));
+  private loadChartData() {
+    if (this.userId) {
+      this.userProfileService.getUserStatistics(this.userId).subscribe({
+        next: (stats: UserStatisticsDTO) => {
+          const spending = stats.categorySpending || [];
+          this.chartData = spending.map(item => ({
+            category: item.category,
+            value: item.amount
+          }));
+        },
+        error: (error: Error) => {
+          console.error('Error loading category spending:', error);
+        }
       });
     }
   }

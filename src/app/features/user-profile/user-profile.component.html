@@ -51,9 +51,10 @@
           <p><strong>{{ user.loyaltyPoints }}</strong> points</p>
           <p>Credits Available: {{ user.creditsAvailable | currency:'EUR':'symbol-narrow' }}</p>
           <qrcode
-            [qrdata]="user.qrCodeValue"
+            [qrdata]="user.qrCodeValue || user.id || ''"
             [width]="120"
-            [errorCorrectionLevel]="'M'">
+            [errorCorrectionLevel]="'M'"
+            [allowEmptyString]="true">
           </qrcode>
         </div>
 

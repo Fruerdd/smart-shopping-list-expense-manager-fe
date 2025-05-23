@@ -1,25 +1,20 @@
 // src/app/interceptors/jwt.interceptor.ts
-import { Injectable } from '@angular/core';
-import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpEvent
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpInterceptorFn } from '@angular/common/http';
 
-@Injectable()
-export class JwtInterceptor implements HttpInterceptor {
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      req = req.clone({
-        setHeaders: { Authorization: `Bearer ${token}` }
-      });
-    }
-    return next.handle(req);
+export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
+  // Skip interceptor for login and register endpoints
+  if (req.url.includes('/login') || req.url.includes('/register')) {
+    return next(req);
   }
-}
+
+  const token = localStorage.getItem('token');
+  if (token) {
+    req = req.clone({
+      setHeaders: { 
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+  return next(req);
+};

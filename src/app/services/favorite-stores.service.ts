@@ -1,75 +1,65 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-
-export interface FavoriteStore {
-  id: number;
-  name: string;
-  icon: string;
-}
-
-export interface StoreSearchResult {
-  id: number;
-  name: string;
-}
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { StoreDTO } from '@app/models/store.dto';
+import { FavoriteStoreDTO } from '@app/models/favorite-store.dto';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoriteStoresService {
-  private favoriteStores: FavoriteStore[] = [
-    {
-      id: 1,
-      name: 'Mercator',
-      icon: '🛒'
-    },
-    {
-      id: 2,
-      name: 'Bingo',
-      icon: '🛍️'
-    }
-  ];
+  private readonly apiUrl = `${environment.apiUrl}/api/users`;
 
-  private allStores: StoreSearchResult[] = [
-    { id: 1, name: 'BEST' },
-    { id: 2, name: 'Amko Komerc' },
-    { id: 3, name: 'Konzum' },
-    { id: 4, name: 'Hose Komerc' },
-    { id: 5, name: 'Mercator' },
-    { id: 6, name: 'Bingo' }
-  ];
+  constructor(private http: HttpClient) {}
 
-  getFavoriteStores(): Observable<FavoriteStore[]> {
-    return of(this.favoriteStores);
-  }
-
-  searchStores(query: string): Observable<StoreSearchResult[]> {
-    if (!query) {
-      return of([]);
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An error occurred';
+    
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = error.error.message;
+    } else {
+      try {
+        const errorBody = typeof error.error === 'string' ? 
+          (error.error.startsWith('{') ? JSON.parse(error.error) : { message: error.error }) 
+          : error.error;
+        errorMessage = errorBody.message || error.message || 'Unknown error occurred';
+      } catch (e) {
+        errorMessage = typeof error.error === 'string' ? 
+          error.error : 
+          `Server error (${error.status}): ${error.message}`;
+      }
     }
 
-    const lcQuery = query.toLowerCase();
-    const availableStores = this.allStores.filter(store =>
-      store.name.toLowerCase().includes(lcQuery) &&
-      !this.favoriteStores.some(fav => fav.name === store.name)
-    );
-    return of(availableStores);
+    console.error('API Error:', {
+      status: error.status,
+      statusText: error.statusText,
+      message: errorMessage,
+      error: error.error
+    });
+
+    return throwError(() => new Error(errorMessage));
   }
 
-  addFavoriteStore(store: Partial<FavoriteStore>): Observable<FavoriteStore> {
-    const maxId = Math.max(...this.favoriteStores.map(s => s.id), 0);
-    const newStore = {
-      ...store,
-      id: maxId + 1,
-      icon: store.icon || '🏪'
-    } as FavoriteStore;
-
-    this.favoriteStores.push(newStore);
-    return of(newStore);
+  getFavoriteStores(userId: string): Observable<FavoriteStoreDTO[]> {
+    return this.http.get<FavoriteStoreDTO[]>(`${this.apiUrl}/${userId}/favorite-stores`)
+      .pipe(catchError(this.handleError));
   }
 
-  removeFavoriteStore(id: number): Observable<boolean> {
-    const initialLength = this.favoriteStores.length;
-    this.favoriteStores = this.favoriteStores.filter(s => s.id !== id);
-    return of(initialLength > this.favoriteStores.length);
+  searchStores(userId: string, query: string): Observable<StoreDTO[]> {
+    return this.http.get<StoreDTO[]>(`${this.apiUrl}/${userId}/stores/search`, {
+      params: { query }
+    }).pipe(catchError(this.handleError));
+  }
+
+  addFavoriteStore(userId: string, storeId: string): Observable<FavoriteStoreDTO> {
+    return this.http.post<FavoriteStoreDTO>(`${this.apiUrl}/${userId}/favorite-stores/${storeId}`, {})
+      .pipe(catchError(this.handleError));
+  }
+
+  removeFavoriteStore(userId: string, storeId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${userId}/favorite-stores/${storeId}`)
+      .pipe(catchError(this.handleError));
   }
 }

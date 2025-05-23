@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserProfileService } from 'src/app/services/user-profile.service';
+import { UserProfileService } from '@app/services/user-profile.service';
+import { UserStatisticsDTO } from '@app/models/user-statistics.dto';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 // import {BaseChartDirective} from 'ng2-charts';
 import {NgChartsModule} from 'ng2-charts';
@@ -15,7 +16,6 @@ import {NgChartsModule} from 'ng2-charts';
 export class ExpensesByStoreChartComponent implements OnInit {
   @Input() userId!: string;
 
-  // Pie Chart Configuration
   public pieChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     plugins: {
@@ -25,7 +25,7 @@ export class ExpensesByStoreChartComponent implements OnInit {
       },
       tooltip: {
         callbacks: {
-          label: (context) => {
+          label: (context: any) => {
             const label = context.label || '';
             const value = context.raw || 0;
             return `${label}: ${value}%`;
@@ -55,16 +55,21 @@ export class ExpensesByStoreChartComponent implements OnInit {
 
   constructor(private userProfileService: UserProfileService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.loadChartData();
+  }
+
+  private loadChartData() {
     if (this.userId) {
-      this.userProfileService.getUserProfile(this.userId).subscribe({
-        next: (user) => {
-          if (user?.storeExpenses) {
-            this.pieChartData.labels = user.storeExpenses.map((e: { store: any; }) => e.store);
-            this.pieChartData.datasets[0].data = user.storeExpenses.map((e: { percentage: any; }) => e.percentage);
-          }
+      this.userProfileService.getUserStatistics(this.userId).subscribe({
+        next: (stats: UserStatisticsDTO) => {
+          const storeExpenses = stats.storeExpenses || [];
+          this.pieChartData.labels = storeExpenses.map(item => item.store);
+          this.pieChartData.datasets[0].data = storeExpenses.map(item => item.percentage);
         },
-        error: (err) => console.error('Error loading data:', err)
+        error: (error: Error) => {
+          console.error('Error loading store expenses:', error);
+        }
       });
     }
   }

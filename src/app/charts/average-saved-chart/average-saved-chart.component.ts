@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IgxCategoryChartModule } from 'igniteui-angular-charts';
-import { UserProfileService } from 'src/app/services/user-profile.service';
+import { UserProfileService } from '@app/services/user-profile.service';
+import { UserStatisticsDTO } from '@app/models/user-statistics.dto';
 
 @Component({
   selector: 'app-average-saved-chart',
@@ -11,29 +12,34 @@ import { UserProfileService } from 'src/app/services/user-profile.service';
   styleUrls: ['./average-saved-chart.component.css']
 })
 export class AverageSavedChartComponent implements OnInit {
-  @Input() userId!: number;
-
-  public chartData: any[] = [];
-  public brushes: string[] = ['rgba(255, 159, 64, 0.8)'];
-  public outlines: string[] = ['rgba(255, 159, 64, 1)'];
-
-  public chartOptions = {
+  @Input() userId!: string;
+  chartData: any[] = [];
+  brushes: string[] = ['rgba(255, 159, 64, 0.8)'];
+  outlines: string[] = ['rgba(255, 159, 64, 1)'];
+  chartOptions = {
     yAxisTitle: 'Amount Saved (KM)',
-    xAxisTitle: 'Month',
+    xAxisTitle: 'Month'
   };
 
   constructor(private userProfileService: UserProfileService) {}
 
-  ngOnInit(): void {
-    if (this.userId) {
-      this.userProfileService.getUserProfile(this.userId).subscribe(user => {
-        const savedData = user.averageSavedPerMonth;
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+  ngOnInit() {
+    this.loadChartData();
+  }
 
-        this.chartData = months.map((month, index) => ({
-          month: month,
-          saved: savedData[index] || 0
-        }));
+  private loadChartData() {
+    if (this.userId) {
+      this.userProfileService.getUserStatistics(this.userId).subscribe({
+        next: (stats: UserStatisticsDTO) => {
+          const savedData = stats.averageSavedPerMonth || [];
+          this.chartData = savedData.map(item => ({
+            month: item.month,
+            value: item.amount
+          }));
+        },
+        error: (error: Error) => {
+          console.error('Error loading savings data:', error);
+        }
       });
     }
   }

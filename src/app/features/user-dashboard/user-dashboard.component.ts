@@ -5,6 +5,7 @@ import {FavoriteProductsComponent} from '@app/features/user-dashboard/favorite-p
 import {FavoriteStoresComponent} from '@app/features/user-dashboard/favorite-stores/favorite-stores.component';
 import {PriceComparisonComponent} from '@app/features/user-dashboard/price-comparison/price-comparison.component';
 import {Router, RouterOutlet} from '@angular/router';
+import { ShoppingListDTO } from '@app/models/shopping-list.dto';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -23,8 +24,12 @@ import {Router, RouterOutlet} from '@angular/router';
 export class UserDashboardComponent {
   constructor(protected router: Router) {}
 
-  navigateToShoppingList(): void {
-    this.router.navigate(['/dashboard/shopping-list']);
+  navigateToShoppingList(list?: ShoppingListDTO): void {
+    if (list) {
+      this.router.navigate(['/dashboard/shopping-list', list.id]);
+    } else {
+      this.router.navigate(['/dashboard/shopping-list']);
+    }
   }
 
 }

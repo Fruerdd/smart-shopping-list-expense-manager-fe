@@ -1,43 +1,64 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ShoppingListItem } from '@app/services/shopping-list-page.service';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-selected-products',
-  templateUrl: './selected-products.component.html',
-  styleUrls: ['./selected-products.component.css'],
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, MatIconModule]
+  imports: [CommonModule, MatIconModule],
+  templateUrl: './selected-products.component.html',
+  styleUrls: ['./selected-products.component.css']
 })
-export class SelectedProductsComponent {
-  @Input() selectedProducts: ShoppingListItem[] = [];
+export class SelectedProductsComponent implements OnChanges {
+  @Input() selectedProducts: ShoppingListItemDTO[] = [];
   @Input() isEditMode = false;
   @Input() preferredStore: string | null = null;
   @Input() listFormValid = false;
 
   @Output() quantityChange = new EventEmitter<{id: string, quantity: number}>();
-  @Output() removeProduct = new EventEmitter<ShoppingListItem>();
+  @Output() removeProduct = new EventEmitter<ShoppingListItemDTO>();
   @Output() saveList = new EventEmitter<void>();
   @Output() cancelEdit = new EventEmitter<void>();
   @Output() changeStore = new EventEmitter<void>();
+  @Output() updateProductStore = new EventEmitter<{productId: string, newStore: string}>();
+
+  private previousStore: string | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['preferredStore'] && !changes['preferredStore'].firstChange) {
+      const currentStore = changes['preferredStore'].currentValue;
+      const previousStore = changes['preferredStore'].previousValue;
+      
+      if (currentStore !== previousStore && currentStore) {
+        this.switchSelectedItemsToNewStore(currentStore);
+      }
+    }
+  }
+
+  private switchSelectedItemsToNewStore(newStore: string): void {
+    this.selectedProducts.forEach(product => {
+      this.updateProductStore.emit({
+        productId: product.id,
+        newStore: newStore
+      });
+    });
+  }
 
   getContainerHeight(): string {
     const baseHeight = 100;
     const itemHeight = 70;
     const maxHeight = 300;
-
-    const calculatedHeight = baseHeight + (this.selectedProducts.length * itemHeight);
-    const finalHeight = Math.min(calculatedHeight, maxHeight);
-
-    return `${finalHeight}px`;
+    return `${Math.min(baseHeight + (this.selectedProducts.length * itemHeight), maxHeight)}px`;
   }
 
   updateItemQuantity(itemId: string, quantity: number): void {
-    this.quantityChange.emit({id: itemId, quantity});
+    if (quantity > 0) {
+      this.quantityChange.emit({id: itemId, quantity});
+    }
   }
 
-  onRemoveProduct(product: ShoppingListItem): void {
+  onRemoveProduct(product: ShoppingListItemDTO): void {
     this.removeProduct.emit(product);
   }
 
@@ -47,5 +68,15 @@ export class SelectedProductsComponent {
 
   onCancelEdit(): void {
     this.cancelEdit.emit();
+  }
+
+  onChangeStore(): void {
+    this.changeStore.emit();
+  }
+
+  getTotalPrice(): number {
+    return this.selectedProducts.reduce((total, product) => {
+      return total + ((product.price || 0) * (product.quantity || 1));
+    }, 0);
   }
 }

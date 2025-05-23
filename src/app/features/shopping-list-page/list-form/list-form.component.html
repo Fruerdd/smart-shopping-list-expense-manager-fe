@@ -17,10 +17,8 @@
     <div class="form-row">
       <div class="form-group">
         <label for="listType">List Type</label>
-        <select id="listType" formControlName="type">
-          <option value="other">Other</option>
-          <option value="grocery">Grocery</option>
-          <option value="household">Household</option>
+        <select id="listType" formControlName="listType">
+          <option *ngFor="let type of listTypes" [value]="type">{{type}}</option>
         </select>
       </div>
       <div class="form-group">
@@ -29,9 +27,9 @@
           <div
             *ngFor="let option of shareOptions"
             class="share-option"
-            [class.selected]="isShareOptionSelected(option.id)"
-            (click)="toggleShareOption(option.id)">
-            <span class="share-name">{{ option.name }}</span>
+            [class.selected]="isShareOptionSelected(option.userId)"
+            (click)="toggleShareOption(option.userId)">
+            <span class="share-name">{{ option.userName }}</span>
           </div>
         </div>
       </div>

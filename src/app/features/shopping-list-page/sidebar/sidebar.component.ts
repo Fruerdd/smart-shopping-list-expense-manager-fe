@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
 import {CommonModule} from '@angular/common';
-import {SidebarCategory} from '@app/services/shopping-list-page.service';
+import {CategoryDTO} from '@app/models/category.dto';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,12 +11,12 @@ import {SidebarCategory} from '@app/services/shopping-list-page.service';
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent {
-  @Input() categories: SidebarCategory[] = [];
+  @Input() categories: CategoryDTO[] = [];
   @Output() categorySelected = new EventEmitter<string>();
 
   selectedCategoryId: string = 'default';
 
-  toggleCategory(category: SidebarCategory): void {
+  toggleCategory(category: CategoryDTO): void {
     if (this.selectedCategoryId === category.id) {
       this.selectedCategoryId = 'default';
       this.categorySelected.emit(this.selectedCategoryId);
@@ -25,5 +25,4 @@ export class SidebarComponent {
       this.categorySelected.emit(category.id);
     }
   }
-
 }
