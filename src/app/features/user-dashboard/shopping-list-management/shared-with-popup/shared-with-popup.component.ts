@@ -1,19 +1,24 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
-import { SharedUser } from '@app/services/shopping-list.service';
+import { CommonModule } from '@angular/common';
+import { CollaboratorDTO } from '@app/models/collaborator.dto';
 
 @Component({
   selector: 'app-shared-with-popup',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage],
+  imports: [CommonModule],
   templateUrl: './shared-with-popup.component.html',
   styleUrls: ['./shared-with-popup.component.css']
 })
 export class SharedWithPopupComponent {
-  @Input() sharedWith: SharedUser[] = [];
+  @Input() collaborators: CollaboratorDTO[] = [];
   @Output() close = new EventEmitter<void>();
+  @Output() removeCollaborator = new EventEmitter<string>();
 
   closePopup(): void {
     this.close.emit();
+  }
+
+  onRemoveCollaborator(collaboratorId: string): void {
+    this.removeCollaborator.emit(collaboratorId);
   }
 }

@@ -136,7 +136,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.isDashboardPage = url === '/dashboard';
     this.isMyProfilePage = url === '/user-profile' || url.startsWith('/user-profile/');
     this.isAdminPage = url === '/admin-page';
-    this.isShoppingListPage = url === '/dashboard/shopping-list';
+    this.isShoppingListPage = url === '/dashboard/shopping-list' || url.startsWith('/dashboard/shopping-list/');
     this.isEditProfilePage = url.startsWith('/user-profiles/edit');
 
     if (url === '/') {
@@ -153,7 +153,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.activePage = 'login';
     } else if (url === '/about') {
       this.activePage = 'about';
-    } else if (url === '/dashboard/shopping-list') {
+    } else if (url.startsWith('/dashboard/shopping-list')) {
       this.activePage = 'shopping-list';
     }
   }

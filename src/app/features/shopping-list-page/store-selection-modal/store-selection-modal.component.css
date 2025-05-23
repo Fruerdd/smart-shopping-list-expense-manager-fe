@@ -83,7 +83,7 @@
 }
 
 .store-item:hover {
-  background-color: rgba(11, 59, 91, 0.1);;
+  background-color: rgba(11, 59, 91, 0.1);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
@@ -120,7 +120,7 @@
   justify-content: center;
 }
 
-.store-selection-actions button {
+.clear-store-btn {
   padding: 8px 16px;
   background-color: #0B3B5B;
   border: 1px solid #0B3B5B;
@@ -131,7 +131,7 @@
   color: white;
 }
 
-.store-selection-actions button:hover {
+.clear-store-btn:hover {
   background-color: #092a40;
 }
 

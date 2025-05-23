@@ -6,8 +6,9 @@
 
       <app-shopping-list-card
         [shoppingList]="list"
-        (viewSharedUsers)="openSharedPopup(list.sharedWith)"
-        (viewList)="showListDetails(list)">
+        (viewSharedUsers)="openSharedPopup(list.collaborators)"
+        (viewList)="showListDetails(list)"
+        (markListAsDone)="deleteShoppingList($event)">
       </app-shopping-list-card>
 
 
@@ -15,7 +16,9 @@
         *ngIf="selectedList && selectedList.id === list.id"
         class="shopping-list-details"
         [list]="list"
-        (editList)="editShoppingList($event)">
+        (editList)="editShoppingList($event)"
+        (updateItem)="updateItem($event)"
+        (deleteList)="deleteShoppingList($event)">
       </app-shopping-list-details>
     </div>
   </ng-container>
@@ -29,7 +32,7 @@
 
   <app-shared-with-popup
     *ngIf="showSharedPopup"
-    [sharedWith]="selectedSharedUsers"
+    [collaborators]="selectedSharedUsers"
     (close)="closeSharedPopup()">
   </app-shared-with-popup>
 </div>

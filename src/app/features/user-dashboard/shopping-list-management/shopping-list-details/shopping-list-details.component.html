@@ -4,18 +4,23 @@
 
   <div class="items-container">
     <div class="item" *ngFor="let item of list.items">
-      <img class="item-icon" [ngSrc]="list.itemImage" alt="Item Icon" width="30" height="30" />
+      <img class="item-icon" src="assets/images/item-img-generic.png" alt="Item Icon" width="30" height="30" />
       <div class="item-details">
-        <span class="item-name">{{ item.name }}</span>
+        <span class="item-name">{{ item.productName }}</span>
         <span class="item-price">{{ item.price }} KM</span>
       </div>
       <span class="item-quantity">{{ item.quantity }}</span>
-      <input type="checkbox" class="checkbox" [(ngModel)]="item.checked" (change)="toggleItemChecked(item)" />
+      <input type="checkbox" class="checkbox" [checked]="item.isChecked" (change)="toggleItemChecked(item)" />
     </div>
   </div>
 
+  <div class="total-price">
+    <span class="total-label">Total Price:</span>
+    <span class="total-amount">{{ calculateTotalPrice() }} KM</span>
+  </div>
+
   <div class="action-buttons">
-    <button class="edit-button" (click)="editShoppingList()">Edit List</button>
-    <button class="delete-button">Delete List</button>
+    <button class="edit-button" *ngIf="hasEditPermission()" (click)="editShoppingList()">Edit List</button>
+    <button class="delete-button" *ngIf="isOwner()" type="button" (click)="onDeleteList()">Delete List</button>
   </div>
 </div>

@@ -26,21 +26,21 @@
       <div class="products-container" *ngIf="isCategoryExpanded(category)">
         <div class="product-row">
           <div class="product-item" *ngFor="let product of category.products"
-               [class.selected]="isProductSelected(product.id)"
+               [class.selected]="isProductSelected(product.productId)"
                (click)="selectProduct(product)">
             <div class="product-image">
-              <img [ngSrc]="product.image" [alt]="product.name" height="100" width="100">
+              <img [src]="'assets/images/' + product.image || 'assets/images/item-img-generic.png'" [alt]="product.productName" height="100" width="100">
+              <div class="selection-indicator" *ngIf="isProductSelected(product.productId)">
+                <span class="quantity">{{ getProductQuantity(product.productId) }}</span>
+              </div>
             </div>
             <div class="product-details">
-              <p class="product-name">{{ product.name }}</p>
+              <p class="product-name">{{ product.productName }}</p>
               <p class="product-store" *ngIf="product.storeName">{{ product.storeName }}</p>
               <p class="product-price" *ngIf="product.price">{{ product.price }} KM</p>
-              <button class="compare-btn" *ngIf="product.price" (click)="compareStoreItems(product.id, $event)">
+              <button class="compare-btn" (click)="compareStoreItems(product.id, $event)">
                 Compare prices
               </button>
-            </div>
-            <div class="selection-indicator" *ngIf="isProductSelected(product.id)">
-              {{ getProductQuantity(product.id) || 1 }}
             </div>
           </div>
         </div>

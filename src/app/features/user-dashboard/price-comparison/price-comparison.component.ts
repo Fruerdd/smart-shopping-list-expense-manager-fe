@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { PriceComparisonService } from '@app/services/price-comparison.service';
-import { Item, StorePrice } from '@app/services/price-comparison.service';
-import {NgForOf, NgIf} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import { ProductDTO } from '@app/models/product.dto';
+import { StorePriceDTO } from '@app/models/store-price.dto';
+import { NgForOf, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-type SanitizedStorePrice = Omit<StorePrice, 'storeIcon'> & { storeIcon: SafeHtml };
+type SanitizedStorePrice = Omit<StorePriceDTO, 'storeIcon'> & { storeIcon: SafeHtml };
+
 @Component({
   selector: 'app-price-comparison',
   templateUrl: './price-comparison.component.html',
@@ -19,24 +21,31 @@ type SanitizedStorePrice = Omit<StorePrice, 'storeIcon'> & { storeIcon: SafeHtml
 })
 export class PriceComparisonComponent implements OnInit {
   searchTerm: string = '';
-  items: Item[] = [];
-  filteredItems: Item[] = [];
-  selectedItem: Item | null = null;
+  items: ProductDTO[] = [];
+  filteredItems: ProductDTO[] = [];
+  selectedItem: ProductDTO | null = null;
   storePrices: SanitizedStorePrice[] = [];
   showSearchResults: boolean = false;
+  userId: string;
 
   constructor(
     private priceComparisonService: PriceComparisonService,
     private sanitizer: DomSanitizer
-  ) { }
+  ) {
+    const userInfo = localStorage.getItem('userInfo');
+    this.userId = userInfo ? JSON.parse(userInfo).id : '';
+    if (!this.userId) {
+      throw new Error('User ID not found. Please log in again.');
+    }
+  }
 
   ngOnInit(): void {
     this.loadItems();
   }
 
   loadItems(): void {
-    this.priceComparisonService.getAllItems().subscribe(
-      (data: Item[]) => {
+    this.priceComparisonService.getAllItems(this.userId).subscribe(
+      (data: ProductDTO[]) => {
         this.items = data;
         this.filteredItems = [...data];
       },
@@ -69,17 +78,16 @@ export class PriceComparisonComponent implements OnInit {
     }
   }
 
-  selectItem(item: Item): void {
-    console.log('Item selected:', item);
+  selectItem(item: ProductDTO): void {
     this.selectedItem = item;
     this.searchTerm = item.name;
     this.showSearchResults = false;
 
-    this.priceComparisonService.getItemPrices(item.id).subscribe(
-      (prices: StorePrice[]) => {
+    this.priceComparisonService.getItemPrices(this.userId, item.id).subscribe(
+      (prices: StorePriceDTO[]) => {
         this.storePrices = prices.map(price => ({
           ...price,
-          storeIcon: this.sanitizer.bypassSecurityTrustHtml(price.storeIcon)
+          storeIcon: this.sanitizer.bypassSecurityTrustHtml('<svg viewBox="0 0 24 24" width="24" height="24"><rect x="4" y="4" width="16" height="16" fill="#e91e63"/></svg>')
         }));
       },
       error => {

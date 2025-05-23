@@ -13,12 +13,13 @@
   <p class="store-info-text">Products will be selected from {{ preferredStore }} when available</p>
 </div>
 <app-store-selection-modal
+  *ngIf="showStoreSelectionModal"
   [show]="showStoreSelectionModal"
   [stores]="availableStores"
   [preferredStore]="preferredStore"
-  [isLoading]="isLoadingComparisons"
+  [isLoading]="isLoading"
   (closeModal)="closeStoreSelectionModal()"
-  (storeSelected)="selectPreferredStore($event)"
+  (storeSelected)="onStoreSelected($event)"
   (clearStore)="preferredStore = null; closeStoreSelectionModal()">
 </app-store-selection-modal>
 
@@ -42,7 +43,8 @@
         (removeProduct)="removeProduct($event)"
         (saveList)="saveList()"
         (cancelEdit)="cancelEdit()"
-        (changeStore)="changePreferredStore()">
+        (changeStore)="showStoreSelectionModal = true"
+        (updateProductStore)="onUpdateProductStore($event)">
       </app-selected-products>
     </div>
     <div class="products-section">
@@ -51,21 +53,22 @@
         [filteredProducts]="filteredProducts"
         [selectedProducts]="selectedProducts"
         [searchTerm]="searchTerm"
-        (searchChange)="searchTerm = $event; searchProducts()"
+        (searchChange)="onSearchInput($event)"
         (toggleCategoryEvent)="toggleCategory($event)"
         (selectProductEvent)="selectProduct($event)"
-        (comparePricesEvent)="compareStoreItems($event)">
+        (comparePricesEvent)="showPriceComparison($event)">
       </app-product-list>
     </div>
   </div>
 
     <div class="modal-overlay" *ngIf="showComparisonModal" (click)="closeComparisonModal()">
       <app-price-comparison-modal
+        *ngIf="showComparisonModal"
         [show]="showComparisonModal"
-        [isLoading]="isLoadingComparisons"
-        [storeComparisons]="storeComparisons"
         [selectedProduct]="selectedComparisonProduct"
+        [storeComparisons]="storeComparisons"
         [preferredStore]="preferredStore"
+        [isLoading]="isLoadingComparisons"
         (closeModal)="closeComparisonModal()"
         (storeSelected)="selectStore($event)">
       </app-price-comparison-modal>

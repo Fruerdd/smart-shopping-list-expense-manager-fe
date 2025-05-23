@@ -1,25 +1,27 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ShoppingListItem, StoreItem } from '@app/services/shopping-list-page.service';
+import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
+import { StoreItemDTO } from '@app/models/store-item.dto';
 
 @Component({
   selector: 'app-price-comparison-modal',
-  templateUrl: './price-comparison-modal.component.html',
-  styleUrls: ['./price-comparison-modal.component.css'],
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, MatIconModule]
+  imports: [CommonModule, MatIconModule],
+  templateUrl: './price-comparison-modal.component.html',
+  styleUrls: ['./price-comparison-modal.component.css']
 })
 export class PriceComparisonModalComponent {
   @Input() show: boolean = false;
   @Input() isLoading: boolean = false;
-  @Input() storeComparisons: StoreItem[] = [];
-  @Input() selectedProduct: ShoppingListItem | null = null;
+  @Input() storeComparisons: StoreItemDTO[] = [];
+  @Input() selectedProduct: ShoppingListItemDTO | null = null;
   @Input() preferredStore: string | null = null;
+  @Input() product: ShoppingListItemDTO | null = null;
 
   @Output() closeModal = new EventEmitter<void>();
-  @Output() storeSelected = new EventEmitter<StoreItem>();
+  @Output() storeSelected = new EventEmitter<StoreItemDTO>();
 
   constructor(private sanitizer: DomSanitizer) {}
 
@@ -27,7 +29,7 @@ export class PriceComparisonModalComponent {
     this.closeModal.emit();
   }
 
-  onStoreSelect(store: StoreItem): void {
+  onStoreSelect(store: StoreItemDTO): void {
     this.storeSelected.emit(store);
   }
 

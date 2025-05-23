@@ -82,8 +82,8 @@ export class UserProfileComponent implements OnInit {
           if (this.currentUserId) {
             this.router.navigate(['/user-profile', this.currentUserId]);
           } else {
-            this.router.navigate(['/user-profile']);
-          }
+        this.loadCurrentUserProfile();
+    }
           return;
         }
       }

@@ -1,47 +1,43 @@
 <div class="modal-overlay" *ngIf="show" (click)="onBackdropClick()">
-  <div class="modal-content" (click)="onContentClick($event)">
+  <div class="modal-content price-comparison-modal" (click)="onContentClick($event)">
     <div class="modal-header">
-      <h3>Price Comparison</h3>
+      <h3>Compare Store Prices</h3>
       <button class="close-btn" (click)="onClose()">×</button>
     </div>
-    <div class="modal-body" *ngIf="!isLoading; else loadingComparisons">
+    <div class="modal-body" *ngIf="!isLoading; else loadingPrices">
       <div class="product-info" *ngIf="selectedProduct">
         <div class="product-image">
-          <img [ngSrc]="selectedProduct.image" [alt]="selectedProduct.name" height="80" width="80">
+          <img [src]="selectedProduct.image || 'assets/images/item-img-generic.png'" [alt]="selectedProduct.productName">
         </div>
         <div class="product-details">
-          <h4>{{ selectedProduct.name }}</h4>
+          <h4>{{ selectedProduct.productName }}</h4>
         </div>
       </div>
 
-      <div class="store-options">
-        <h4>Available at:</h4>
-        <div class="store-list">
-          <div class="store-item" *ngFor="let store of storeComparisons" (click)="onStoreSelect(store)">
-            <div class="store-info">
-              <span [innerHTML]="getSafeSvg(store.storeIcon)" [title]="store.storeName" class="store-logo"></span>
-              <span class="store-name">{{ store.storeName }}</span>
+      <div class="store-prices">
+        <div class="store-price-item" *ngFor="let store of storeComparisons"
+             [class.preferred]="store.storeName === preferredStore"
+             (click)="onStoreSelect(store)">
+          <div class="store-info">
+            <span [innerHTML]="getSafeSvg(store.storeIcon)" class="store-logo"></span>
+            <span class="store-name">{{ store.storeName }}</span>
+          </div>
+          <div class="price-info">
+            <span class="price">{{ store.price }} KM</span>
+            <div class="store-indicator" *ngIf="store.storeName === preferredStore">
+              <mat-icon>check_circle</mat-icon>
+              <span>Current Store</span>
             </div>
-            <div class="store-price">{{ store.price }} KM</div>
           </div>
         </div>
       </div>
     </div>
 
-    <ng-template #loadingComparisons>
-      <div class="loading-container small">
+    <ng-template #loadingPrices>
+      <div class="loading-container">
         <div class="loading-spinner"></div>
-        <p>Loading price comparisons...</p>
+        <p style="color: #0B3B5B">Loading price comparisons...</p>
       </div>
     </ng-template>
-
-    <div class="store-preference-note" *ngIf="!preferredStore">
-      <mat-icon>info</mat-icon>
-      <p>Selecting a store will set it as your preferred store for all future items in this list.</p>
-    </div>
-    <div class="store-preference-note" *ngIf="preferredStore && preferredStore !== (selectedProduct?.storeName || '')">
-      <mat-icon style="color: #0B3B5B">info</mat-icon>
-      <p>Selecting a different store will change your preferred store from {{ preferredStore }}.</p>
-    </div>
   </div>
 </div>

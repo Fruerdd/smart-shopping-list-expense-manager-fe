@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IgxFinancialChartModule } from 'igniteui-angular-charts';
-import { UserProfileService } from 'src/app/services/user-profile.service';
+import { UserProfileService } from '@app/services/user-profile.service';
+import { UserStatisticsDTO } from '@app/models/user-statistics.dto';
 
 @Component({
   selector: 'app-money-spent-chart',
@@ -11,10 +12,9 @@ import { UserProfileService } from 'src/app/services/user-profile.service';
   styleUrls: ['./money-spent-chart.component.css']
 })
 export class MoneySpentChartComponent implements OnInit {
-  @Input() userId!: number;
-
-  public chartData: any[] = [];
-  public chartOptions = {
+  @Input() userId!: string;
+  chartData: any[] = [];
+  chartOptions = {
     yAxisTitle: 'Amount (KM)',
     xAxisTitle: 'Month',
     thickness: 2,
@@ -24,32 +24,24 @@ export class MoneySpentChartComponent implements OnInit {
 
   constructor(private userProfileService: UserProfileService) {}
 
-  ngOnInit(): void {
-    if (this.userId) {
-      this.userProfileService.getUserProfile(this.userId).subscribe(user => {
-        const spending = user.spendingOverTime || {};
-
-        // Prepare data in IgniteUI format
-        this.chartData = [
-          {
-            name: 'This Year',
-            values: this.createMonthlyData(spending.currentYear)
-          },
-          {
-            name: 'Last Year',
-            values: this.createMonthlyData(spending.previousYear)
-          }
-        ];
-      });
-    }
+  ngOnInit() {
+    this.loadChartData();
   }
 
-  private createMonthlyData(amounts: number[]): any[] {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return months.map((month, index) => ({
-      month: month,
-      amount: amounts[index] || 0
-    }));
+  private loadChartData() {
+    if (this.userId) {
+      this.userProfileService.getUserStatistics(this.userId).subscribe({
+        next: (stats: UserStatisticsDTO) => {
+          const spending = stats.spendingOverTime || {};
+          this.chartData = Object.entries(spending).map(([date, amount]) => ({
+            date,
+            value: amount
+          }));
+        },
+        error: (error: Error) => {
+          console.error('Error loading spending data:', error);
+        }
+      });
+    }
   }
 }

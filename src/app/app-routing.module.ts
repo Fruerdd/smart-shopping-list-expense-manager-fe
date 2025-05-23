@@ -17,6 +17,11 @@ export const routes: Routes = [
         path: 'shopping-list',
         loadComponent: () => import('@app/features/shopping-list-page/shopping-list-page.component')
           .then(m => m.ShoppingListPageComponent)
+      },
+      {
+        path: 'shopping-list/:id',
+        loadComponent: () => import('@app/features/shopping-list-page/shopping-list-page.component')
+          .then(m => m.ShoppingListPageComponent)
       }
     ],
   },

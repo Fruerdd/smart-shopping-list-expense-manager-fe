@@ -2,11 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
-interface StoreOption {
-  storeName: string;
-  storeIcon: string;
-}
+import { StoreDTO } from '@app/models/store.dto';
 
 @Component({
   selector: 'app-store-selection-modal',
@@ -17,12 +13,13 @@ interface StoreOption {
 })
 export class StoreSelectionModalComponent {
   @Input() show: boolean = false;
-  @Input() stores: StoreOption[] = [];
+  @Input() stores: StoreDTO[] = [];
   @Input() preferredStore: string | null = null;
   @Input() isLoading: boolean = false;
+  @Input() currentStore: string | null = null;
 
   @Output() closeModal = new EventEmitter<void>();
-  @Output() storeSelected = new EventEmitter<string>();
+  @Output() storeSelected = new EventEmitter<StoreDTO>();
   @Output() clearStore = new EventEmitter<void>();
 
   constructor(private sanitizer: DomSanitizer) {}
@@ -31,8 +28,8 @@ export class StoreSelectionModalComponent {
     this.closeModal.emit();
   }
 
-  onStoreSelect(storeName: string): void {
-    this.storeSelected.emit(storeName);
+  onStoreSelect(store: StoreDTO): void {
+    this.storeSelected.emit(store);
   }
 
   onClearStore(): void {
@@ -49,5 +46,9 @@ export class StoreSelectionModalComponent {
 
   onContentClick(event: Event): void {
     event.stopPropagation();
+  }
+
+  isStoreSelected(store: StoreDTO): boolean {
+    return store.name === this.currentStore;
   }
 }
