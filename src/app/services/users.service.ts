@@ -12,6 +12,7 @@ export interface UserDTO {
 
   id?:       string;
   name:          string;
+  avatar?:       string;
   email:         string;
   password?:     string;
   phoneNumber?:  string;
@@ -26,9 +27,19 @@ export interface UserDTO {
   reviewContext?:string;
 }
 
+export interface TestimonialDTO {
+  name:             string;
+  reviewScore:      number;
+  reviewContext:    string;
+  avatar?:          string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private readonly base = 'http://localhost:8080/api/users';
+  private readonly base1 = 'http://localhost:8080/api/customers';
+
+
 
   constructor(private http: HttpClient) {}
 
@@ -45,5 +56,9 @@ export class UsersService {
   /** PUT to bulk-update existing users */
   bulkUpdateUsers(users: UserDTO[]): Observable<UserDTO[]> {
     return this.http.put<UserDTO[]>(`${this.base}/bulk`, users);
+  }
+
+  getTestimonials(): Observable<TestimonialDTO[]> {
+    return this.http.get<TestimonialDTO[]>(`${this.base1}/reviews`);
   }
 }
