@@ -1,23 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient }   from '@angular/common/http';
+import { Observable }   from 'rxjs';
+import { map }          from 'rxjs/operators';
 
 export interface PopularShopDataItem {
-  shop: string;
+  shop:  string;
   value: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+interface PopularShopDTO {
+  name:  string;
+  count: number;
+}
+
+@Injectable({ providedIn: 'root' })
 export class PopularShopsService {
+  private readonly base = 'http://localhost:8080/api/stores';
+
+  constructor(private http: HttpClient) {}
+
   getPopularShopsData(): Observable<PopularShopDataItem[]> {
-    return of([
-      { shop: 'Bingo',       value: 10 },
-      { shop: 'Mercator',    value: 12 },
-      { shop: 'Konzum',      value: 8 },
-      { shop: 'BEST',        value: 14 },
-      { shop: 'Amko Komerc', value: 9 },
-      { shop: 'Hoše Komerc', value: 11 }
-    ]);
+    return this.http
+      .get<PopularShopDTO[]>(`${this.base}/popular`)
+      .pipe(
+        map(list =>
+          list.map(d => ({
+            shop:  d.name,
+            value: d.count
+          }))
+        )
+      );
   }
 }
