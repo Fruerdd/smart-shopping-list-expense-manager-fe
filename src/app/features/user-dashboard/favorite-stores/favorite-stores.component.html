@@ -4,7 +4,7 @@
   <div class="items-grid">
     <div class="item-card" *ngFor="let store of favoriteStores$ | async">
       <div class="item-content">
-        <span class="item-icon">🏬</span>
+        <mat-icon class="item-icon">store</mat-icon>
         <span class="item-name">{{ store.storeName }}</span>
       </div>
       <button class="remove-button" (click)="removeStore(store.id)">

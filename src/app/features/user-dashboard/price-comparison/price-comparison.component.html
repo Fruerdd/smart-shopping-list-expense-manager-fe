@@ -1,5 +1,5 @@
 <section id="price-comparison" class="price-comparison-container">
-  <h2>Price Comparison</h2>
+  <h2>Compare Prices</h2>
 
   <div class="search-section">
     <div class="search-container">
@@ -23,7 +23,7 @@
           <div *ngFor="let item of filteredItems"
                class="search-result-item"
                (click)="selectItem(item)">
-            <img src="assets/images/item-img-generic.png" alt="Generic item image" class="item-icon">
+            <mat-icon class="item-icon">shopping_basket</mat-icon>
             <div class="item-name">{{ item.name }}</div>
           </div>
           <div *ngIf="filteredItems.length === 0" class="no-results">
@@ -41,7 +41,7 @@
       <div class="price-results-list">
         <div *ngFor="let storePrice of storePrices" class="store-price-item">
           <div class="store-info">
-            <div class="store-icon" [innerHTML]="storePrice.storeIcon"></div>
+            <mat-icon class="store-icon">store</mat-icon>
             <div class="store-name">{{ storePrice.storeName }}</div>
           </div>
           <div class="price">{{ storePrice.price.toFixed(2) }} KM</div>

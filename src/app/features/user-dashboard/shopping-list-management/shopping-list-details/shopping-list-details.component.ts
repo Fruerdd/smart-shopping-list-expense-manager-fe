@@ -5,11 +5,13 @@ import {FormsModule} from '@angular/forms';
 import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
 import { PermissionEnum } from '@app/models/collaborator.dto';
 import { AuthService } from '@app/services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-shopping-list-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatIcon],
   templateUrl: './shopping-list-details.component.html',
   styleUrls: ['./shopping-list-details.component.css']
 })
@@ -19,7 +21,7 @@ export class ShoppingListDetailsComponent {
   @Output() deleteList = new EventEmitter<string>();
   @Output() updateItem = new EventEmitter<{listId: string, itemId: string, item: ShoppingListItemDTO, onError: () => void}>();
 
-  private userId: string;
+  private readonly userId: string;
 
   constructor(private authService: AuthService) {
     const currentUserId = this.authService.getCurrentUserId();
@@ -30,7 +32,7 @@ export class ShoppingListDetailsComponent {
   }
 
   hasEditPermission(): boolean {
-    if (this.list.ownerId === this.userId) return true;
+    if (this.isOwner()) return true;
     const userCollaborator = this.list.collaborators.find(c => c.userId === this.userId);
     return userCollaborator?.permission === PermissionEnum.EDIT;
   }
@@ -41,7 +43,7 @@ export class ShoppingListDetailsComponent {
 
   toggleItemChecked(item: ShoppingListItemDTO): void {
     const previousState = item.isChecked;
-    
+
     // Create minimal update payload
     const updatedItem: ShoppingListItemDTO = {
       id: item.id,
@@ -50,7 +52,7 @@ export class ShoppingListDetailsComponent {
       isChecked: !previousState,
       status: item.status || 'PENDING'
     };
-    
+
     const onError = () => {
       item.isChecked = previousState;
     };
@@ -67,7 +69,7 @@ export class ShoppingListDetailsComponent {
     if (!this.list?.items) {
       return 0;
     }
-    
+
     return this.list.items.reduce((total, item) => {
       const price = item.price || 0;
       const quantity = item.quantity || 1;

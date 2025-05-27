@@ -9,6 +9,7 @@ import { ShoppingListDTO } from '@app/models/shopping-list.dto';
 import { AuthService } from '@app/services/auth.service';
 import { CollaboratorDTO } from '@app/models/collaborator.dto';
 import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
+import { PermissionEnum } from '@app/models/collaborator.dto';
 
 @Component({
   selector: 'app-shopping-list-management',
@@ -30,6 +31,8 @@ export class ShoppingListManagementComponent implements OnInit {
   selectedSharedUsers: CollaboratorDTO[] = [];
   selectedList: ShoppingListDTO | null = null;
   userId: string;
+  isListOwner = false;
+  private currentListId: string | null = null;
 
   @Output() editList = new EventEmitter<ShoppingListDTO>();
   editShoppingList(list: ShoppingListDTO): void {
@@ -98,8 +101,10 @@ export class ShoppingListManagementComponent implements OnInit {
     });
   }
 
-  openSharedPopup(collaborators: CollaboratorDTO[]): void {
+  openSharedPopup(collaborators: CollaboratorDTO[], listId: string, isOwner: boolean): void {
     this.selectedSharedUsers = collaborators;
+    this.currentListId = listId;
+    this.isListOwner = isOwner;
     this.showSharedPopup = true;
   }
 
@@ -138,5 +143,50 @@ export class ShoppingListManagementComponent implements OnInit {
       },
       error: () => this.loadShoppingLists()
     });
+  }
+
+  onUpdatePermission(event: { collaboratorId: string, permission: PermissionEnum }): void {
+    if (!this.currentListId) return;
+    
+    const collaborator: CollaboratorDTO = {
+      userId: event.collaboratorId,
+      permission: event.permission
+    };
+
+    this.shoppingListService.updateCollaborator(this.userId, this.currentListId, event.collaboratorId, collaborator)
+      .subscribe({
+        next: () => {
+          // Update the local state to reflect the change
+          this.selectedSharedUsers = this.selectedSharedUsers.map(user => 
+            user.userId === event.collaboratorId 
+              ? { ...user, permission: event.permission }
+              : user
+          );
+          // Refresh the shopping lists to get the updated data
+          this.loadShoppingLists();
+        },
+        error: (error) => {
+          console.error('Error updating collaborator:', error);
+          // You might want to show an error message to the user here
+        }
+      });
+  }
+
+  onRemoveCollaborator(collaboratorId: string): void {
+    if (!this.currentListId) return;
+
+    this.shoppingListService.removeCollaborator(this.userId, this.currentListId, collaboratorId)
+      .subscribe({
+        next: () => {
+          // Update the local state to reflect the removal
+          this.selectedSharedUsers = this.selectedSharedUsers.filter(user => user.userId !== collaboratorId);
+          // Refresh the shopping lists to get the updated data
+          this.loadShoppingLists();
+        },
+        error: (error) => {
+          console.error('Error removing collaborator:', error);
+          // You might want to show an error message to the user here
+        }
+      });
   }
 }

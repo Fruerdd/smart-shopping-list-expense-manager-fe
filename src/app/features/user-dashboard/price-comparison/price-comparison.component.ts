@@ -5,6 +5,8 @@ import { StorePriceDTO } from '@app/models/store-price.dto';
 import { NgForOf, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 
 type SanitizedStorePrice = Omit<StorePriceDTO, 'storeIcon'> & { storeIcon: SafeHtml };
 
@@ -16,6 +18,8 @@ type SanitizedStorePrice = Omit<StorePriceDTO, 'storeIcon'> & { storeIcon: SafeH
     NgForOf,
     NgIf,
     FormsModule,
+    MatIconModule,
+    MatIcon
   ],
   styleUrls: ['./price-comparison.component.css']
 })

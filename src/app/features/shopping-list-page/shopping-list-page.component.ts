@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {ShoppingListPageService} from '@app/services/shopping-list-page.service';
+import {FavoriteProductsService} from '@app/services/favorite-products.service';
 import {filter, finalize, switchMap, tap, debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {forkJoin, map, Observable, of, Subject} from 'rxjs';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
@@ -70,11 +71,13 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private readonly DEBOUNCE_TIME = 300; // milliseconds
   private currentStore: StoreDTO | null = null;
+  favoriteProducts: ShoppingListItemDTO[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private shoppingListService: ShoppingListPageService,
+    private favoriteProductsService: FavoriteProductsService
   ) {
     const userInfo = localStorage.getItem('userInfo');
     this.userId = userInfo ? JSON.parse(userInfo).id : '';
@@ -90,23 +93,56 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(
       tap(params => {
         this.listId = params.get('id');
-        this.isEditMode = !!this.listId && this.hasEditPermission();
       }),
       switchMap(() => {
-        return this.shoppingListService.getSidebarCategories().pipe(
-          tap(categories => {
-            this.sidebarCategories = categories;
+        // Load favorite products first
+        return this.favoriteProductsService.getFavoriteProducts(this.userId).pipe(
+          tap(favorites => {
+            this.favoriteProducts = favorites.map(fav => ({
+              ...fav,
+              isChecked: false,
+              quantity: 1,
+              price: 0,
+              storeId: '',
+              storeName: ''
+            }));
           }),
-          switchMap(() => this.shoppingListService.getCategories())
+          // Load all products before categories
+          switchMap(() => this.shoppingListService.getAllProducts()),
+          tap(products => {
+            this.filteredProducts = products;
+          }),
+          switchMap(() => this.shoppingListService.getSidebarCategories())
         );
       }),
       tap(categories => {
-        this.categories = categories;
-        this.originalCategories = JSON.parse(JSON.stringify(categories));
-        this.getAllProducts();
+        // Add favorites category to sidebar categories
+        const favoritesSidebarCategory = {
+          id: 'favorite',
+          name: 'Favorites',
+          icon: 'favorite',
+          products: []
+        };
+        this.sidebarCategories = [favoritesSidebarCategory, ...categories];
+      }),
+      switchMap(() => this.shoppingListService.getCategories()),
+      tap(categories => {
+        // Add favorites category if it doesn't exist
+        const favoritesCategory = {
+          id: 'favorite',
+          name: 'Favorites',
+          icon: 'favorite',
+          products: this.getFavoriteProducts()
+        };
+        
+        const hasFavoritesCategory = categories.some(cat => cat.id === 'favorite');
+        this.categories = hasFavoritesCategory 
+          ? categories 
+          : [favoritesCategory, ...categories];
+        this.originalCategories = JSON.parse(JSON.stringify(this.categories));
       }),
       switchMap(() => {
-        if (this.isEditMode && this.listId) {
+        if (this.listId) {
           return this.shoppingListService.getListById(this.listId);
         }
         return of(null);
@@ -117,6 +153,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     ).subscribe(list => {
       if (list) {
         this.currentList = list;
+        this.isEditMode = this.hasEditPermission();
         this.loadListData(list);
       }
     });
@@ -230,15 +267,26 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         this.categories = this.originalCategories;
         this.isLoading = false;
       });
+    } else if (this.selectedCategoryId === 'favorite') {
+      // For favorites category, filter the existing products
+      this.shoppingListService.getAllProducts().subscribe(products => {
+        this.filteredProducts = products;
+        const favoriteProducts = this.getFavoriteProducts();
+        this.categories = [{
+          id: 'favorite',
+          name: 'Favorites',
+          icon: 'favorite',
+          products: favoriteProducts
+        }];
+        this.isLoading = false;
+      });
     } else {
       this.shoppingListService.getProductsByCategory(categoryId).subscribe(products => {
         this.filteredProducts = products;
-
         this.categories = this.originalCategories.filter(cat => cat.id === categoryId);
         if (this.categories.length > 0) {
           (this.categories[0] as any).expanded = true;
         }
-
         this.isLoading = false;
       });
     }
@@ -250,7 +298,14 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       return;
     }
     this.categories.forEach(category => {
-      category.products = [];
+      if (category.id === 'favorite') {
+        // Update favorites category with matching search results
+        category.products = this.getFavoriteProducts().filter(product =>
+          searchResults.some(sr => sr.productId === product.productId)
+        );
+      } else {
+        category.products = [];
+      }
       (category as any).expanded = false;
     });
 
@@ -258,10 +313,10 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       const categoryId = (product as any).category || 'general';
       const category = this.categories.find(c => c.id === categoryId);
 
-      if (category) {
+      if (category && category.id !== 'favorite') {  // Skip favorites category as it's already handled
         category.products.push(product);
         (category as any).expanded = true;
-      } else {
+      } else if (!category) {
         let generalCategory = this.categories.find(c => c.id === 'general');
         if (!generalCategory) {
           generalCategory = {
@@ -636,5 +691,11 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     // Check collaborator permissions
     const userCollaborator = this.currentList.collaborators.find(c => c.userId === this.userId);
     return userCollaborator?.permission === PermissionEnum.EDIT;
+  }
+
+  private getFavoriteProducts(): ShoppingListItemDTO[] {
+    return this.filteredProducts.filter(product => 
+      this.favoriteProducts.some(fav => fav.productId === product.productId)
+    );
   }
 }

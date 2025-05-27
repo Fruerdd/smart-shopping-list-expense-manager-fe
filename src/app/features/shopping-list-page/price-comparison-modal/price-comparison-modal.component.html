@@ -7,7 +7,7 @@
     <div class="modal-body" *ngIf="!isLoading; else loadingPrices">
       <div class="product-info" *ngIf="selectedProduct">
         <div class="product-image">
-          <img [src]="selectedProduct.image || 'assets/images/item-img-generic.png'" [alt]="selectedProduct.productName">
+          <img [src]="'assets/images/' + selectedProduct.image || 'assets/images/item-img-generic.png'" [alt]="selectedProduct.productName">
         </div>
         <div class="product-details">
           <h4>{{ selectedProduct.productName }}</h4>
