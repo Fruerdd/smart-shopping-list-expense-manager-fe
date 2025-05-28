@@ -1,8 +1,18 @@
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+// src/app/app.config.ts
+import { ApplicationConfig } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { routes } from './app-routing.module';
-import { provideHttpClient, withFetch } from '@angular/common/http';
-
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
+import { jwtInterceptor } from './interceptors/jwt.interceptor';
 
 export const appConfig = {
-  providers: [provideRouter(routes, withComponentInputBinding()), provideHttpClient(withFetch())]
+  providers: [
+    provideRouter(routes),
+    provideAnimations(),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([jwtInterceptor])
+    )
+  ]
 };

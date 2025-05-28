@@ -12,13 +12,13 @@
       <div class="store-options">
         <div class="store-list">
           <div class="store-item" *ngFor="let store of stores"
-               [class.selected]="store.storeName === preferredStore"
-               (click)="onStoreSelect(store.storeName)">
+               [class.selected]="store.name === preferredStore"
+               (click)="onStoreSelect(store)">
             <div class="store-info">
-              <span [innerHTML]="getSafeSvg(store.storeIcon)" [title]="store.storeName" class="store-logo"></span>
-              <span class="store-name">{{ store.storeName }}</span>
+              <span [innerHTML]="getSafeSvg(store.icon)" [title]="store.name" class="store-logo"></span>
+              <span class="store-name">{{ store.name }}</span>
             </div>
-            <div class="store-selection-indicator" *ngIf="store.storeName === preferredStore">
+            <div class="store-selection-indicator" *ngIf="store.name === preferredStore">
               <mat-icon>check_circle</mat-icon>
             </div>
           </div>

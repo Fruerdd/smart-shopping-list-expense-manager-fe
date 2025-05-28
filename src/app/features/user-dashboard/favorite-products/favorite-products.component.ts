@@ -1,33 +1,43 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FavoriteProductsService, FavoriteProduct, ProductSearchResult} from '@app/services/favorite-products.service';
+import { FavoriteProductsService } from '@app/services/favorite-products.service';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { ProductDTO } from '@app/models/product.dto';
+import { FavoriteProductDTO } from '@app/models/favorite-product.dto';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-favorite-products',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatIcon],
   templateUrl: './favorite-products.component.html',
   styleUrls: ['./favorite-products.component.css']
 })
 export class FavoriteProductsComponent implements OnInit {
-  favoriteProducts$!: Observable<FavoriteProduct[]>;
-  searchResults$!: Observable<FavoriteProduct[]>; // Add this to store search results
-  newProductName = '';
+  favoriteProducts$!: Observable<FavoriteProductDTO[]>;
+  searchResults$!: Observable<ProductDTO[]>;
   showAddForm = false;
   searchQuery = '';
+  userId: string;
   private searchTerms = new Subject<string>();
 
-  constructor(private favoriteProductsService: FavoriteProductsService) {}
+  constructor(private favoriteProductsService: FavoriteProductsService) {
+    const userInfo = localStorage.getItem('userInfo');
+    this.userId = userInfo ? JSON.parse(userInfo).id : '';
+    if (!this.userId) {
+      throw new Error('User ID not found. Please log in again.');
+    }
+  }
 
   ngOnInit(): void {
     this.loadFavoriteProducts();
     this.searchResults$ = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(term => this.favoriteProductsService.searchProducts(term))
+      switchMap(term => this.favoriteProductsService.searchProducts(this.userId, term))
     );
   }
 
@@ -36,29 +46,41 @@ export class FavoriteProductsComponent implements OnInit {
   }
 
   loadFavoriteProducts(): void {
-    this.favoriteProducts$ = this.favoriteProductsService.getFavoriteProducts();
+    this.favoriteProducts$ = this.favoriteProductsService.getFavoriteProducts(this.userId);
   }
 
   toggleAddForm(): void {
     this.showAddForm = !this.showAddForm;
-    this.newProductName = '';
+    this.searchQuery = '';
+    if (!this.showAddForm) {
+      this.searchTerms.next('');
+    }
   }
 
-  addProduct(product: ProductSearchResult): void {
-    if (!this.newProductName.trim()) return;
-
-    this.favoriteProductsService.addFavoriteProduct({
-      id: product.id,
-      name: product.name,
-      icon: '🛒' // Default icon
-    }).subscribe(() => {
-      this.loadFavoriteProducts();
-      this.toggleAddForm();
-    });
+  addProduct(product: ProductDTO): void {
+    this.favoriteProductsService.addFavoriteProduct(this.userId, product.id)
+      .subscribe(() => {
+        this.loadFavoriteProducts();
+        this.toggleAddForm();
+      });
   }
 
-  removeProduct(id: number): void {
-    this.favoriteProductsService.removeFavoriteProduct(id)
-      .subscribe(() => this.loadFavoriteProducts());
+  removeProduct(productId: string): void {
+    this.favoriteProductsService.removeFavoriteProduct(this.userId, productId)
+      .subscribe({
+        next: () => {
+          this.loadFavoriteProducts();
+        },
+        error: (error) => {
+          // If the product was not found, consider it a success case
+          if (error.status === 404 || error.message?.toLowerCase().includes('not found')) {
+            this.loadFavoriteProducts(); // Refresh list as the item is already gone
+            return;
+          }
+          // Only show error for actual errors (network, server, etc)
+          console.error('Failed to remove product:', error);
+          // Here you could add a user-friendly error notification
+        }
+      });
   }
 }

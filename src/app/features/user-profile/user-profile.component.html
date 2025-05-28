@@ -111,11 +111,9 @@
             </div>
           </div>
       </div>
-
       <p><strong>{{ user.loyaltyPoints }}</strong> points</p>
       <p>Credits Available: {{ user.creditsAvailable | currency:'EUR':'symbol-narrow' }}</p>
       <qrcode [qrdata]="user.qrCodeValue" [width]="120" [errorCorrectionLevel]="'M'"></qrcode>
-
     </div>
   </div>
 

@@ -1,28 +1,95 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { isPlatformBrowser } from '@angular/common';
+
+export interface LoginResponse {
+  token: string;
+  userType: 'USER' | 'ADMIN';
+}
+
+export interface RegisterDTO {
+  name: string;
+  email: string;
+  password: string;
+}
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/users';
+  private apiUrl = 'http://localhost:8080/user';
+  private storageKey = 'token';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
-  login(email: string, password: string): Observable<any | null> {
-    return this.http.get<any[]>(`${this.apiUrl}?email=${email}`).pipe(
-      map(users => {
-        const user = users[0];
-        if (user && user.password === password) {
-          return user; // contains ID and email
+  private getStorage(): Storage | null {
+    return isPlatformBrowser(this.platformId) ? localStorage : null;
+  }
+
+  login(credentials: { email: string; password: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          this.getStorage()?.setItem(this.storageKey, response.token);
+          // Fetch user profile to get UUID
+          this.http.get(`${this.apiUrl}/profile/me`).subscribe((user: any) => {
+            this.getStorage()?.setItem('userInfo', JSON.stringify({ id: user.id, email: user.email }));
+          });
         }
-        return null;
       })
     );
   }
+
+  register(registerData: RegisterDTO): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, registerData, {
+      responseType: 'text'
+    });
+  }
+
   logout() {
-    localStorage.removeItem('loggedInUser');
+    this.getStorage()?.removeItem(this.storageKey);
+    this.router.navigate(['/login']);
+  }
+
+  getToken(): string | null {
+    const storage = this.getStorage();
+    return storage ? storage.getItem(this.storageKey) : null;
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  getCurrentUserId(): string | null {
+    const storage = this.getStorage();
+    if (!storage) {
+      return null;
+    }
+    const userInfo = storage.getItem('userInfo');
+    const userId = userInfo ? JSON.parse(userInfo).id : null;
+    if (!userId) {
+      throw new Error('User ID not found. Please log in again.');
+    }
+    return userId;
+  }
+
+  setCurrentUserId(userId: string): void {
+    const storage = this.getStorage();
+    if (storage) {
+      storage.setItem('currentUserId', userId);
+    }
+  }
+
+  clearCurrentUserId(): void {
+    const storage = this.getStorage();
+    if (storage) {
+      storage.removeItem('currentUserId');
+    }
   }
 }

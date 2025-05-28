@@ -4,8 +4,8 @@
   <div class="items-grid">
     <div class="item-card" *ngFor="let product of favoriteProducts$ | async">
       <div class="item-content">
-        <span class="item-icon">{{ product.icon }}</span>
-        <span class="item-name">{{ product.name }}</span>
+        <mat-icon class="item-icon">shopping_basket</mat-icon>
+        <span class="item-name">{{ product.productName }}</span>
       </div>
       <button class="remove-button" (click)="removeProduct(product.id)">
         <span class="circle-icon">⊖</span>

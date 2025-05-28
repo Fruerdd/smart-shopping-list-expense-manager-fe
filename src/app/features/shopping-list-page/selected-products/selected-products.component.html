@@ -4,11 +4,11 @@
     <div class="selected-items-container" [ngStyle]="{'max-height': getContainerHeight()}">
       <div class="selected-item" *ngFor="let item of selectedProducts">
         <div class="selected-item-image">
-          <img [ngSrc]="item.image" [alt]="item.name" height="50" width="50">
+          <img src="assets/images/item-img-generic.png" [alt]="item.productName" height="50" width="50">
         </div>
         <div class="selected-item-details">
-          <p class="selected-item-name">{{ item.name }}</p>
-          <p class="selected-item-price" *ngIf="item.price">{{ item.price}} KM</p>
+          <p class="selected-item-name">{{ item.productName }}</p>
+          <p class="selected-item-price" *ngIf="item.price">{{ item.price }} KM</p>
           <p class="selected-item-store" *ngIf="item.storeName">{{ item.storeName }}</p>
         </div>
         <div class="selected-item-actions">

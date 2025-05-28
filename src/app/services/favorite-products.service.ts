@@ -1,69 +1,65 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-
-export interface FavoriteProduct {
-  id: number;
-  name: string;
-  icon: string;
-}
-
-export interface ProductSearchResult {
-  id: number;
-  name: string;
-}
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { ProductDTO } from '@app/models/product.dto';
+import { FavoriteProductDTO } from '@app/models/favorite-product.dto';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoriteProductsService {
-  private favoriteProducts: FavoriteProduct[] = [
-    {
-      id: 1,
-      name: 'Bread',
-      icon: '🍞'
-    },
-    {
-      id: 2,
-      name: 'Apples',
-      icon: '🍎'
-    }
-  ];
+  private readonly apiUrl = `${environment.apiUrl}/api/users`;
 
-  private allProducts: FavoriteProduct[] = [
-    { id: 1, name: 'Bread', icon: '🍞' },
-    { id: 2, name: 'Apples', icon: '🍎' },
-    { id: 3, name: 'Milk', icon: '🥛' },
-    { id: 4, name: 'Eggs', icon: '🥚' },
-    { id: 5, name: 'Cheese', icon: '🧀' }
-  ];
+  constructor(private http: HttpClient) {}
 
-  searchProducts(query: string): Observable<FavoriteProduct[]> {
-    if (!query) {
-      return of([]);
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An error occurred';
+    
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = error.error.message;
+    } else {
+      try {
+        const errorBody = typeof error.error === 'string' ? 
+          (error.error.startsWith('{') ? JSON.parse(error.error) : { message: error.error }) 
+          : error.error;
+        errorMessage = errorBody.message || error.message || 'Unknown error occurred';
+      } catch (e) {
+        errorMessage = typeof error.error === 'string' ? 
+          error.error : 
+          `Server error (${error.status}): ${error.message}`;
+      }
     }
 
-    const lcQuery = query.toLowerCase();
-    const availableProducts = this.allProducts.filter(product =>
-      product.name.toLowerCase().includes(lcQuery) &&
-      !this.favoriteProducts.some(fav => fav.name === product.name)
-    );
-    return of(availableProducts);
+    console.error('API Error:', {
+      status: error.status,
+      statusText: error.statusText,
+      message: errorMessage,
+      error: error.error
+    });
+
+    return throwError(() => new Error(errorMessage));
   }
 
-  getFavoriteProducts(): Observable<FavoriteProduct[]> {
-    return of(this.favoriteProducts);
+  searchProducts(userId: string, query: string): Observable<ProductDTO[]> {
+    return this.http.get<ProductDTO[]>(`${this.apiUrl}/${userId}/products/search`, {
+      params: { query }
+    }).pipe(catchError(this.handleError));
   }
 
-  addFavoriteProduct(product: FavoriteProduct): Observable<FavoriteProduct> {
-    const maxId = Math.max(...this.favoriteProducts.map(p => p.id), 0);
-    const newProduct = { ...product, id: maxId + 1 };
-    this.favoriteProducts.push(newProduct);
-    return of(newProduct);
+  getFavoriteProducts(userId: string): Observable<FavoriteProductDTO[]> {
+    return this.http.get<FavoriteProductDTO[]>(`${this.apiUrl}/${userId}/favorite-products`)
+      .pipe(catchError(this.handleError));
   }
 
-  removeFavoriteProduct(id: number): Observable<boolean> {
-    const initialLength = this.favoriteProducts.length;
-    this.favoriteProducts = this.favoriteProducts.filter(p => p.id !== id);
-    return of(initialLength > this.favoriteProducts.length);
+  addFavoriteProduct(userId: string, productId: string): Observable<FavoriteProductDTO> {
+    return this.http.post<FavoriteProductDTO>(`${this.apiUrl}/${userId}/favorite-products/${productId}`, {})
+      .pipe(catchError(this.handleError));
+  }
+
+  removeFavoriteProduct(userId: string, productId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${userId}/favorite-products/${productId}`)
+      .pipe(catchError(this.handleError));
   }
 }

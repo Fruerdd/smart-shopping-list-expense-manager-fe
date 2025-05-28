@@ -1,19 +1,28 @@
+// src/app/features/login/login.component.ts
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {Router, RouterLink} from '@angular/router';
+
 import { AuthService } from '@app/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  loginForm: FormGroup;
+  // ← add this so <img [src]="imageUrl"> compiles
   imageUrl: string = 'assets/images/slika1.jpg';
+
+  loginForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -22,24 +31,23 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
   }
 
   onSubmit() {
-    if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
+    if (!this.loginForm.valid) return;
 
-      this.authService.login(email, password).subscribe(user => {
-        if (user) {
-          localStorage.setItem('loggedInUser', JSON.stringify(user));
-          console.log('User stored in the localStorage:', JSON.parse(localStorage.getItem('loggedInUser')!));
-
-          this.router.navigate(['/user-profile', user.id]);
+    this.authService.login(this.loginForm.value).subscribe({
+      next: res => {
+        localStorage.setItem(this.authService['storageKey'], res.token);
+        if (res.userType === 'ADMIN') {
+          this.router.navigate(['/admin-page']);
         } else {
-          alert('Either your username or password is wrong');
+          this.router.navigate(['/home']);
         }
-      });
-    }
+      },
+      error: () => alert('Username or password is wrong'),
+    });
   }
 }
