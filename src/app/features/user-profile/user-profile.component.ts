@@ -9,6 +9,9 @@ import {AverageSavedChartComponent} from '@app/charts/average-saved-chart/averag
 import {CategorySpendingChartComponent} from '@app/charts/category-spending-chart/category-spending-chart.component';
 import {QRCodeComponent} from 'angularx-qrcode';
 import {AuthService} from '@app/services/auth.service';
+import { UserDTO } from '@app/models/user.dto';
+import { ReviewDTO } from '@app/models/review.dto';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile',
@@ -26,8 +29,13 @@ import {AuthService} from '@app/services/auth.service';
   styleUrls: ['./user-profile.component.css'],
 })
 export class UserProfileComponent implements OnInit {
-  user: any;
+  user: UserDTO | null = null;
+  friends: UserDTO[] = [];
+  userReview: ReviewDTO | null = null;
+  loyaltyPoints: number = 0;
   currentUserId: string | null = null;
+  activeTab: string = 'profile';
+  loading = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -48,22 +56,76 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  copyCoupon(couponCode: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      navigator.clipboard.writeText(couponCode).then(() => {
+        console.log('Coupon code copied to clipboard');
+        alert('Coupon code copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    }
+  }
+
+  submitCoupon(couponCode: string): void {
+    if (!couponCode.trim()) {
+      alert('Please enter a coupon code');
+      return;
+    }
+    console.log('Submitting coupon:', couponCode);
+    alert('Coupon submission functionality coming soon!');
+  }
+
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+  }
+
+  private loadUserData(userId: string): void {
+    this.loading = true;
+    
+    forkJoin({
+      profile: this.userProfileService.getUserProfileById(userId),
+      friends: this.userProfileService.getUserFriends(userId),
+      loyaltyPoints: this.userProfileService.getLoyaltyPoints(userId),
+      reviews: this.userProfileService.getUserReviews(userId)
+    }).subscribe({
+      next: (data) => {
+        this.user = data.profile;
+        this.friends = data.friends;
+        this.loyaltyPoints = data.loyaltyPoints;
+        this.userReview = data.reviews;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading user data:', error);
+        this.userProfileService.getUserProfileById(userId).subscribe({
+          next: (profile) => {
+            this.user = profile;
+            this.loading = false;
+          },
+          error: (profileError) => {
+            console.error('Error loading user profile:', profileError);
+            alert('Failed to load user profile. Please try again later.');
+            this.router.navigate(this.currentUserId ? ['/user-profile', this.currentUserId] : ['/user-profile']);
+            this.loading = false;
+          }
+        });
+      }
+    });
+  }
+
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Check if user is logged in
       if (!this.authService.isLoggedIn()) {
         alert("You're not logged in!");
         this.router.navigate(['/login']);
         return;
       }
 
-      // Get current user ID from token
       this.extractUserIdFromToken();
 
-      // Get user ID from route parameter
       const routeId = this.route.snapshot.paramMap.get('id');
 
-      // Validate routeId
       if (routeId === 'null' || !routeId || !this.isValidUUID(routeId)) {
         if (this.currentUserId) {
           this.router.navigate(['/user-profile', this.currentUserId]);
@@ -74,7 +136,6 @@ export class UserProfileComponent implements OnInit {
         }
       }
 
-      // Check if the user is trying to access their own profile or is an admin
       if (this.currentUserId && this.currentUserId !== routeId) {
         const isAdmin = this.checkIfUserIsAdmin();
         if (!isAdmin) {
@@ -82,48 +143,35 @@ export class UserProfileComponent implements OnInit {
           if (this.currentUserId) {
             this.router.navigate(['/user-profile', this.currentUserId]);
           } else {
-        this.loadCurrentUserProfile();
-    }
+            this.loadCurrentUserProfile();
+          }
           return;
         }
       }
 
-      // If no currentUserId, try loading the current user's profile first
       if (!this.currentUserId) {
         this.loadCurrentUserProfile();
         return;
       }
 
-      // Fetch the user profile by ID
-      this.loadUserProfile(routeId);
+      this.loadUserData(routeId);
     }
   }
 
   private loadCurrentUserProfile(): void {
+    this.loading = true;
     this.userProfileService.getCurrentUserProfile().subscribe({
       next: (data) => {
         this.user = data;
-        this.currentUserId = data.id; // Update current user ID
-        // Redirect to the user's own profile
+        this.currentUserId = data.id;
+        this.loadUserData(data.id);
         this.router.navigate(['/user-profile', this.currentUserId]);
       },
       error: (error) => {
         console.error('Error fetching current user profile:', error);
         alert('Failed to load your profile. Please try again later.');
         this.router.navigate(['/login']);
-      },
-    });
-  }
-
-  private loadUserProfile(userId: string): void {
-    this.userProfileService.getUserProfileById(userId).subscribe({
-      next: (data) => {
-        this.user = data;
-      },
-      error: (error) => {
-        console.error('Error fetching user profile:', error);
-        alert('Failed to load user profile. Please try again later.');
-        this.router.navigate(this.currentUserId ? ['/user-profile', this.currentUserId] : ['/user-profile']);
+        this.loading = false;
       },
     });
   }
@@ -143,7 +191,6 @@ export class UserProfileComponent implements OnInit {
           }
         }
 
-        // Validate UUID format
         if (this.currentUserId && !this.isValidUUID(this.currentUserId)) {
           console.error('Invalid UUID in token or localStorage:', this.currentUserId);
           this.currentUserId = null;

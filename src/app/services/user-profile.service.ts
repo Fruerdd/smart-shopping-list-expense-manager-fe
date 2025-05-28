@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { UserDTO } from '@app/models/user.dto';
 import { AuthService } from './auth.service';
 import { UserStatisticsDTO } from '@app/models/user-statistics.dto';
+import { ReviewDTO } from '@app/models/review.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,26 @@ export class UserProfileService {
 
   getUserFriends(userId: string): Observable<UserDTO[]> {
     return this.http.get<UserDTO[]>(`${this.apiUrl}/friends/${userId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getLoyaltyPoints(userId: string): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/profile/loyalty-points/${userId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateLoyaltyPoints(userId: string, points: number): Observable<number> {
+    return this.http.put<number>(`${this.apiUrl}/profile/loyalty-points/${userId}`, null, {
+      params: { points: points.toString() }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getUserReviews(userId: string): Observable<ReviewDTO> {
+    return this.http.get<ReviewDTO>(`${this.apiUrl}/profile/reviews/${userId}`).pipe(
       catchError(this.handleError)
     );
   }
