@@ -1,97 +1,152 @@
-  <div *ngIf="user" class="profile-header">
-    <div class="profile-banner">
-      <div class="banner-inner">
-        <div class="profile-info">
-          <img
-            class="profile-image"
-            [src]="user.profileImageUrl || '/assets/avatar.png'"
-            (error)="setDefaultImage($event)"
-            alt="Profile photo"
-          />
-          <div>
-            <h2>Welcome, {{ user.name }}!</h2>
-            <p><i class="fa fa-map-marker-alt"></i> Sarajevo</p>
+<div *ngIf="user && !loading" class="profile-container">
+  <!-- Blue Header Section -->
+  <div class="profile-banner">
+    <div class="banner-inner">
+      <div class="profile-info">
+        <img [src]="user.profilePicture || '/assets/avatar.png'" 
+             (error)="setDefaultImage($event)" 
+             alt="Profile photo" 
+             class="profile-image" />
+        <div class="profile-welcome">
+          <h1>Welcome, {{user.name}}!</h1>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> {{user.address || 'Sarajevo'}}</p>
+        </div>
+      </div>
+      <button class="edit-button" (click)="navigateToEditProfile()">Edit Profile</button>
+    </div>
+  </div>
+
+  <!-- Profile Content -->
+  <div class="profile-content-wrapper">
+    <div class="profile-grid">
+      <!-- About Me Section -->
+      <div class="card about-me">
+        <h3>About Me</h3>
+        <div class="info-item">
+          <i class="fas fa-user"></i>
+          <span class="value">{{user.name}}</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-envelope"></i>
+          <span class="value">{{user.email}}</span>
+        </div>
+        <div class="info-item" *ngIf="user.phone">
+          <i class="fas fa-phone"></i>
+          <span class="value">{{user.phone}}</span>
+        </div>
+      </div>
+
+      <!-- Coupon Code Section -->
+      <div class="card coupon-section">
+        <h3>Your coupon Code:</h3>
+        <div class="coupon-box">
+          <input type="text" [value]="user.couponCode || 'YOUR1464'" readonly class="coupon-input" #couponInput />
+          <button class="copy-btn" (click)="copyCoupon(couponInput.value)">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+        <h3>Enter coupon Code:</h3>
+        <div class="coupon-box">
+          <input type="text" placeholder="" class="coupon-input" #newCouponInput />
+          <button class="submit-btn" (click)="submitCoupon(newCouponInput.value)">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Friends Section -->
+      <div class="card friends-section">
+        <h3>Friends</h3>
+        <div class="friends-list">
+          <div class="friend-item" *ngFor="let friend of friends.slice(0, 3)">
+            <img [src]="friend.profilePicture || '/assets/avatar.png'" 
+                 alt="Friend avatar" 
+                 class="friend-avatar" 
+                 (error)="setDefaultImage($event)" />
+            <span class="friend-name">{{friend.name}}</span>
+          </div>
+          <div *ngIf="friends.length === 0" class="no-friends">
+            <p>No friends added yet</p>
           </div>
         </div>
-        <button class="edit-button" (click)="navigateToEditProfile()">Edit Profile</button>
+        <button class="see-all-btn" *ngIf="friends.length > 0">See All</button>
       </div>
-    </div>
-    <div class="profile-content-wrapper">
 
-      <div class="profile-grid">
-        <!-- About Me -->
-        <div class="card">
-          <h4>About Me</h4>
-          <p><strong>Name:</strong> {{ user.name }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p><strong>Phone:</strong> {{ user.phone }}</p>
+      <!-- Review Box Section -->
+      <div class="card review-section">
+        <h3>Review Box</h3>
+        <textarea class="review-textarea" 
+                  [value]="userReview?.reviewContext || ''"
+                  [placeholder]="userReview?.reviewContext || 'Great App! Very helpful and easy to use. I can also share my lists...'"></textarea>
+        <div class="rating-section">
+          <div class="stars">
+            <i class="fas fa-star" 
+               *ngFor="let star of [1,2,3,4,5]" 
+               [class.filled]="star <= (userReview?.reviewScore || 5)"></i>
+          </div>
+          <button class="edit-review-btn">
+            <i class="fas fa-edit"></i> Edit Review
+          </button>
         </div>
+      </div>
 
-        <!-- Coupon Code -->
-        <div class="card">
-          <h4>Your coupon Code:</h4>
-          <input type="text" [value]="user.couponCode" readonly />
-          <!-- <button (click)="copyCoupon(user.couponCode)">📋</button> -->
-          <h4>Enter coupon Code:</h4>
-          <input type="text" placeholder="Coupon code" />
+      <!-- Loyalty Points Section -->
+      <div class="card loyalty-section">
+        <h3>Loyalty Points</h3>
+        <div class="points-info">
+          <div class="points-circle">
+            <i class="fas fa-plus-circle"></i>
+            <span class="points-number">{{user.bonus_points || loyaltyPoints || 0}}</span>
+            <span class="points-label">points</span>
+          </div>
+          <div class="info-tooltip">
+            <i class="fas fa-info-circle"></i>
+            <div class="tooltip-content">
+              <h4>How to Earn Points</h4>
+              <p>Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns you points which can then be used for discounts by scanning your unique QR code in any of the supported stores!</p>
+            </div>
+          </div>
         </div>
-
-        <!-- Friends -->
-        <div class="card">
-          <h4>Friends</h4>
-          <ul>
-            <li *ngFor="let friend of user.friends">{{ friend }}</li>
-          </ul>
-          <button class="see-all-button">See All</button>
+        <div class="credits-info">
+          <p>Credits Available: {{user.creditsAvailable || '0.30'}} €</p>
         </div>
-
-        <!-- Loyalty & QR -->
-        <div class="card">
-          <h4>Loyalty Points</h4>
-          <p><strong>{{ user.loyaltyPoints }}</strong> points</p>
-          <p>Credits Available: {{ user.creditsAvailable | currency:'EUR':'symbol-narrow' }}</p>
-          <qrcode
-            [qrdata]="user.qrCodeValue || user.id || ''"
-            [width]="120"
-            [errorCorrectionLevel]="'M'"
-            [allowEmptyString]="true">
+        <div class="qr-code">
+          <qrcode [qrdata]="user.qrCodeValue || user.id || ''"
+                  [width]="100"
+                  [errorCorrectionLevel]="'M'"
+                  [allowEmptyString]="true">
           </qrcode>
         </div>
-
-    <!-- Info Box
-    <div class="info-box">
-      <p>
-        Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns you points which can then be used for discounts by scanning your unique QR code in any of the supported stores!
-      </p>
-      <button>Got it!</button>
-    </div>-->
+      </div>
+    </div>
   </div>
 </div>
 
-    <div id="analytics" class="charts-grid">
-      <!-- Prvi red -->
-      <div class="grid-item grid-span-2">
-        <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>
-      </div>
-      <div class="grid-item">
-        <app-category-spending-chart *ngIf="user" [userId]="user.id"></app-category-spending-chart>
-      </div>
+<div *ngIf="loading" class="loading">
+  <p>Loading the profile...</p>
+</div>
 
-      <!-- Drugi red -->
-      <div class="grid-item">
-        <app-average-price-chart *ngIf="user" [userId]="user.id"></app-average-price-chart>
-      </div>
-      <div class="grid-item">
-        <app-expenses-by-store-chart *ngIf="user" [userId]="user.id"></app-expenses-by-store-chart>
-      </div>
-      <div class="grid-item">
-        <app-average-saved-chart *ngIf="user" [userId]="user.id"></app-average-saved-chart>
-      </div>
-    </div>
+<div *ngIf="!user && !loading" class="loading">
+  <p>Failed to load profile data.</p>
+</div>
 
-  <div *ngIf="!user">
-    <p>Loading the profile...</p>
+<div id="analytics" class="charts-grid">
+  <!-- Prvi red -->
+  <div class="grid-item grid-span-2">
+    <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>
+  </div>
+  <div class="grid-item">
+    <app-category-spending-chart *ngIf="user" [userId]="user.id"></app-category-spending-chart>
   </div>
 
-
-
+  <!-- Drugi red -->
+  <div class="grid-item">
+    <app-average-price-chart *ngIf="user" [userId]="user.id"></app-average-price-chart>
+  </div>
+  <div class="grid-item">
+    <app-expenses-by-store-chart *ngIf="user" [userId]="user.id"></app-expenses-by-store-chart>
+  </div>
+  <div class="grid-item">
+    <app-average-saved-chart *ngIf="user" [userId]="user.id"></app-average-saved-chart>
+  </div>
+</div>

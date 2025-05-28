@@ -18,7 +18,6 @@ export enum LoyaltyTierEnum {
     bonus_points?: number;
     shoppingLists?: ShoppingListDTO[];
     friends?: string[];
-    loyaltyPoints?: number;
     creditsAvailable?: number;
     qrCodeValue?: string;
   }
