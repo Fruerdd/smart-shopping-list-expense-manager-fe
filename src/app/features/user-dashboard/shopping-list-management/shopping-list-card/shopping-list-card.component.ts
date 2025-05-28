@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ShoppingListCardComponent {
   @Input() shoppingList!: ShoppingListDTO;
-  @Output() viewSharedUsers = new EventEmitter<void>();
+  @Output() viewSharedUsers = new EventEmitter<{collaborators: CollaboratorDTO[], listId: string, isOwner: boolean}>();
   @Output() viewList = new EventEmitter<ShoppingListDTO>();
   @Output() markListAsDone = new EventEmitter<string>();
 
@@ -39,8 +39,12 @@ export class ShoppingListCardComponent {
     return userCollaborator?.permission === PermissionEnum.EDIT;
   }
 
-  onViewSharedUsers(): void {
-    this.viewSharedUsers.emit();
+  onViewSharedUsers(listId: string, isOwner: boolean): void {
+    this.viewSharedUsers.emit({
+      collaborators: this.shoppingList.collaborators,
+      listId,
+      isOwner
+    });
   }
 
   onViewList(): void {

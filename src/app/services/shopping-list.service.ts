@@ -180,6 +180,13 @@ export class ShoppingListService {
     );
   }
 
+  updateCollaborator(userId: string, listId: string, collaboratorId: string, collaborator: CollaboratorDTO): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrl}/${userId}/shopping-lists/${listId}/collaborators/${collaboratorId}`,
+      collaborator
+    ).pipe(catchError(this.handleError));
+  }
+
   removeCollaborator(userId: string, listId: string, collaboratorId: string): Observable<void> {
     return this.http.delete<void>(
       `${this.apiUrl}/${userId}/shopping-lists/${listId}/collaborators/${collaboratorId}`

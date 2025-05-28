@@ -5,7 +5,7 @@
       <span class="owner-name">{{ shoppingList.ownerName }}</span>
       <span class="list-owner">{{ shoppingList.ownerId === userId ? 'List Owner' : 'Shared with you' }}</span>
     </div>
-    <button class="info-button" (click)="onViewSharedUsers()">
+    <button class="info-button" (click)="onViewSharedUsers(shoppingList.id, shoppingList.ownerId === userId)">
       <mat-icon>info</mat-icon>
     </button>
   </div>
@@ -15,7 +15,7 @@
   </div>
 
   <div class="list-content">
-    <h3>{{ shoppingList.name }}</h3>
+    <h4>{{ shoppingList.name }}</h4>
     <div class="list-details">
       <p class="list-category">{{ shoppingList.category }}</p>
       <p class="list-store">

@@ -6,7 +6,7 @@
 
       <app-shopping-list-card
         [shoppingList]="list"
-        (viewSharedUsers)="openSharedPopup(list.collaborators)"
+        (viewSharedUsers)="openSharedPopup($event.collaborators, $event.listId, $event.isOwner)"
         (viewList)="showListDetails(list)"
         (markListAsDone)="deleteShoppingList($event)">
       </app-shopping-list-card>
@@ -33,6 +33,9 @@
   <app-shared-with-popup
     *ngIf="showSharedPopup"
     [collaborators]="selectedSharedUsers"
-    (close)="closeSharedPopup()">
+    [isOwner]="isListOwner"
+    (close)="closeSharedPopup()"
+    (updatePermission)="onUpdatePermission($event)"
+    (removeCollaborator)="onRemoveCollaborator($event)">
   </app-shared-with-popup>
 </div>

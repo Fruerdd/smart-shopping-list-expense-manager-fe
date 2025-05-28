@@ -6,11 +6,13 @@ import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { ProductDTO } from '@app/models/product.dto';
 import { FavoriteProductDTO } from '@app/models/favorite-product.dto';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-favorite-products',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatIcon],
   templateUrl: './favorite-products.component.html',
   styleUrls: ['./favorite-products.component.css']
 })
