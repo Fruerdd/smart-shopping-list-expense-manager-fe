@@ -11,12 +11,14 @@ import { CategorySpendingChartComponent } from '@app/charts/category-spending-ch
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { QRCodeComponent } from 'angularx-qrcode';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     QRCodeComponent,
     MoneySpentChartComponent,
     AveragePriceChartComponent,
@@ -29,7 +31,11 @@ import { QRCodeComponent } from 'angularx-qrcode';
 })
 export class UserProfileComponent implements OnInit {
   user: any;
-  
+  currentDate: string = ''; 
+  searchQuery: string = '';
+  searchResults: any[] = [];
+  showAllFriends = false;
+  showInfo = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -37,6 +43,10 @@ export class UserProfileComponent implements OnInit {
     private userProfileService: UserProfileService,
     private router: Router
   ) {}
+
+  toggleFriendsView(): void {
+  this.showAllFriends = !this.showAllFriends;
+}
   setDefaultImage(event: Event) {
     const target = event.target as HTMLImageElement;
     target.src = '/assets/images/avatar.png';
@@ -47,8 +57,41 @@ export class UserProfileComponent implements OnInit {
       this.router.navigate(['/user-profiles/edit', this.user.id]); 
     }
   }
+  onSearchUser(): void {
+  if (this.searchQuery.trim().length < 2) {
+    this.searchResults = [];
+    return;
+  }
+
+  this.userProfileService.getAllProfiles().subscribe(allUsers => {
+    // Exclude self and already-friends
+    const lowerQuery = this.searchQuery.toLowerCase();
+    this.searchResults = allUsers.filter(u =>
+      u.id !== this.user.id &&
+      !this.user.friends.includes(u.name) &&
+      (u.name.toLowerCase().includes(lowerQuery) || u.email.toLowerCase().includes(lowerQuery))
+    );
+  });
+}
+//ovaj dio povezati sa backend-om da se novi prijatelji mogu dodavati u DB, a dodati funkciju i brisanja prijatelja
+addFriend(newFriend: any): void {
+  this.user.friends.push(newFriend.name);  
+
+  this.userProfileService.updateUserProfile(this.user.id, this.user).subscribe(() => {
+    this.searchQuery = '';
+    this.searchResults = [];
+  });
+}
+
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      const today = new Date();
+      this.currentDate = today.toLocaleDateString('hr-BA', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+
       const routeId = Number(this.route.snapshot.paramMap.get('id'));
       const storedUser = localStorage.getItem('loggedInUser');
 
@@ -68,8 +111,6 @@ export class UserProfileComponent implements OnInit {
 
       this.userProfileService.getUserProfile(routeId).subscribe((data) => {
         this.user = data;
-
-      
       });
     }
   }

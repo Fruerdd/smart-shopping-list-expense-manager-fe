@@ -1,96 +1,172 @@
-  <div *ngIf="user" class="profile-header">
-    <div class="profile-banner">
-      <div class="banner-inner">
-        <div class="profile-info">
-          <img
-            class="profile-image"
-            [src]="user.profileImageUrl || '/assets/avatar.png'"
-            (error)="setDefaultImage($event)"
-            alt="Profile photo"
-          />
-          <div>
-            <h2>Welcome, {{ user.name }}!</h2>
-            <p><i class="fa fa-map-marker-alt"></i> Sarajevo</p>
-          </div>
+<div *ngIf="user" class="profile-header">
+  <div class="profile-banner">
+    <div class="banner-inner">
+      <div class="profile-info">
+        <img
+          class="profile-image"
+          [src]="user.profileImageUrl || '/assets/avatar.png'"
+          (error)="setDefaultImage($event)"
+          alt="Profile photo"
+        />
+        <div>
+          <h2>Welcome, {{ user.name }}!</h2>
+          <p><i class="fa fa-map-marker-alt"></i> Sarajevo</p>
         </div>
-        <button class="edit-button" (click)="navigateToEditProfile()">Edit Profile</button>
       </div>
+      <button class="edit-button" (click)="navigateToEditProfile()">Edit Profile</button>
     </div>
-    <div class="profile-content-wrapper">
+  </div>
 
-      <div class="profile-grid">
+  
+  <div class="profile-content-wrapper">
+    <!-- LHS (60%) -->
+    <div class="profile-left">
+      <div class="profile-grid-layout">
         <!-- About Me -->
-        <div class="card">
+        <div class="card about-me">
           <h4>About Me</h4>
-          <p><strong>Name:</strong> {{ user.name }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p><strong>Phone:</strong> {{ user.phone }}</p>
+          <p><i class="far fa-user info-icon"></i> <strong>Name:</strong> {{ user.name }}</p>
+          <p><i class="far fa-envelope info-icon"></i> <strong>Email:</strong> {{ user.email }}</p>
+          <p><i class="fa fa-phone info-icon"></i> <strong>Phone:</strong> {{ user.phone }}</p>
         </div>
 
         <!-- Coupon Code -->
-        <div class="card">
+        <div class="card coupon">
           <h4>Your coupon Code:</h4>
-          <input type="text" [value]="user.couponCode" readonly />
-          <!-- <button (click)="copyCoupon(user.couponCode)">📋</button> -->
+          <div class="input-with-button">
+            <input type="text" [value]="user.couponCode" readonly />
+            <div class="icon-button"><i class="fa fa-copy"></i></div>
+          </div>
           <h4>Enter coupon Code:</h4>
-          <input type="text" placeholder="Coupon code" />
+          <div class="input-with-button">
+            <input type="text" placeholder="Coupon code" />
+            <div class="icon-button"><i class="fa fa-arrow-right"></i></div>
+          </div>
         </div>
 
-        <!-- Friends -->
-        <div class="card">
-          <h4>Friends</h4>
-          <ul>
-            <li *ngFor="let friend of user.friends">{{ friend }}</li>
-          </ul>
-          <button class="see-all-button">See All</button>
+        <!-- Review Box (must be inside the grid) -->
+        <div class="card review">
+          <h4>Review Box</h4>
+          <textarea class="review-text" readonly>
+              Great App! Very helpful and easy to use. I can also share my lists ...
+          </textarea>
+          <div class="review-footer">
+            <div class="stars">
+              <i class="fa fa-star" *ngFor="let star of [1,2,3,4,5]"></i>
+            </div>
+            <button class="edit-button">
+              <i class="fa fa-pencil"></i> Edit Review
+            </button>
+          </div>
         </div>
-
-        <!-- Loyalty & QR -->
-        <div class="card">
-          <h4>Loyalty Points</h4>
-          <p><strong>{{ user.loyaltyPoints }}</strong> points</p>
-          <p>Credits Available: {{ user.creditsAvailable | currency:'EUR':'symbol-narrow' }}</p>
-          <qrcode
-            [qrdata]="user.qrCodeValue"
-            [width]="120"
-            [errorCorrectionLevel]="'M'">
-          </qrcode>
-        </div>
-
-    <!-- Info Box
-    <div class="info-box">
-      <p>
-        Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns you points which can then be used for discounts by scanning your unique QR code in any of the supported stores!
-      </p>
-      <button>Got it!</button>
-    </div>-->
-  </div>
-</div>
-
-    <div id="analytics" class="charts-grid">
-      <!-- Prvi red -->
-      <div class="grid-item grid-span-2">
-        <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>
-      </div>
-      <div class="grid-item">
-        <app-category-spending-chart *ngIf="user" [userId]="user.id"></app-category-spending-chart>
-      </div>
-
-      <!-- Drugi red -->
-      <div class="grid-item">
-        <app-average-price-chart *ngIf="user" [userId]="user.id"></app-average-price-chart>
-      </div>
-      <div class="grid-item">
-        <app-expenses-by-store-chart *ngIf="user" [userId]="user.id"></app-expenses-by-store-chart>
-      </div>
-      <div class="grid-item">
-        <app-average-saved-chart *ngIf="user" [userId]="user.id"></app-average-saved-chart>
       </div>
     </div>
+
+    <!-- RHS  -->
+    <div class="profile-right">
+      <!-- Friends -->
+      <div class="card friends">
+        <h4>Friends</h4>
+       <ul class="friends-list">
+          <li *ngFor="let friend of user.friends | slice:0:(showAllFriends ? user.friends.length : 2)" class="friend-item">
+            <i class="fa fa-user-circle info-icon"></i>&nbsp;{{ friend }}<span class="spacer"></span>
+            <i class="fa fa-trash delete-icon"></i>
+          </li>
+        </ul>
+        <button class="see-all-button"  *ngIf="user.friends.length > 2" (click)="toggleFriendsView()"><strong>{{ showAllFriends ? 'Show Less' : 'See All' }}</strong></button>
+        <!-- User Search -->
+        <div class="card user-search">
+          <h4>Find Friends</h4>
+          <div class="search-bar">
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              (input)="onSearchUser()"
+              placeholder="Search by name or email"
+            />
+          </div>
+
+          <ul class="search-results" *ngIf="searchResults.length > 0">
+            <li *ngFor="let result of searchResults">
+              {{ result.name }} ({{ result.email }})
+              <button class="add-friend-button" (click)="addFriend(result)">Add</button>
+            </li>
+          </ul>
+
+          <p *ngIf="searchQuery && searchResults.length === 0">No users found.</p>
+        </div>
+
+      </div>
+
+      <!-- Loyalty & QR -->
+      <div class="loyalty-header">
+          <h4>Loyalty Points</h4>
+          <div class="info-icon-wrapper" (mouseenter)="showInfo = true" (mouseleave)="showInfo = false">
+            <i class="fa fa-info-circle"></i>
+            <div class="info-popup" *ngIf="showInfo">
+              <h5>How to Earn Points</h5>
+              <p>
+                Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns you points which can then be used for discounts by scanning your unique QR code in any of the supported stores!
+              </p>
+            </div>
+          </div>
+      </div>
+
+      <p><strong>{{ user.loyaltyPoints }}</strong> points</p>
+      <p>Credits Available: {{ user.creditsAvailable | currency:'EUR':'symbol-narrow' }}</p>
+      <qrcode [qrdata]="user.qrCodeValue" [width]="120" [errorCorrectionLevel]="'M'"></qrcode>
+
+    </div>
+  </div>
+
+  <!-- Quick stats (hard code data - treba povezati sa DB)-->
+  <div class="quick-stats-wrapper">
+    <div class="quick-stats-heading">
+      <h3>Budget & Expense Analytics</h3>
+      <span class="report-date">{{ currentDate }}</span>
+    </div>
+
+    <div class="quick-stats-grid">
+      <div class="stat-card light-blue">
+        <p>Total Shopping Lists</p>
+        <h2>756</h2>
+      </div>
+      <div class="stat-card light-blue">
+        <p>Total Expenses This Month</p>
+        <h2>2,671</h2>
+      </div>
+      <div class="stat-card light-blue">
+        <p>New Items Added to Lists</p>
+        <h2>156</h2>
+      </div>
+      <div class="stat-card light-blue">
+        <p>Favorite Store</p>
+        <h2><strong>Mercator</strong></h2>
+      </div>
+    </div>
+</div>
+ 
+
+  <!-- Analitika -->
+  <div id="analytics" class="charts-grid">
+    <div class="grid-item grid-span-2">
+      <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>
+    </div>
+    <div class="grid-item">
+      <app-category-spending-chart *ngIf="user" [userId]="user.id"></app-category-spending-chart>
+    </div>
+    <div class="grid-item">
+      <app-average-price-chart *ngIf="user" [userId]="user.id"></app-average-price-chart>
+    </div>
+    <div class="grid-item">
+      <app-expenses-by-store-chart *ngIf="user" [userId]="user.id"></app-expenses-by-store-chart>
+    </div>
+    <div class="grid-item">
+      <app-average-saved-chart *ngIf="user" [userId]="user.id"></app-average-saved-chart>
+    </div>
+  </div>
 
   <div *ngIf="!user">
     <p>Loading the profile...</p>
   </div>
-
-
-
+</div>

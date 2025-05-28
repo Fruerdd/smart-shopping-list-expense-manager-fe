@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserProfileService {
-  private apiUrl = 'http://localhost:3000/userProfiles';
+  private apiUrl = 'http://localhost:8080/userProfiles';
   constructor(private http: HttpClient) {}
 
   getUserProfile(id: number | string): Observable<any> {
