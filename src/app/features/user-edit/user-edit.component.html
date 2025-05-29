@@ -1,19 +1,34 @@
 <div *ngIf="user" class="profile-image-wrapper">
   <img
-    [src]="user.profileImageUrl || 'assets/images/avatar.png'"
+    [src]="previewImageUrl || getFullImageUrl(user.avatar) || 'assets/images/avatar.png'"
     (error)="setDefaultImage($event)"
     alt="Profile Picture"
     width="150"
     height="150"
+    class="profile-preview"
   /><br />
 
-  <button type="button" disabled title="Coming soon">Change Profile Picture</button>
+  <button type="button" (click)="triggerFileInput()" class="change-picture-btn" [disabled]="isUploading">
+    {{isUploading ? 'Uploading...' : 'Change Profile Picture'}}
+  </button>
 
   <input
+    #fileInput
     type="file"
     accept="image/*"
     style="display: none"
+    (change)="onFileSelected($event)"
+    [disabled]="isUploading"
   />
+  
+  <div *ngIf="selectedFile" class="file-info">
+    <p>Selected: {{selectedFile.name}}</p>
+    <button type="button" (click)="clearSelectedFile()" class="clear-btn" [disabled]="isUploading">Clear</button>
+  </div>
+  
+  <div *ngIf="isUploading" class="upload-progress">
+    <p>Uploading image...</p>
+  </div>
 </div>
 
 <form *ngIf="user" (ngSubmit)="onSubmit()">
@@ -34,29 +49,25 @@
   </label><br />
 
   <label>
-    Favorite Store:
-    <select [(ngModel)]="user.favoriteStore" name="favoriteStore">
-      <option value="Mercator">Mercator</option>
-      <option value="Bingo">Bingo</option>
-      <option value="Konzum">Konzum</option>
-    </select>
+    Address:
+    <input type="text" [(ngModel)]="user.address" name="address" />
   </label><br />
 
   <!-- Read-Only Fields (Display Only) -->
   <fieldset disabled>
     <label>
-      Coupon Code:
-      <input type="text" [value]="user.couponCode" />
+      Referral/Coupon Code:
+      <input type="text" [value]="user.couponCode || 'N/A'" />
     </label><br />
 
     <label>
       Loyalty Points:
-      <input type="number" [value]="user.loyaltyPoints" />
+      <input type="number" [value]="user.bonus_points || user.loyaltyPoints || 0" />
     </label><br />
 
     <label>
       Credits Available:
-      <input type="number" [value]="user.creditsAvailable" />
+      <input type="number" [value]="user.creditsAvailable || 0" />
     </label><br />
   </fieldset>
 

@@ -37,10 +37,12 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   isDashboardPage: boolean = false;
   isShoppingListPage: boolean = false;
   isMyProfilePage: boolean = false;
+  isOtherUserProfilePage: boolean = false;
   isEditProfilePage: boolean = false;
   isAdminPage: boolean = false;
   isAdmin: boolean = false; // Mimic admin state
-  loggedInUserId: number | null = null;
+  loggedInUserId: string | null = null;
+  currentProfileUserId: string | null = null;
   userType: string | null = null;
 
   constructor(
@@ -62,6 +64,11 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     if (isPlatformBrowser(this.platformId) && this.isLoggedIn) {
       // Try to get user information from token or localStorage
       this.parseUserInfo();
+      
+      // If we don't have a valid logged in user ID, get it from API
+      if (!this.loggedInUserId) {
+        this.getCurrentUserIdFromApi();
+      }
     }
 
     const currentUrl = this.router.url;
@@ -96,9 +103,19 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         this.userType = user.userType || this.userType;
         this.isAdmin = this.userType === 'ADMIN' || this.isAdmin;
       }
+
+      // If we don't have a proper UUID, try to get it from the API
+      if (this.loggedInUserId && !this.isValidUUID(this.loggedInUserId)) {
+        // The token might contain an email instead of UUID, we'll need to handle this case
+        this.loggedInUserId = null;
+      }
     } catch (error) {
       console.error('Error parsing user information:', error);
     }
+  }
+
+  private isValidUUID(str: string): boolean {
+    return /^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$/i.test(str);
   }
 
   togglePlay(): void {
@@ -133,8 +150,20 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   private updateActivePageFromUrl(url: string): void {
+    // Extract profile user ID from URL if it's a profile page
+    const profileMatch = url.match(/^\/user-profile\/([^\/]+)/);
+    if (profileMatch) {
+      this.currentProfileUserId = profileMatch[1];
+      
+      this.isMyProfilePage = this.currentProfileUserId === this.loggedInUserId;
+      this.isOtherUserProfilePage = this.currentProfileUserId !== this.loggedInUserId && this.isValidUUID(this.currentProfileUserId);
+    } else {
+      this.currentProfileUserId = null;
+      this.isMyProfilePage = url === '/user-profile' || url === '/user-profile/';
+      this.isOtherUserProfilePage = false;
+    }
+
     this.isDashboardPage = url === '/dashboard';
-    this.isMyProfilePage = url === '/user-profile' || url.startsWith('/user-profile/');
     this.isAdminPage = url === '/admin-page';
     this.isShoppingListPage = url === '/dashboard/shopping-list' || url.startsWith('/dashboard/shopping-list/');
     this.isEditProfilePage = url.startsWith('/user-profiles/edit');
@@ -180,13 +209,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         this.closeMenu();
       }
     }
-    // if (this.isMusicPopupVisible && !this.isMobileView) {
-    //     const clickedInsidePopup = this.musicPopupDivRef?.nativeElement.contains(event.target);
-    //     if (!clickedInsidePopup) {
-    //       this.isMusicPopupVisible = false;
-    //     }
-    //
-    //   }
   }
 
   checkViewport(): void {
@@ -239,5 +261,16 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.userType = null;
     this.isAdmin = false;
     this.router.navigate(['/login']);
+  }
+
+  private getCurrentUserIdFromApi(): void {
+    // This is a simplified version - you may need to inject UserProfileService
+    // For now, we'll try to get it from the current route if available
+    const currentUrl = this.router.url;
+    const profileMatch = currentUrl.match(/^\/user-profile\/([^\/]+)/);
+    if (profileMatch && this.isValidUUID(profileMatch[1])) {
+      // If we're on a profile page and don't know our own ID, we can't determine ownership
+      // The profile component will handle getting the current user ID
+    }
   }
 }

@@ -3,32 +3,18 @@
   <div class="container">
     <div class="row">
       <div class="col-md-3 col-sm-3 col-3">
-        <div class="logo d-flex align-items-center">
-          <img *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage && !isShoppingListPage && !isEditProfilePage"
-               src="app_logo.jpg" class="logo" alt="logo" (click)="scrollToTop()"
-               style="cursor: pointer;" />
-          <img *ngIf="isAdminPage || isMyProfilePage || isDashboardPage || isShoppingListPage || isEditProfilePage"
-               src="app_logo.jpg" class="logo" alt="logo" (click)="scrollToTopAndActivateHome()"
-               style="cursor: pointer;" />
-          <span *ngIf="!isAdminPage && !isDashboardPage && !isMyProfilePage && !isShoppingListPage && !isEditProfilePage"
-                routerLink="/home" routerLinkActive="active" class="company-name"
-                (click)="scrollToTopAndActivateHome()" style="cursor: pointer;">
-          GroceryMate
-          </span>
-          <span *ngIf="isAdminPage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
-            Admin Dashboard
-          </span>
-          <span *ngIf="isMyProfilePage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
-            My Profile
-          </span>
-          <span *ngIf="isDashboardPage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
-            User Dashboard
-          </span>
-          <span *ngIf="isShoppingListPage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
-            Shopping List
-          </span>
-          <span *ngIf="isEditProfilePage" class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
-            Edit Profile
+        <div class="logo-container d-flex align-items-center">
+          <img src="app_logo.jpg" class="logo-image" alt="logo" (click)="scrollToTop()" style="cursor: pointer;" />
+          
+          <!-- Always show a title -->
+          <span class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
+            <span *ngIf="isAdminPage">Admin Dashboard</span>
+            <span *ngIf="isMyProfilePage">My Profile</span>
+            <span *ngIf="isOtherUserProfilePage">User Profile</span>
+            <span *ngIf="isDashboardPage">User Dashboard</span>
+            <span *ngIf="isShoppingListPage">Shopping List</span>
+            <span *ngIf="isEditProfilePage">Edit Profile</span>
+            <span *ngIf="!isAdminPage && !isMyProfilePage && !isOtherUserProfilePage && !isDashboardPage && !isShoppingListPage && !isEditProfilePage">GroceryMate</span>
           </span>
         </div>
       </div>
@@ -58,39 +44,39 @@
 
 
             <!-- Home Page Links, visible only when user is logged in -->
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage && !isEditProfilePage"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isOtherUserProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage && !isEditProfilePage"
                 routerLink="/dashboard"
                 routerLinkActive="active"
                 (click)="activatePage('dashboard')"
                 [ngClass]="{'active': activePage === 'dashboard'}">
               Dashboard
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage && !isEditProfilePage"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isOtherUserProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage && !isEditProfilePage"
                 [routerLink]="['/user-profile', loggedInUserId]"
                 routerLinkActive="active"
                 (click)="activatePage('user-profile')"
                 [ngClass]="{'active': activePage === 'user-profile'}">
               My Profile
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage && !isEditProfilePage"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isOtherUserProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage && !isEditProfilePage"
                 (click)="scrollToSection('how-it-works')"
                 [ngClass]="{'active': activePage === 'how-it-works'}">
               How to Use
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && isAdmin && !isShoppingListPage && !isEditProfilePage"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isOtherUserProfilePage && !isAdminPage && isAdmin && !isShoppingListPage && !isEditProfilePage"
                 routerLink="/admin-page"
                 routerLinkActive="active"
                 (click)="activatePage('admin-page')"
                 [ngClass]="{'active': activePage === 'admin-page'}">
               Admin Dashboard
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isAdminPage && !isShoppingListPage && !isEditProfilePage"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isOtherUserProfilePage && !isShoppingListPage && !isEditProfilePage"
                 (click)="activatePage('log-out')"
                 [ngClass]="{'active': activePage === 'log-out'}" class="log-out-button">
               Log Out
             </li>
             <!-- Music Player -->
-            <li *ngIf="!isMobileView && !isAdminPage && !isMyProfilePage && !isDashboardPage && !isShoppingListPage && !isEditProfilePage">
+            <li *ngIf="!isMobileView && !isAdminPage && !isMyProfilePage && !isOtherUserProfilePage && !isDashboardPage && !isShoppingListPage && !isEditProfilePage">
               <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
             </li>
 
@@ -110,6 +96,16 @@
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
               <li (click)="scrollToSection('analytics')" [ngClass]="{'active': activePage === 'analytics'}">Analytics</li>
               <li (click)="scrollToSection('notifications')" [ngClass]="{'active': activePage === 'notifications'}">Notifications</li>
+              <li *ngIf="!isMobileView">
+                <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
+              </li>
+            </ng-container>
+
+            <!-- Other User Profile specific links -->
+            <ng-container *ngIf="isOtherUserProfilePage">
+              <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
+              <li [routerLink]="['/user-profile', loggedInUserId]" routerLinkActive="active" (click)="activatePage('user-profile')">My Profile</li>
+              <li routerLink="/dashboard" routerLinkActive="active" (click)="activatePage('dashboard')">Dashboard</li>
               <li *ngIf="!isMobileView">
                 <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
               </li>

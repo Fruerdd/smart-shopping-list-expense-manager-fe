@@ -30,13 +30,29 @@ export class HomeComponent implements OnInit {
   /** track hover state per card index */
   hoverMap: { [i: number]: boolean } = {};
 
-  constructor(private usersSvc: UsersService, private auth:     AuthService,
-    private router:   Router) {}
+  constructor(private usersSvc: UsersService, private auth: AuthService,
+    private router: Router) {}
 
   ngOnInit() {
     this.onResize();  // set itemsToShow initially
     this.usersSvc.getTestimonials()
       .subscribe(dtos => this.testimonials = dtos.map(this.toView.bind(this)));
+  }
+
+  getFullImageUrl(avatarPath: string | null | undefined): string | null {
+    if (!avatarPath) return null;
+    
+    // If it's already a full URL or base64, return as is
+    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
+      return avatarPath;
+    }
+    
+    // If it's a relative path, prepend the API base URL
+    if (avatarPath.startsWith('/uploads/')) {
+      return `http://localhost:8080${avatarPath}`;
+    }
+    
+    return avatarPath;
   }
 
   onStartShopping() {
@@ -48,16 +64,16 @@ export class HomeComponent implements OnInit {
   }
 
   /** toggle 1 vs 3 cards as viewport crosses 768px */
-  @HostListener('window:resize')
+  @HostListener('window:resize', ['$event'])
   onResize() {
-    this.itemsToShow = window.innerWidth < 768 ? 1 : 3;
+    this.itemsToShow = window.innerWidth <= 768 ? 1 : 3;
   }
 
   private toView(dto: TestimonialDTO): TestimonialView {
     const raw   = typeof dto.reviewScore === 'number' && !isNaN(dto.reviewScore) ? dto.reviewScore : 0;
     const score = Math.max(0, Math.min(5, raw));
     return {
-      avatar:  dto.avatar || 'assets/avatars/avatar-generic.png',
+      avatar:  this.getFullImageUrl(dto.avatar) || 'assets/avatars/avatar-generic.png',
       name:    dto.name,
       score,
       context: dto.reviewContext

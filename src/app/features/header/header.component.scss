@@ -80,7 +80,7 @@ header {
   color: white;
 }
 
-.logo {
+.logo-image {
   display: flex;
   align-items: center;
   width: 50px;
@@ -88,10 +88,10 @@ header {
   border-radius: 50px;
 }
 
-.logo-image {
-  width: 60px;
-  height: auto;
-  cursor: pointer;
+.logo-container {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
 }
 
 .log-out-button {
@@ -123,6 +123,9 @@ header {
   font-weight: bold;
   margin-left: 10px;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .desktop_menu {
@@ -299,4 +302,18 @@ header {
       border-radius: 5px;
       border: none;
     }
+}
+
+@media screen and (max-width: 768px) {
+  .company-name {
+    font-size: 1.2rem;
+    max-width: 150px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .company-name {
+    font-size: 1rem;
+    max-width: 120px;
+  }
 }

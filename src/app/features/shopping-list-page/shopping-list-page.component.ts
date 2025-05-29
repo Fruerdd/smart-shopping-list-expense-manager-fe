@@ -4,6 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {ShoppingListPageService} from '@app/services/shopping-list-page.service';
 import {FavoriteProductsService} from '@app/services/favorite-products.service';
+import {LoyaltyPointsService} from '@app/services/loyalty-points.service';
 import {filter, finalize, switchMap, tap, debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {forkJoin, map, Observable, of, Subject} from 'rxjs';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
@@ -77,7 +78,8 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private shoppingListService: ShoppingListPageService,
-    private favoriteProductsService: FavoriteProductsService
+    private favoriteProductsService: FavoriteProductsService,
+    private loyaltyPointsService: LoyaltyPointsService
   ) {
     const userInfo = localStorage.getItem('userInfo');
     this.userId = userInfo ? JSON.parse(userInfo).id : '';
@@ -502,6 +504,8 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       next: (result) => {
         if (result) {
           this.router.navigate(['/dashboard']);
+          // Award points for creating a shopping list
+          this.loyaltyPointsService.awardPointsWithNotification('create_list', 1, true);
         }
       },
       error: (error) => {

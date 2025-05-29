@@ -1,6 +1,11 @@
 <div class="shopping-list-card">
   <div class="owner-info">
-    <img [src]="'assets/profile-images/1.jpg'" alt="Owner avatar" class="avatar" width="50" height="50">
+    <img [src]="getFullImageUrl(shoppingList.ownerAvatar) || '/assets/images/avatar.png'" 
+         alt="Owner avatar" 
+         class="avatar" 
+         width="50" 
+         height="50"
+         (error)="setDefaultImage($event)">
     <div class="owner-details">
       <span class="owner-name">{{ shoppingList.ownerName }}</span>
       <span class="list-owner">{{ shoppingList.ownerId === userId ? 'List Owner' : 'Shared with you' }}</span>

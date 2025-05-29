@@ -11,11 +11,13 @@ export enum LoyaltyTierEnum {
     email: string;
     name: string;
     loyaltyTier?: LoyaltyTierEnum;
-    profilePicture?: string;
+    avatar?: string;
     phone?: string;
     address?: string;
+    referralCode?: string;
     couponCode?: string;
     bonus_points?: number;
+    loyaltyPoints?: number;
     shoppingLists?: ShoppingListDTO[];
     friends?: string[];
     creditsAvailable?: number;
