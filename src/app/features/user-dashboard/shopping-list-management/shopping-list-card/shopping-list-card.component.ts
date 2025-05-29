@@ -28,6 +28,27 @@ export class ShoppingListCardComponent {
     this.userId = currentUserId;
   }
 
+  getFullImageUrl(avatarPath: string | null | undefined): string | null {
+    if (!avatarPath) return null;
+    
+    // If it's already a full URL or base64, return as is
+    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
+      return avatarPath;
+    }
+    
+    // If it's a relative path, prepend the API base URL
+    if (avatarPath.startsWith('/uploads/')) {
+      return `http://localhost:8080${avatarPath}`;
+    }
+    
+    return avatarPath;
+  }
+
+  setDefaultImage(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = '/assets/images/avatar.png';
+  }
+
   hasEditPermission(): boolean {
     // Owner always has edit permission
     if (this.shoppingList.ownerId === this.userId) {

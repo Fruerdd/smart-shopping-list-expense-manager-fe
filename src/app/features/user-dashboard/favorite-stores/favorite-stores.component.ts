@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FavoriteStoresService } from '@app/services/favorite-stores.service';
+import { LoyaltyPointsService } from '@app/services/loyalty-points.service';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { StoreDTO } from '@app/models/store.dto';
@@ -24,7 +25,7 @@ export class FavoriteStoresComponent implements OnInit {
   userId: string;
   private searchTerms = new Subject<string>();
 
-  constructor(private favoriteStoresService: FavoriteStoresService) {
+  constructor(private favoriteStoresService: FavoriteStoresService, private loyaltyPointsService: LoyaltyPointsService) {
     const userInfo = localStorage.getItem('userInfo');
     this.userId = userInfo ? JSON.parse(userInfo).id : '';
     if (!this.userId) {
@@ -63,6 +64,7 @@ export class FavoriteStoresComponent implements OnInit {
       .subscribe(() => {
         this.loadFavoriteStores();
         this.toggleAddForm();
+        this.loyaltyPointsService.awardPointsWithNotification('add_favorite_store');
       });
   }
 

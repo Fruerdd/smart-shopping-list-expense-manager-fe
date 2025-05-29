@@ -3,16 +3,32 @@
   <div class="profile-banner">
     <div class="banner-inner">
       <div class="profile-info">
-        <img [src]="user.profilePicture || '/assets/avatar.png'" 
+        <img [src]="getFullImageUrl(user.avatar) || '/assets/images/avatar.png'" 
              (error)="setDefaultImage($event)" 
              alt="Profile photo" 
              class="profile-image" />
         <div class="profile-welcome">
-          <h1>Welcome, {{user.name}}!</h1>
-          <p class="location"><i class="fas fa-map-marker-alt"></i> {{user.address || 'Sarajevo'}}</p>
+          <h1>Welcome{{isOwnProfile ? '' : ' to'}}, {{user.name}}{{isOwnProfile ? '!' : "'s Profile!"}}</h1>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> {{user.address}}</p>
+          <div class="loyalty-tier">
+            <i class="fas fa-medal" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))"></i>
+            <span class="tier-label" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))">
+              {{getLoyaltyTier(user.bonus_points || loyaltyPoints || 0)}} MEMBER
+            </span>
+          </div>
         </div>
       </div>
-      <button class="edit-button" (click)="navigateToEditProfile()">Edit Profile</button>
+      
+      <!-- Dynamic button based on profile view -->
+      <button *ngIf="isOwnProfile" class="edit-button" (click)="navigateToEditProfile()">
+        Edit Profile
+      </button>
+      <button *ngIf="!isOwnProfile && !isFriend" class="edit-button friend-button" (click)="toggleFriendship()">
+        <i class="fas fa-user-plus"></i> Add Friend
+      </button>
+      <button *ngIf="!isOwnProfile && isFriend" class="edit-button friend-button friends" (click)="toggleFriendship()">
+        <i class="fas fa-user-check"></i> Friends
+      </button>
     </div>
   </div>
 
@@ -38,68 +54,116 @@
 
       <!-- Coupon Code Section -->
       <div class="card coupon-section">
-        <h3>Your coupon Code:</h3>
+        <h3>{{isOwnProfile ? 'Your' : user.name + "'s"}} referral code:</h3>
         <div class="coupon-box">
-          <input type="text" [value]="user.couponCode || 'YOUR1464'" readonly class="coupon-input" #couponInput />
-          <button class="copy-btn" (click)="copyCoupon(couponInput.value)">
+          <input type="text" [value]="user.couponCode || 'YOUR1464'" readonly class="coupon-input" #referralInput />
+          <button class="copy-btn" (click)="copyCoupon(referralInput.value)">
             <i class="fas fa-copy"></i>
           </button>
         </div>
-        <h3>Enter coupon Code:</h3>
-        <div class="coupon-box">
-          <input type="text" placeholder="" class="coupon-input" #newCouponInput />
-          <button class="submit-btn" (click)="submitCoupon(newCouponInput.value)">
-            <i class="fas fa-arrow-right"></i>
-          </button>
+        
+        <!-- Only show referral code input for own profile -->
+        <div *ngIf="isOwnProfile">
+          <h3>Enter referral code:</h3>
+          <div class="coupon-box">
+            <input type="text" placeholder="" class="coupon-input" #newReferralInput />
+            <button class="submit-btn" (click)="submitReferral(newReferralInput.value)">
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Friends Section -->
       <div class="card friends-section">
-        <h3>Friends</h3>
+        <h3>{{isOwnProfile ? 'Friends' : user.name + "'s Friends"}}</h3>
+        
         <div class="friends-list">
           <div class="friend-item" *ngFor="let friend of friends.slice(0, 3)">
-            <img [src]="friend.profilePicture || '/assets/avatar.png'" 
+            <img [src]="getFullImageUrl(friend.avatar) || '/assets/images/avatar.png'" 
                  alt="Friend avatar" 
                  class="friend-avatar" 
-                 (error)="setDefaultImage($event)" />
-            <span class="friend-name">{{friend.name}}</span>
+                 (error)="setDefaultImage($event)"
+                 (click)="viewUserProfile(friend.id)"
+                 style="cursor: pointer;" />
+            <span class="friend-name" (click)="viewUserProfile(friend.id)" style="cursor: pointer;">{{friend.name}}</span>
           </div>
           <div *ngIf="friends.length === 0" class="no-friends">
-            <p>No friends added yet</p>
+            <p>{{isOwnProfile ? 'No friends added yet' : 'This user has no friends yet'}}</p>
           </div>
         </div>
-        <button class="see-all-btn" *ngIf="friends.length > 0">See All</button>
+        <button class="see-all-btn" *ngIf="friends.length > 0" (click)="showAllFriends()">See All</button>
       </div>
 
       <!-- Review Box Section -->
       <div class="card review-section">
-        <h3>Review Box</h3>
-        <textarea class="review-textarea" 
-                  [value]="userReview?.reviewContext || ''"
-                  [placeholder]="userReview?.reviewContext || 'Great App! Very helpful and easy to use. I can also share my lists...'"></textarea>
-        <div class="rating-section">
-          <div class="stars">
-            <i class="fas fa-star" 
-               *ngFor="let star of [1,2,3,4,5]" 
-               [class.filled]="star <= (userReview?.reviewScore || 5)"></i>
+        <h3>{{isOwnProfile ? 'Review Box' : user.name + "'s Review"}}</h3>
+        
+        <!-- View Mode -->
+        <div *ngIf="!isEditingReview">
+          <textarea class="review-textarea" 
+                    [value]="userReview?.reviewContext || ''"
+                    [placeholder]="userReview?.reviewContext || 'Great App! Very helpful and easy to use. I can also share my lists...'"
+                    readonly></textarea>
+          <div class="rating-section">
+            <div class="stars">
+              <i class="fas fa-star" 
+                 *ngFor="let star of [1,2,3,4,5]" 
+                 [class.filled]="star <= (userReview?.reviewScore || 5)"></i>
+            </div>
+            <!-- Only allow editing own review -->
+            <button *ngIf="isOwnProfile" class="edit-review-btn" (click)="startEditingReview()">
+              <i class="fas fa-edit"></i> Edit Review
+            </button>
           </div>
-          <button class="edit-review-btn">
-            <i class="fas fa-edit"></i> Edit Review
-          </button>
+        </div>
+
+        <!-- Edit Mode - Only for own profile -->
+        <div *ngIf="isEditingReview && isOwnProfile">
+          <textarea class="review-textarea" 
+                    [(ngModel)]="editedReview!.reviewContext"
+                    placeholder="Write your review here..."></textarea>
+          <div class="rating-section">
+            <div class="stars editable">
+              <i class="fas fa-star" 
+                 *ngFor="let star of [1,2,3,4,5]" 
+                 [class.filled]="star <= (editedReview?.reviewScore || 0)"
+                 (click)="updateReviewRating(star)"></i>
+            </div>
+            <div class="review-buttons">
+              <button class="save-review-btn" (click)="saveReview()">
+                <i class="fas fa-save"></i> Save
+              </button>
+              <button class="cancel-review-btn" (click)="cancelEditingReview()">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Loyalty Points Section -->
       <div class="card loyalty-section">
-        <h3>Loyalty Points</h3>
+        <h3>Loyalty {{isOwnProfile ? 'Points' : 'Status'}}</h3>
         <div class="points-info">
-          <div class="points-circle">
+          <!-- Show points only for own profile -->
+          <div *ngIf="isOwnProfile" class="points-circle">
             <i class="fas fa-plus-circle"></i>
             <span class="points-number">{{user.bonus_points || loyaltyPoints || 0}}</span>
             <span class="points-label">points</span>
           </div>
-          <div class="info-tooltip">
+          
+          <!-- Show tier for everyone -->
+          <div class="tier-display">
+            <i class="fas fa-medal" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))"></i>
+            <span class="tier-name" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))">
+              {{getLoyaltyTier(user.bonus_points || loyaltyPoints || 0)}}
+            </span>
+            <span class="tier-label">MEMBER</span>
+          </div>
+          
+          <!-- Info tooltip only for own profile -->
+          <div *ngIf="isOwnProfile" class="info-tooltip">
             <i class="fas fa-info-circle"></i>
             <div class="tooltip-content">
               <h4>How to Earn Points</h4>
@@ -107,15 +171,61 @@
             </div>
           </div>
         </div>
-        <div class="credits-info">
+        
+        <!-- Credits only for own profile -->
+        <div *ngIf="isOwnProfile" class="credits-info">
           <p>Credits Available: {{user.creditsAvailable || '0.30'}} €</p>
         </div>
-        <div class="qr-code">
+        
+        <!-- QR Code only for own profile -->
+        <div *ngIf="isOwnProfile" class="qr-code">
           <qrcode [qrdata]="user.qrCodeValue || user.id || ''"
                   [width]="100"
                   [errorCorrectionLevel]="'M'"
                   [allowEmptyString]="true">
           </qrcode>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Search Section - only show on own profile -->
+<div *ngIf="isOwnProfile" class="search-section">
+  <div class="search-container">
+    <h3>Find Users</h3>
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput(searchQuery)"
+        placeholder="Search for users by name or email..."
+        class="search-input">
+      <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-search-btn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <!-- Search Results -->
+    <div *ngIf="showSearchResults" class="search-results">
+      <div *ngIf="isSearching" class="search-loading">
+        <i class="fas fa-spinner fa-spin"></i> Searching...
+      </div>
+      <div *ngIf="!isSearching && searchResults.length === 0" class="no-results">
+        No users found
+      </div>
+      <div *ngIf="!isSearching && searchResults.length > 0" class="results-list">
+        <div *ngFor="let searchUser of searchResults" 
+             class="search-result-item" 
+             (click)="viewUserProfile(searchUser.id)">
+          <img [src]="getFullImageUrl(searchUser.avatar) || '/assets/images/avatar.png'" 
+               alt="User avatar" 
+               class="search-user-avatar"
+               (error)="setDefaultImage($event)" />
+          <div class="search-user-info">
+            <span class="search-user-name">{{searchUser.name}}</span>
+            <span class="search-user-email">{{searchUser.email}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -130,7 +240,38 @@
   <p>Failed to load profile data.</p>
 </div>
 
-<div id="analytics" class="charts-grid">
+<!-- Friends Modal -->
+<div *ngIf="showFriendsModal" class="modal-overlay" (click)="closeFriendsModal()">
+  <div class="friends-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>All Friends ({{friends.length}})</h3>
+      <button class="close-btn" (click)="closeFriendsModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-content">
+      <div class="friends-grid">
+        <div class="friend-card" *ngFor="let friend of friends">
+          <img [src]="getFullImageUrl(friend.avatar) || '/assets/images/avatar.png'" 
+               alt="Friend avatar" 
+               class="friend-avatar-large" 
+               (error)="setDefaultImage($event)"
+               (click)="viewUserProfile(friend.id)"
+               style="cursor: pointer;" />
+          <div class="friend-info">
+            <span class="friend-name" (click)="viewUserProfile(friend.id)" style="cursor: pointer;">{{friend.name}}</span>
+            <span class="friend-email">{{friend.email}}</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="friends.length === 0" class="no-friends-modal">
+        <p>You haven't added any friends yet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="analytics" class="charts-grid" *ngIf="isOwnProfile">
   <!-- Prvi red -->
   <div class="grid-item grid-span-2">
     <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>

@@ -9,6 +9,10 @@ form {
 .profile-image-wrapper {
   text-align: center;
   margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .profile-image-wrapper img {
@@ -33,12 +37,12 @@ form select {
   padding: 0.5rem;
   font-size: 1rem;
   margin-top: 0.25rem;
-  border: 1px solid #ccc;
+  border: 1px solid #0B3B5B;
   border-radius: 4px;
 }
 button {
   padding: 0.6rem 1.2rem;
-  background-color: #007bff;
+  background-color: #0B3B5B;
   color: white;
   border: none;
   border-radius: 4px;
@@ -54,7 +58,7 @@ button[disabled] {
 form button {
   margin-top: 1rem;
   padding: 0.6rem 1.2rem;
-  background-color: #007bff;
+  background-color: #0B3B5B;
   color: white;
   border: none;
   border-radius: 4px;
@@ -73,4 +77,87 @@ img {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ddd;
+}
+
+.profile-preview {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0B3B5B;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+.profile-preview:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.change-picture-btn {
+  background-color: rgba(11, 59, 91, 0.8);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.change-picture-btn:hover {
+  background-color: #0B3B5B;
+}
+
+.file-info {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #e7f3ff;
+  border: 1px solid #b3d7ff;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.file-info p {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.clear-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+  background-color: #c82333;
+}
+
+.upload-progress {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #856404;
+  text-align: center;
+}
+
+.upload-progress p {
+  margin: 0;
+}
+
+button:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+button:disabled:hover {
+  background-color: #ccc !important;
 }

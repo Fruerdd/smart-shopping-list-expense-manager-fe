@@ -22,11 +22,18 @@ export const jwtInterceptor: HttpInterceptorFn = (
 
   // If token present, clone and set headers
   if (token) {
+    const headers: any = {
+      Authorization: `Bearer ${token}`
+    };
+    
+    // Only set Content-Type for non-FormData requests
+    // FormData requests need the browser to set multipart/form-data with boundary
+    if (!(req.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
+    
     req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
+      setHeaders: headers
     });
   }
 

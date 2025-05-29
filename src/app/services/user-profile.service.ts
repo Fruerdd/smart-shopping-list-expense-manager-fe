@@ -85,6 +85,108 @@ export class UserProfileService {
     );
   }
 
+  updateUserReview(userId: string, review: ReviewDTO): Observable<ReviewDTO> {
+    return this.http.post<ReviewDTO>(`${this.apiUrl}/profile/reviews/${userId}`, review).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  applyReferralCode(userId: string, referralCode: string): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/profile/referral/${userId}`, null, {
+      params: { referralCode },
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getUserReferralCode(userId: string): Observable<string> {
+    return this.http.get<string>(`${this.apiUrl}/profile/referral-code/${userId}`, {
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  awardLoyaltyPoints(userId: string, activity: string, count: number = 1): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/profile/award-points/${userId}`, null, {
+      params: { 
+        activity: activity,
+        count: count.toString()
+      },
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Convert file to compressed base64 for database storage
+  convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      // Create canvas to resize image
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Set tiny thumbnail size (max 50x50 pixels for tiny base64)
+        const maxSize = 50;
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw and compress image very aggressively
+        ctx?.drawImage(img, 0, 0, width, height);
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.3); // 30% quality
+        resolve(compressedBase64);
+      };
+      
+      img.onerror = () => reject(new Error('Failed to load image'));
+      
+      // Load original image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Upload file to server (using the proper backend endpoint)
+  uploadProfilePicture(userId: string, file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', file); // Backend expects 'file' parameter
+    
+    return this.http.post<string>(`${this.apiUrl}/profile/upload-picture/${userId}`, formData, {
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Search for users by name or email
+  searchUsers(query: string): Observable<UserDTO[]> {
+    return this.http.get<UserDTO[]>(`${this.apiUrl}/search`, {
+      params: { q: query }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
     
