@@ -3,8 +3,11 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule }      from '@angular/common';
 import { HttpClientModule }  from '@angular/common/http';
 import { Router }            from '@angular/router';
-import { UsersService, TestimonialDTO } from '@app/services/users.service';
+import { UsersService, TestimonialDTO, UserDTO } from '@app/services/users.service';
+import { UserProfileService } from '@app/services/user-profile.service';
 import { AuthService }       from '@app/services/auth.service'; 
+import { forkJoin, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 interface TestimonialView {
   avatar:  string;
@@ -30,13 +33,73 @@ export class HomeComponent implements OnInit {
   /** track hover state per card index */
   hoverMap: { [i: number]: boolean } = {};
 
-  constructor(private usersSvc: UsersService, private auth: AuthService,
-    private router: Router) {}
+  constructor(
+    private usersSvc: UsersService, 
+    private userProfileService: UserProfileService,
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.onResize();  // set itemsToShow initially
-    this.usersSvc.getTestimonials()
-      .subscribe(dtos => this.testimonials = dtos.map(this.toView.bind(this)));
+    this.loadTestimonialsWithAvatars();
+  }
+
+  private loadTestimonialsWithAvatars() {
+    this.usersSvc.getTestimonials().subscribe({
+      next: (testimonials) => {
+        // For each testimonial, try to find the user and get their avatar
+        const testimonialPromises = testimonials.map(testimonial => 
+          this.enrichTestimonialWithUserAvatar(testimonial)
+        );
+        
+        forkJoin(testimonialPromises).subscribe({
+          next: (enrichedTestimonials) => {
+            this.testimonials = enrichedTestimonials;
+          },
+          error: (error) => {
+            console.error('Error enriching testimonials:', error);
+            // Fallback to basic testimonials
+            this.testimonials = testimonials.map(this.toView.bind(this));
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error loading testimonials:', error);
+        this.testimonials = [];
+      }
+    });
+  }
+
+  private enrichTestimonialWithUserAvatar(testimonial: TestimonialDTO) {
+    // Use the same search approach as user profile component
+    return this.userProfileService.searchUsers(testimonial.name).pipe(
+      map((users) => {
+        // Find exact match by name
+        const matchingUser = users.find(user => 
+          user.name.toLowerCase() === testimonial.name.toLowerCase()
+        );
+        
+        const raw = typeof testimonial.reviewScore === 'number' && !isNaN(testimonial.reviewScore) ? testimonial.reviewScore : 0;
+        const score = Math.max(0, Math.min(5, raw));
+        
+        const avatarUrl = matchingUser?.avatar 
+          ? this.getFullImageUrl(matchingUser.avatar) || '/assets/images/avatar.png'
+          : '/assets/images/avatar.png';
+
+        return {
+          avatar: avatarUrl,
+          name: testimonial.name,
+          score,
+          context: testimonial.reviewContext
+        };
+      }),
+      catchError((error) => {
+        console.error(`Error searching for user ${testimonial.name}:`, error);
+        // Fallback to basic testimonial without user avatar
+        return of(this.toView(testimonial));
+      })
+    );
   }
 
   getFullImageUrl(avatarPath: string | null | undefined): string | null {
@@ -73,7 +136,7 @@ export class HomeComponent implements OnInit {
     const raw   = typeof dto.reviewScore === 'number' && !isNaN(dto.reviewScore) ? dto.reviewScore : 0;
     const score = Math.max(0, Math.min(5, raw));
     return {
-      avatar:  this.getFullImageUrl(dto.avatar) || 'assets/avatars/avatar-generic.png',
+      avatar:  this.getFullImageUrl(dto.avatar) || '/assets/images/avatar.png',
       name:    dto.name,
       score,
       context: dto.reviewContext
@@ -108,5 +171,10 @@ export class HomeComponent implements OnInit {
     if (i < full)            return 'fas fa-star';
     else if (i === full && half) return 'fas fa-star-half-alt';
     else                      return 'far fa-star';
+  }
+
+  setDefaultAvatar(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = '/assets/images/avatar.png';
   }
 }

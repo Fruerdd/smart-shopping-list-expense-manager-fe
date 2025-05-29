@@ -63,6 +63,7 @@
                 <div class="d-flex justify-content-center mb-3">
                   <img
                     [src]="t.avatar"
+                    (error)="setDefaultAvatar($event)"
                     class="rounded-circle shadow-1-strong"
                     width="100"
                     height="100"
