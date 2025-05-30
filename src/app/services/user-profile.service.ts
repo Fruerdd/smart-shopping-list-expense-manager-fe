@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { UserDTO } from '@app/models/user.dto';
 import { AuthService } from './auth.service';
 import { UserStatisticsDTO } from '@app/models/user-statistics.dto';
 import { ReviewDTO } from '@app/models/review.dto';
+import { NotificationDTO } from '@app/models/notification.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -120,56 +121,9 @@ export class UserProfileService {
     );
   }
 
-  // Convert file to compressed base64 for database storage
-  convertFileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      // Create canvas to resize image
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      
-      img.onload = () => {
-        // Set tiny thumbnail size (max 50x50 pixels for tiny base64)
-        const maxSize = 50;
-        let { width, height } = img;
-        
-        if (width > height) {
-          if (width > maxSize) {
-            height = (height * maxSize) / width;
-            width = maxSize;
-          }
-        } else {
-          if (height > maxSize) {
-            width = (width * maxSize) / height;
-            height = maxSize;
-          }
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        
-        // Draw and compress image very aggressively
-        ctx?.drawImage(img, 0, 0, width, height);
-        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.3); // 30% quality
-        resolve(compressedBase64);
-      };
-      
-      img.onerror = () => reject(new Error('Failed to load image'));
-      
-      // Load original image
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        img.src = e.target?.result as string;
-      };
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // Upload file to server (using the proper backend endpoint)
   uploadProfilePicture(userId: string, file: File): Observable<string> {
     const formData = new FormData();
-    formData.append('file', file); // Backend expects 'file' parameter
+    formData.append('file', file);
     
     return this.http.post<string>(`${this.apiUrl}/profile/upload-picture/${userId}`, formData, {
       responseType: 'text' as 'json'
@@ -178,10 +132,84 @@ export class UserProfileService {
     );
   }
 
-  // Search for users by name or email
   searchUsers(query: string): Observable<UserDTO[]> {
     return this.http.get<UserDTO[]>(`${this.apiUrl}/search`, {
       params: { q: query }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Friend management methods
+  sendFriendRequest(userId: string, friendId: string): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/friends/${userId}/request`, null, {
+      params: { friendId },
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  acceptFriendRequest(userId: string, requesterId: string): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/friends/${userId}/accept`, null, {
+      params: { requesterId },
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  declineFriendRequest(userId: string, requesterId: string): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/friends/${userId}/decline`, null, {
+      params: { requesterId },
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  removeFriend(userId: string, friendId: string): Observable<string> {
+    return this.http.delete<string>(`${this.apiUrl}/friends/${userId}/remove`, {
+      params: { friendId },
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Notification methods
+  getUserNotifications(userId: string): Observable<NotificationDTO[]> {
+    return this.http.get<NotificationDTO[]>(`${this.apiUrl}/notifications/${userId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getUnreadNotifications(userId: string): Observable<NotificationDTO[]> {
+    return this.http.get<NotificationDTO[]>(`${this.apiUrl}/notifications/${userId}/unread`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getUnreadNotificationCount(userId: string): Observable<number> {
+    return this.http.get<any>(`${this.apiUrl}/notifications/${userId}/count`).pipe(
+      map((response: any) => {
+        return typeof response === 'number' ? response : parseInt(response.toString());
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  markNotificationAsRead(notificationId: string): Observable<string> {
+    return this.http.patch<string>(`${this.apiUrl}/notifications/${notificationId}/read`, null, {
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  markAllNotificationsAsRead(userId: string): Observable<string> {
+    return this.http.patch<string>(`${this.apiUrl}/notifications/${userId}/read-all`, null, {
+      responseType: 'text' as 'json'
     }).pipe(
       catchError(this.handleError)
     );
@@ -191,22 +219,53 @@ export class UserProfileService {
     let errorMessage = 'An error occurred';
     
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
       errorMessage = error.error.message;
     } else {
-      // Server-side error
-      switch (error.status) {
-        case 401:
-          errorMessage = 'Unauthorized. Please log in again.';
-          break;
-        case 403:
-          errorMessage = 'You do not have permission to access this resource.';
-          break;
-        case 404:
-          errorMessage = 'Profile not found.';
-          break;
-        default:
-          errorMessage = `Error: ${error.message}`;
+      let backendMessage = '';
+      
+      if (typeof error.error === 'string') {
+        try {
+          const parsedError = JSON.parse(error.error);
+          backendMessage = parsedError.message || parsedError.error || '';
+        } catch (e) {
+          backendMessage = error.error;
+        }
+      } else if (error.error && typeof error.error === 'object') {
+        backendMessage = error.error.message || error.error.error || '';
+      }
+      
+      if (backendMessage && backendMessage.includes('"')) {
+        const match = backendMessage.match(/"([^"]+)"/);
+        if (match && match[1]) {
+          errorMessage = match[1];
+        } else {
+          errorMessage = backendMessage;
+        }
+      } else if (backendMessage) {
+        errorMessage = backendMessage;
+      } else {
+        switch (error.status) {
+          case 400:
+            errorMessage = 'Bad request. Please check your input.';
+            break;
+          case 401:
+            errorMessage = 'Unauthorized. Please log in again.';
+            break;
+          case 403:
+            errorMessage = 'You do not have permission to access this resource.';
+            break;
+          case 404:
+            errorMessage = 'Resource not found.';
+            break;
+          case 409:
+            errorMessage = 'Conflict. Resource already exists or has been used.';
+            break;
+          case 500:
+            errorMessage = 'Server error occurred. Please try again later.';
+            break;
+          default:
+            errorMessage = `Error ${error.status}: ${error.message}`;
+        }
       }
     }
 

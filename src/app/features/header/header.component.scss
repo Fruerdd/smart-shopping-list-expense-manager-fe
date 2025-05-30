@@ -317,3 +317,38 @@ header {
     max-width: 120px;
   }
 }
+
+/* Notification Menu Styling */
+.notifications-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  i {
+    font-size: 18px;
+  }
+}
+
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  background-color: #dc2626;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0B3B5B;
+  z-index: 10;
+}
+
+.mobile_menu .desktop_menu {
+  margin-top: 10px;
+}

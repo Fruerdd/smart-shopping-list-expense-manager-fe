@@ -3,10 +3,16 @@ import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from 'src/environments/environment';
 
-export interface LoginResponse {
+export interface AuthResponse {
   token: string;
   userType: 'USER' | 'ADMIN';
+}
+
+export interface AuthDTO {
+  email: string;
+  password: string;
 }
 
 export interface RegisterDTO {
@@ -19,7 +25,8 @@ export interface RegisterDTO {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/user';
+  private apiUrl = environment.apiUrl + '/auth';
+  private userApiUrl = environment.apiUrl + '/user';
   private storageKey = 'token';
 
   constructor(
@@ -32,13 +39,17 @@ export class AuthService {
     return isPlatformBrowser(this.platformId) ? localStorage : null;
   }
 
-  login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
-      tap((response: any) => {
+  login(credentials: AuthDTO): Observable<AuthResponse> {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+    
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials, { headers }).pipe(
+      tap((response: AuthResponse) => {
         if (response.token) {
           this.getStorage()?.setItem(this.storageKey, response.token);
-          // Fetch user profile to get UUID
-          this.http.get(`${this.apiUrl}/profile/me`).subscribe((user: any) => {
+          this.http.get(`${this.userApiUrl}/profile/me`).subscribe((user: any) => {
             this.getStorage()?.setItem('userInfo', JSON.stringify({ id: user.id, email: user.email }));
           });
         }
@@ -46,7 +57,7 @@ export class AuthService {
     );
   }
 
-  register(registerData: RegisterDTO): Observable<any> {
+  register(registerData: RegisterDTO): Observable<string> {
     return this.http.post(`${this.apiUrl}/register`, registerData, {
       responseType: 'text'
     });

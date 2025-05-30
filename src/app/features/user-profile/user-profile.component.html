@@ -23,11 +23,20 @@
       <button *ngIf="isOwnProfile" class="edit-button" (click)="navigateToEditProfile()">
         Edit Profile
       </button>
-      <button *ngIf="!isOwnProfile && !isFriend" class="edit-button friend-button" (click)="toggleFriendship()">
+      <button *ngIf="!isOwnProfile && !isFriend && !hasPendingFriendRequest" 
+              class="edit-button friend-button" 
+              (click)="toggleFriendship()">
         <i class="fas fa-user-plus"></i> Add Friend
       </button>
-      <button *ngIf="!isOwnProfile && isFriend" class="edit-button friend-button friends" (click)="toggleFriendship()">
-        <i class="fas fa-user-check"></i> Friends
+      <button *ngIf="!isOwnProfile && !isFriend && hasPendingFriendRequest" 
+              class="edit-button friend-button pending" 
+              disabled>
+        <i class="fas fa-clock"></i> Request Sent
+      </button>
+      <button *ngIf="!isOwnProfile && isFriend" 
+              class="edit-button friend-button friends" 
+              (click)="toggleFriendship()">
+        <i class="fas fa-user-check"></i> Remove Friend
       </button>
     </div>
   </div>
@@ -65,8 +74,12 @@
         <!-- Only show referral code input for own profile -->
         <div *ngIf="isOwnProfile">
           <h3>Enter referral code:</h3>
+          <p class="referral-info">
+            <i class="fas fa-info-circle"></i>
+            You can only use one referral code per account. Enter a friend's referral code to earn bonus points!
+          </p>
           <div class="coupon-box">
-            <input type="text" placeholder="" class="coupon-input" #newReferralInput />
+            <input type="text" placeholder="Enter referral code (e.g., REF123)" class="coupon-input" #newReferralInput />
             <button class="submit-btn" (click)="submitReferral(newReferralInput.value)">
               <i class="fas fa-arrow-right"></i>
             </button>

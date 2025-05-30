@@ -1,4 +1,3 @@
-// src/app/features/login/login.component.ts
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -40,7 +39,7 @@ export class LoginComponent {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: res => {
-        localStorage.setItem(this.authService['storageKey'], res.token);
+        // Token is automatically stored by AuthService
         if (res.userType === 'ADMIN') {
           this.router.navigate(['/admin-page']);
         } else {

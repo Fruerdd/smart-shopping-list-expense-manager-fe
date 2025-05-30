@@ -95,7 +95,11 @@
             <ng-container *ngIf="isMyProfilePage">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
               <li (click)="scrollToSection('analytics')" [ngClass]="{'active': activePage === 'analytics'}">Analytics</li>
-              <li (click)="scrollToSection('notifications')" [ngClass]="{'active': activePage === 'notifications'}">Notifications</li>
+              <li class="notifications-menu-item" (click)="toggleNotifications()">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" *ngIf="unreadNotificationCount > 0">{{unreadNotificationCount}}</span>
+                Notifications
+              </li>
               <li *ngIf="!isMobileView">
                 <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
               </li>
@@ -176,4 +180,12 @@
     [volume]="volume"
     muted
   ></audio>
+
+  <!-- Notifications Component -->
+  <app-notifications 
+    [currentUserId]="loggedInUserId"
+    [isVisible]="showNotifications"
+    (closeNotifications)="closeNotifications()"
+    (notificationCountChanged)="onNotificationCountChanged($event)">
+  </app-notifications>
 </header>
