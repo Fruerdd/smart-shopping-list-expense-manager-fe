@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IgxCategoryChartModule } from 'igniteui-angular-charts';
-import { AnalyticsService, ISaving } from '../../../services/analytics.service';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { ISaving } from "@app/models/user.analytics.model"
+
 import { Observable } from 'rxjs';
 
 @Component({

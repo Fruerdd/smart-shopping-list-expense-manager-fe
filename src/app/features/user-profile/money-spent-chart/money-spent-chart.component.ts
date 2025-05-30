@@ -14,7 +14,9 @@ import {
   IgxLegendModule
 } from 'igniteui-angular-charts';
 
-import { AnalyticsService, IMoneySpent } from '@app/services/analytics.service';
+import { AnalyticsService } from '@app/services/analytics.service';
+import { IMoneySpent } from "@app/models/user.analytics.model"
+
 
 @Component({
   selector: 'app-money-spent-chart',

@@ -12,7 +12,9 @@ import {
   IgxCategoryChartComponent,
   IgxCategoryChartModule
 } from 'igniteui-angular-charts';
-import { AnalyticsService, ICategorySpend } from '@app/services/analytics.service';
+import { AnalyticsService } from '@app/services/analytics.service';
+import { ICategorySpend } from "@app/models/user.analytics.model"
+
 
 @Component({
   selector: 'app-category-spending-chart',

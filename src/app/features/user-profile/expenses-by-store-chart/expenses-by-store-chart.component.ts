@@ -14,7 +14,9 @@ import {
   IgxPieChartModule,
   IgxItemLegendModule
 } from 'igniteui-angular-charts';
-import { AnalyticsService, IStoreExpense } from '@app/services/analytics.service';
+import { AnalyticsService } from '@app/services/analytics.service';
+import { IStoreExpense } from "@app/models/user.analytics.model"
+
 
 @Component({
   selector: 'app-expenses-by-store-chart',

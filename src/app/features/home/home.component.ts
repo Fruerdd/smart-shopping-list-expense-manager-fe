@@ -1,10 +1,17 @@
 // src/app/features/home/home.component.ts
-import { Component, HostListener, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  PLATFORM_ID
+} from '@angular/core';
 import { CommonModule }      from '@angular/common';
 import { HttpClientModule }  from '@angular/common/http';
 import { Router }            from '@angular/router';
 import { UsersService, TestimonialDTO } from '@app/services/users.service';
 import { AuthService }       from '@app/services/auth.service'; 
+import { isPlatformBrowser } from '@angular/common';
 
 interface TestimonialView {
   avatar:  string;
@@ -30,28 +37,34 @@ export class HomeComponent implements OnInit {
   /** track hover state per card index */
   hoverMap: { [i: number]: boolean } = {};
 
-  constructor(private usersSvc: UsersService, private auth: AuthService,
-    private router: Router) {}
+  private isBrowser: boolean;
+
+  constructor(
+    private usersSvc: UsersService,
+    private auth: AuthService,
+    private router: Router,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    // Detect whether we're running in the browser (avoids SSR errors)
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit() {
-    this.onResize();  // set itemsToShow initially
+    // Safe to call onResize even under SSR because it checks isBrowser
+    this.onResize();  
     this.usersSvc.getTestimonials()
       .subscribe(dtos => this.testimonials = dtos.map(this.toView.bind(this)));
   }
 
   getFullImageUrl(avatarPath: string | null | undefined): string | null {
     if (!avatarPath) return null;
-    
-    // If it's already a full URL or base64, return as is
+
     if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
       return avatarPath;
     }
-    
-    // If it's a relative path, prepend the API base URL
     if (avatarPath.startsWith('/uploads/')) {
       return `http://localhost:8080${avatarPath}`;
     }
-    
     return avatarPath;
   }
 
@@ -64,13 +77,19 @@ export class HomeComponent implements OnInit {
   }
 
   /** toggle 1 vs 3 cards as viewport crosses 768px */
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize() {
+    if (!this.isBrowser) {
+      // Skip resizing logic on the server
+      return;
+    }
     this.itemsToShow = window.innerWidth <= 768 ? 1 : 3;
   }
 
   private toView(dto: TestimonialDTO): TestimonialView {
-    const raw   = typeof dto.reviewScore === 'number' && !isNaN(dto.reviewScore) ? dto.reviewScore : 0;
+    const raw   = typeof dto.reviewScore === 'number' && !isNaN(dto.reviewScore)
+      ? dto.reviewScore
+      : 0;
     const score = Math.max(0, Math.min(5, raw));
     return {
       avatar:  this.getFullImageUrl(dto.avatar) || 'assets/avatars/avatar-generic.png',
@@ -80,7 +99,6 @@ export class HomeComponent implements OnInit {
     };
   }
 
-  /** returns exactly itemsToShow testimonials in a wrap-around slice */
   get visibleTestimonials(): TestimonialView[] {
     const n = this.testimonials.length;
     if (!n) return [];
@@ -89,24 +107,21 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  /** step backward by itemsToShow */
   prev() {
     const n = this.testimonials.length;
     this.startIndex = (this.startIndex - this.itemsToShow + n) % n;
   }
 
-  /** step forward by itemsToShow */
   next() {
     const n = this.testimonials.length;
     this.startIndex = (this.startIndex + this.itemsToShow) % n;
   }
 
-  /** Determine star icon based on full/half/empty */
   starClass(i: number, score: number): string {
     const full = Math.floor(score);
     const half = score - full >= 0.5;
-    if (i < full)            return 'fas fa-star';
+    if (i < full)              return 'fas fa-star';
     else if (i === full && half) return 'fas fa-star-half-alt';
-    else                      return 'far fa-star';
+    else                        return 'far fa-star';
   }
 }

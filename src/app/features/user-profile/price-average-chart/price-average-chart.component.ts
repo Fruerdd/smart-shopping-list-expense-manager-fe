@@ -12,8 +12,9 @@ import {
   IgxCategoryChartComponent,
   IgxCategoryChartModule
 } from 'igniteui-angular-charts';
-import { AnalyticsService, IPriceAverage } from '@app/services/analytics.service';
-
+import { AnalyticsService } from '@app/services/analytics.service';
+import { IPriceAverage } from "@app/models/user.analytics.model"
+ 
 @Component({
   selector: 'app-price-average-chart',
   standalone: true,
