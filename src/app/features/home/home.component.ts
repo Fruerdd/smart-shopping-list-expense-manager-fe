@@ -1,18 +1,27 @@
-// src/app/features/home/home.component.ts
-import { Component, HostListener, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  PLATFORM_ID
+} from '@angular/core';
 import { CommonModule }      from '@angular/common';
 import { HttpClientModule }  from '@angular/common/http';
 import { Router }            from '@angular/router';
-import { UsersService, TestimonialDTO, UserDTO } from '@app/services/users.service';
+import {
+  UsersService,
+  TestimonialDTO
+} from '@app/services/users.service';
 import { UserProfileService } from '@app/services/user-profile.service';
-import { AuthService }       from '@app/services/auth.service'; 
-import { forkJoin, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { AuthService }       from '@app/services/auth.service';
+import { isPlatformBrowser } from '@angular/common';
+import { forkJoin, of }      from 'rxjs';
+import { map, catchError }   from 'rxjs/operators';
 
 interface TestimonialView {
   avatar:  string;
   name:    string;
-  score:   number;      // 0–5, can be fractional
+  score:   number;      
   context: string;
 }
 
@@ -26,155 +35,119 @@ interface TestimonialView {
 export class HomeComponent implements OnInit {
   testimonials: TestimonialView[] = [];
   startIndex   = 0;
-
-  /** Number of cards visible at once (1 on mobile, 3 on desktop) */
-  itemsToShow = 3;
-
-  /** track hover state per card index */
+  itemsToShow  = 3;
   hoverMap: { [i: number]: boolean } = {};
+  private isBrowser: boolean;
 
   constructor(
-    private usersSvc: UsersService, 
+    private usersSvc: UsersService,
     private userProfileService: UserProfileService,
     private auth: AuthService,
-    private router: Router
-  ) {}
-
-  ngOnInit() {
-    this.onResize();  // set itemsToShow initially
-    this.loadTestimonialsWithAvatars();
+    private router: Router,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  private loadTestimonialsWithAvatars() {
+  ngOnInit() {
+    // SSR‐safe resize logic
+    this.onResize();
+
+    // load & enrich testimonials
     this.usersSvc.getTestimonials().subscribe({
-      next: (testimonials) => {
-        // For each testimonial, try to find the user and get their avatar
-        const testimonialPromises = testimonials.map(testimonial => 
-          this.enrichTestimonialWithUserAvatar(testimonial)
-        );
-        
-        forkJoin(testimonialPromises).subscribe({
-          next: (enrichedTestimonials) => {
-            this.testimonials = enrichedTestimonials;
-          },
-          error: (error) => {
-            console.error('Error enriching testimonials:', error);
-            // Fallback to basic testimonials
-            this.testimonials = testimonials.map(this.toView.bind(this));
-          }
-        });
-      },
-      error: (error) => {
-        console.error('Error loading testimonials:', error);
+      next: dtos => this.loadWithAvatars(dtos),
+      error: err => {
+        console.error('Failed to load testimonials:', err);
         this.testimonials = [];
       }
     });
   }
 
-  private enrichTestimonialWithUserAvatar(testimonial: TestimonialDTO) {
-    // Use the same search approach as user profile component
-    return this.userProfileService.searchUsers(testimonial.name).pipe(
-      map((users) => {
-        // Find exact match by name
-        const matchingUser = users.find(user => 
-          user.name.toLowerCase() === testimonial.name.toLowerCase()
-        );
-        
-        const raw = typeof testimonial.reviewScore === 'number' && !isNaN(testimonial.reviewScore) ? testimonial.reviewScore : 0;
-        const score = Math.max(0, Math.min(5, raw));
-        
-        const avatarUrl = matchingUser?.avatar 
-          ? this.getFullImageUrl(matchingUser.avatar) || '/assets/images/avatar.png'
-          : '/assets/images/avatar.png';
-
-        return {
-          avatar: avatarUrl,
-          name: testimonial.name,
-          score,
-          context: testimonial.reviewContext
-        };
-      }),
-      catchError((error) => {
-        console.error(`Error searching for user ${testimonial.name}:`, error);
-        // Fallback to basic testimonial without user avatar
-        return of(this.toView(testimonial));
-      })
+  private loadWithAvatars(dtos: TestimonialDTO[]) {
+    const calls = dtos.map(dto =>
+      this.userProfileService.searchUsers(dto.name).pipe(
+        map(users => {
+          // pick exact name match
+          const match = users.find(u =>
+            u.name.toLowerCase() === dto.name.toLowerCase()
+          );
+          return this.toView(dto, match?.avatar);
+        }),
+        catchError(err => {
+          console.error(`Error enriching ${dto.name}:`, err);
+          return of(this.toView(dto, dto.avatar));
+        })
+      )
     );
+
+    forkJoin(calls).subscribe({
+      next: views => this.testimonials = views,
+      error: err => {
+        console.error('Error during forkJoin:', err);
+        // fallback to raw views
+        this.testimonials = dtos.map(dto => this.toView(dto, dto.avatar));
+      }
+    });
   }
 
-  getFullImageUrl(avatarPath: string | null | undefined): string | null {
-    if (!avatarPath) return null;
-    
-    // If it's already a full URL or base64, return as is
-    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
-      return avatarPath;
-    }
-    
-    // If it's a relative path, prepend the API base URL
-    if (avatarPath.startsWith('/uploads/')) {
-      return `http://localhost:8080${avatarPath}`;
-    }
-    
-    return avatarPath;
-  }
-
-  onStartShopping() {
-    if (this.auth.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.router.navigate(['/signup']);
-    }
-  }
-
-  /** toggle 1 vs 3 cards as viewport crosses 768px */
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.itemsToShow = window.innerWidth <= 768 ? 1 : 3;
-  }
-
-  private toView(dto: TestimonialDTO): TestimonialView {
-    const raw   = typeof dto.reviewScore === 'number' && !isNaN(dto.reviewScore) ? dto.reviewScore : 0;
+  private toView(dto: TestimonialDTO, avatarPath?: string|null) : TestimonialView {
+    const raw   = typeof dto.reviewScore === 'number' && !isNaN(dto.reviewScore)
+      ? dto.reviewScore : 0;
     const score = Math.max(0, Math.min(5, raw));
+    const avatarUrl = this.getFullImageUrl(avatarPath) || '/assets/images/avatar.png';
+
     return {
-      avatar:  this.getFullImageUrl(dto.avatar) || '/assets/images/avatar.png',
+      avatar:  avatarUrl,
       name:    dto.name,
       score,
       context: dto.reviewContext
     };
   }
 
-  /** returns exactly itemsToShow testimonials in a wrap-around slice */
+  getFullImageUrl(path?: string|null): string|null {
+    if (!path) return null;
+    if (path.startsWith('http') || path.startsWith('data:')) return path;
+    if (path.startsWith('/uploads/')) return `http://localhost:8080${path}`;
+    return path;
+  }
+
+  onStartShopping() {
+    this.router.navigate([ this.auth.isLoggedIn() ? '/dashboard' : '/signup' ]);
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (!this.isBrowser) return;
+    this.itemsToShow = window.innerWidth <= 768 ? 1 : 3;
+  }
+
   get visibleTestimonials(): TestimonialView[] {
     const n = this.testimonials.length;
-    if (!n) return [];
+    if (n === 0) return [];
     return Array.from({ length: this.itemsToShow }, (_, i) =>
       this.testimonials[(this.startIndex + i) % n]
     );
   }
 
-  /** step backward by itemsToShow */
   prev() {
     const n = this.testimonials.length;
     this.startIndex = (this.startIndex - this.itemsToShow + n) % n;
   }
 
-  /** step forward by itemsToShow */
   next() {
     const n = this.testimonials.length;
     this.startIndex = (this.startIndex + this.itemsToShow) % n;
   }
 
-  /** Determine star icon based on full/half/empty */
   starClass(i: number, score: number): string {
     const full = Math.floor(score);
     const half = score - full >= 0.5;
     if (i < full)            return 'fas fa-star';
-    else if (i === full && half) return 'fas fa-star-half-alt';
-    else                      return 'far fa-star';
+    if (i === full && half)  return 'fas fa-star-half-alt';
+    return 'far fa-star';
   }
 
-  setDefaultAvatar(event: Event) {
-    const target = event.target as HTMLImageElement;
-    target.src = '/assets/images/avatar.png';
+  setDefaultAvatar(evt: Event) {
+    (evt.target as HTMLImageElement).src = '/assets/images/avatar.png';
   }
 }

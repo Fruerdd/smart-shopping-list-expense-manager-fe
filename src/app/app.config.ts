@@ -6,14 +6,11 @@ import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/
 import { jwtInterceptor } from './interceptors/jwt.interceptor';
 
 export const appConfig = {
-  providers: [
-    provideRouter(routes, withRouterConfig({
-      onSameUrlNavigation: 'reload'
-    })),
-    provideAnimations(),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([jwtInterceptor])
-    )
-  ]
+	providers: [
+		provideRouter(routes, withRouterConfig({
+			onSameUrlNavigation: 'reload'
+		})),
+		provideAnimations(),
+		provideHttpClient(withFetch(), withInterceptors([jwtInterceptor]))
+	]
 };

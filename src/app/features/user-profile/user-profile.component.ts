@@ -3,18 +3,17 @@ import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {UserProfileService} from '@app/services/user-profile.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MoneySpentChartComponent} from '@app/charts/money-spent-chart/money-spent-chart.component';
-import {AveragePriceChartComponent} from '@app/charts/average-price-chart/average-price-chart.component';
-import {ExpensesByStoreChartComponent} from '@app/charts/expenses-by-store-chart/expenses-by-store-chart.component';
-import {AverageSavedChartComponent} from '@app/charts/average-saved-chart/average-saved-chart.component';
-import {CategorySpendingChartComponent} from '@app/charts/category-spending-chart/category-spending-chart.component';
 import {QRCodeComponent} from 'angularx-qrcode';
 import {AuthService} from '@app/services/auth.service';
 import { UserDTO } from '@app/models/user.dto';
 import { ReviewDTO } from '@app/models/review.dto';
 import { forkJoin, debounceTime, distinctUntilChanged, switchMap, of, Subscription } from 'rxjs';
 import { Subject } from 'rxjs';
-
+import { MoneySpentChartComponent } from './money-spent-chart/money-spent-chart.component';
+import { ExpensesByStoreChartComponent } from './expenses-by-store-chart/expenses-by-store-chart.component';
+import { PriceAverageChartComponent } from './price-average-chart/price-average-chart.component';
+import { AverageSavedChartComponent } from './average-saved-chart/average-saved-chart.component';
+import { CategorySpendingChartComponent } from './category-spending-chart/category-spending-chart.component';
 @Component({
   selector: 'app-user-profile',
   standalone: true,
@@ -23,10 +22,10 @@ import { Subject } from 'rxjs';
     FormsModule,
     QRCodeComponent,
     MoneySpentChartComponent,
-    AveragePriceChartComponent,
+    PriceAverageChartComponent,
     ExpensesByStoreChartComponent,
     AverageSavedChartComponent,
-    CategorySpendingChartComponent,
+    CategorySpendingChartComponent
   ],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],

@@ -1021,3 +1021,58 @@
     height: 40px;
   }
 }
+
+
+.analytics-grid {
+  margin-top: 2rem;
+  max-width: 1200px;    /* same as .profile-content-wrapper */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;      /* match your horizontal page padding */
+}
+.analytics-grid h2 {
+  margin-bottom: 1rem;
+}
+
+/* 5‐column responsive grid */
+/* 2-column responsive grid that flows like your screenshot */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: auto;
+  grid-gap: 1rem;
+}
+
+/* Utility class: spans 2 columns on desktop */
+.grid-span-2 {
+  grid-column: span 2;
+}
+
+/* Make each chart fill its card */
+.chart-wrapper {
+  flex: 1;           /* takes up all available vertical space */
+  min-height: 300px; /* your desired minimum */
+  position: relative;/* for absolute‐positioned chart inside */
+}
+
+/* make every IgniteUI chart fill that wrapper */
+.chart-wrapper igx-category-chart,
+.chart-wrapper igx-pie-chart {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card-grid .card {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 992px) {
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}

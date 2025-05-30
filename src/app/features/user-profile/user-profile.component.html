@@ -283,24 +283,55 @@
     </div>
   </div>
 </div>
+<!-- ===================================== -->
+<!-- Budget & Expense Analytics Section -->
+<!-- ===================================== -->
+<!-- user-profile.component.html -->
 
-<div id="analytics" class="charts-grid" *ngIf="isOwnProfile">
-  <!-- Prvi red -->
-  <div class="grid-item grid-span-2">
-    <app-money-spent-chart *ngIf="user" [userId]="user.id"></app-money-spent-chart>
-  </div>
-  <div class="grid-item">
-    <app-category-spending-chart *ngIf="user" [userId]="user.id"></app-category-spending-chart>
-  </div>
+<section class="analytics-grid" *ngIf="user && !loading">
+  <h2>Budget & Expense Analytics</h2>
 
-  <!-- Drugi red -->
-  <div class="grid-item">
-    <app-average-price-chart *ngIf="user" [userId]="user.id"></app-average-price-chart>
+  <div class="card-grid">
+
+    <!-- 1) Money Spent Over Time spans two columns -->
+    <div class="card money-spent-card grid-span-2">
+      <h3>Money Spent Over Time</h3>
+      <div class="chart-wrapper">
+        <app-money-spent-chart></app-money-spent-chart>
+      </div>
+    </div>
+
+    <!-- 2) Spending Per Item Category on the right of the line chart -->
+    <div class="card category-spending-card">
+      <h3>Spending Per Item Category</h3>
+      <div class="chart-wrapper">
+        <app-category-spending-chart></app-category-spending-chart>
+      </div>
+    </div>
+
+    <!-- 3) Price Averages of Frequently Bought Items on the next row, left -->
+    <div class="card price-average-card">
+      <h3>Price Averages of Frequently Bought Items</h3>
+      <div class="chart-wrapper">
+        <app-price-average-chart></app-price-average-chart>
+      </div>
+    </div>
+
+    <!-- 4) Expense Breakdown by Store, next to price averages -->
+    <div class="card expenses-by-store-card">
+      <h3>Expense Breakdown by Store</h3>
+      <div class="chart-wrapper">
+        <app-expenses-by-store-chart></app-expenses-by-store-chart>
+      </div>
+    </div>
+
+    <!-- 5) Average Money Saved Per Month spans full width on its own row -->
+    <div class="card average-saved-card grid-span-2">
+      <h3>Average Money Saved Per Month</h3>
+      <div class="chart-wrapper">
+        <app-average-saved-chart></app-average-saved-chart>
+      </div>
+    </div>
+
   </div>
-  <div class="grid-item">
-    <app-expenses-by-store-chart *ngIf="user" [userId]="user.id"></app-expenses-by-store-chart>
-  </div>
-  <div class="grid-item">
-    <app-average-saved-chart *ngIf="user" [userId]="user.id"></app-average-saved-chart>
-  </div>
-</div>
+</section>
