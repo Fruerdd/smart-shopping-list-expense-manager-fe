@@ -42,7 +42,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   isEditingReview = false;
   editedReview: ReviewDTO | null = null;
 
-  // Search functionality
   searchQuery: string = '';
   searchResults: UserDTO[] = [];
   isSearching = false;
@@ -50,9 +49,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private routeSubscription: Subscription = new Subscription();
 
-  // Profile viewing logic
   isOwnProfile = false;
-  isFriend = false; // This will be determined when we implement friend relationships
+  isFriend = false;
+  hasPendingFriendRequest = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -61,7 +60,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService
   ) {
-    // Setup search with debounce
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -94,12 +92,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   getFullImageUrl(avatarPath: string | null | undefined): string | null {
     if (!avatarPath) return null;
     
-    // If it's already a full URL or base64, return as is
     if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
       return avatarPath;
     }
     
-    // If it's a relative path, prepend the API base URL
     if (avatarPath.startsWith('/uploads/')) {
       return `http://localhost:8080${avatarPath}`;
     }
@@ -107,7 +103,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return avatarPath;
   }
 
-  // Get loyalty tier based on points
   getLoyaltyTier(points: number): string {
     if (points >= 1000) return 'GOLD';
     if (points >= 500) return 'SILVER';
@@ -131,11 +126,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   viewUserProfile(userId: string) {
-    // Clear search state
     this.showSearchResults = false;
     this.searchQuery = '';
-    
-    // Navigate to the user profile
     this.router.navigate(['/user-profile', userId]);
   }
 
@@ -151,15 +143,46 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  // This method will be implemented later for friend functionality
   toggleFriendship(): void {
-    // TODO: Implement add/remove friend functionality
+    if (!this.currentUserId || !this.user?.id) {
+      alert('Unable to process friend request. Please try again.');
+      return;
+    }
+
+    if (this.isFriend) {
+      this.userProfileService.removeFriend(this.currentUserId, this.user.id).subscribe({
+        next: (response) => {
+          console.log('Friend removed:', response);
+          this.isFriend = false;
+          this.hasPendingFriendRequest = false;
+          this.loadUserData(this.user!.id);
+        },
+        error: (error) => {
+          console.error('Error removing friend:', error);
+          alert('Failed to remove friend. Please try again.');
+        }
+      });
+    } else {
+      this.userProfileService.sendFriendRequest(this.currentUserId, this.user.id).subscribe({
+        next: (response) => {
+          console.log('Friend request sent:', response);
+          this.hasPendingFriendRequest = true;
+        },
+        error: (error) => {
+          console.error('Error sending friend request:', error);
+          if (error.message && error.message.includes('already exists')) {
+            alert('Friend request already sent or you are already friends.');
+          } else {
+            alert('Failed to send friend request. Please try again.');
+          }
+        }
+      });
+    }
   }
 
   copyCoupon(couponCode: string): void {
     if (isPlatformBrowser(this.platformId)) {
       navigator.clipboard.writeText(couponCode).then(() => {
-        alert('Coupon code copied to clipboard!');
       }).catch(err => {
         console.error('Failed to copy text: ', err);
       });
@@ -168,7 +191,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   submitReferral(referralCode: string): void {
     if (!referralCode.trim()) {
-      alert('Please enter a referral code');
       return;
     }
     
@@ -177,15 +199,24 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.userProfileService.applyReferralCode(this.user.id, referralCode).subscribe({
+    const cleanedCode = referralCode.trim().toUpperCase();
+
+    this.userProfileService.applyReferralCode(this.user.id, cleanedCode).subscribe({
       next: (response) => {
-        alert(response);
-        // Reload user data to get updated points
         this.loadUserData(this.user!.id);
       },
       error: (error) => {
         console.error('Error applying referral code:', error);
-        alert('Failed to apply referral code. Please try again.');
+        
+        let errorMessage = error.message || 'Failed to apply referral code. Please try again.';
+        
+        if (errorMessage.includes('already used a referral code') || 
+            errorMessage.includes('already been referred') ||
+            errorMessage.includes('already have a referral')) {
+          errorMessage = 'You have already been referred by another user. Each user can only be referred once.';
+        }
+        
+        alert(errorMessage);
       }
     });
   }
@@ -220,7 +251,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.userReview = updatedReview;
         this.isEditingReview = false;
         this.editedReview = null;
-        alert('Review updated successfully!');
       },
       error: (error) => {
         console.error('Error updating review:', error);
@@ -242,7 +272,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   private loadUserData(userId: string): void {
     this.loading = true;
     
-    // Determine if this is the user's own profile
     this.isOwnProfile = this.currentUserId === userId;
     
     forkJoin({
@@ -257,7 +286,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.loyaltyPoints = data.loyaltyPoints;
         this.userReview = data.reviews;
         
-        // Check if current user is friends with this user
         if (!this.isOwnProfile && this.currentUserId) {
           this.isFriend = this.friends.some(friend => friend.id === this.currentUserId);
         } else {
@@ -272,7 +300,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           next: (profile) => {
             this.user = profile;
             this.isOwnProfile = this.currentUserId === userId;
-            this.isFriend = false; // Can't determine friendship without friends data
+            this.isFriend = false;
             this.loading = false;
           },
           error: (profileError) => {
@@ -290,14 +318,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.userProfileService.getCurrentUserProfile().subscribe({
       next: (data) => {
-        this.currentUserId = data.id; // Set the actual UUID from the API response
+        this.currentUserId = data.id;
         
-        // Only navigate if we're not already on the correct route
         const currentRoute = this.route.snapshot.params['id'];
         if (currentRoute !== data.id) {
           this.router.navigate(['/user-profile', this.currentUserId]);
         } else {
-          // We're already on the correct route, load the full user data
           this.loadUserData(data.id);
         }
       },
@@ -313,9 +339,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   private loadCurrentUserProfileThenNavigate(targetUserId: string): void {
     this.userProfileService.getCurrentUserProfile().subscribe({
       next: (data) => {
-        this.currentUserId = data.id; // Set the actual UUID from the API response
+        this.currentUserId = data.id;
         
-        // Now load the target user's data
         this.loadUserData(targetUserId);
       },
       error: (error) => {
@@ -336,27 +361,21 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       }
 
       this.extractUserIdFromToken();
-
-      // Subscribe to route parameter changes
       this.routeSubscription = this.route.params.subscribe(params => {
         const routeId = params['id'];
 
-        // If no route ID or invalid UUID, load current user profile
         if (!routeId || !this.isValidUUID(routeId)) {
           this.loadCurrentUserProfile();
           return;
         }
 
-        // If we don't have currentUserId yet (email-based token case)
         if (!this.currentUserId) {
           this.loadCurrentUserProfileThenNavigate(routeId);
           return;
         }
 
-        // Set isOwnProfile based on comparison
         this.isOwnProfile = (this.currentUserId === routeId);
 
-        // Load data for the requested user
         this.loadUserData(routeId);
       });
     }
@@ -369,7 +388,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         const tokenPayload = JSON.parse(atob(token.split('.')[1]));
         let possibleUserId = tokenPayload.id || tokenPayload.userId || tokenPayload.sub || null;
 
-        // If we didn't find it in token, check localStorage
         if (!possibleUserId) {
           const userInfo = localStorage.getItem('userInfo');
           if (userInfo) {
@@ -378,13 +396,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           }
         }
 
-        // Check if we have a valid UUID
         if (possibleUserId && this.isValidUUID(possibleUserId)) {
           this.currentUserId = possibleUserId;
         } else if (possibleUserId) {
-          // If it's not a UUID (probably an email), we'll need to get the actual user ID
-          // by calling the current user profile endpoint
-          this.currentUserId = null; // Set to null, loadCurrentUserProfile will handle it
+          this.currentUserId = null;
         } else {
           this.currentUserId = null;
         }
@@ -409,7 +424,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   private isValidUUID(str: string): boolean {
-    // accept any dashed 36-char id so the app works even if backend does not issue RFC-4122 UUIDs
     return /^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$/i.test(str);
   }
 

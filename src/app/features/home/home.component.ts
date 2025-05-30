@@ -1,4 +1,3 @@
-// src/app/features/home/home.component.ts
 import {
   Component,
   HostListener,
@@ -9,14 +8,20 @@ import {
 import { CommonModule }      from '@angular/common';
 import { HttpClientModule }  from '@angular/common/http';
 import { Router }            from '@angular/router';
-import { UsersService, TestimonialDTO } from '@app/services/users.service';
-import { AuthService }       from '@app/services/auth.service'; 
+import {
+  UsersService,
+  TestimonialDTO
+} from '@app/services/users.service';
+import { UserProfileService } from '@app/services/user-profile.service';
+import { AuthService }       from '@app/services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
+import { forkJoin, of }      from 'rxjs';
+import { map, catchError }   from 'rxjs/operators';
 
 interface TestimonialView {
   avatar:  string;
   name:    string;
-  score:   number;      // 0–5, can be fractional
+  score:   number;      
   context: string;
 }
 
@@ -30,78 +35,95 @@ interface TestimonialView {
 export class HomeComponent implements OnInit {
   testimonials: TestimonialView[] = [];
   startIndex   = 0;
-
-  /** Number of cards visible at once (1 on mobile, 3 on desktop) */
-  itemsToShow = 3;
-
-  /** track hover state per card index */
+  itemsToShow  = 3;
   hoverMap: { [i: number]: boolean } = {};
-
   private isBrowser: boolean;
 
   constructor(
     private usersSvc: UsersService,
+    private userProfileService: UserProfileService,
     private auth: AuthService,
     private router: Router,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
-    // Detect whether we're running in the browser (avoids SSR errors)
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit() {
-    // Safe to call onResize even under SSR because it checks isBrowser
-    this.onResize();  
-    this.usersSvc.getTestimonials()
-      .subscribe(dtos => this.testimonials = dtos.map(this.toView.bind(this)));
+    // SSR‐safe resize logic
+    this.onResize();
+
+    // load & enrich testimonials
+    this.usersSvc.getTestimonials().subscribe({
+      next: dtos => this.loadWithAvatars(dtos),
+      error: err => {
+        console.error('Failed to load testimonials:', err);
+        this.testimonials = [];
+      }
+    });
   }
 
-  getFullImageUrl(avatarPath: string | null | undefined): string | null {
-    if (!avatarPath) return null;
+  private loadWithAvatars(dtos: TestimonialDTO[]) {
+    const calls = dtos.map(dto =>
+      this.userProfileService.searchUsers(dto.name).pipe(
+        map(users => {
+          // pick exact name match
+          const match = users.find(u =>
+            u.name.toLowerCase() === dto.name.toLowerCase()
+          );
+          return this.toView(dto, match?.avatar);
+        }),
+        catchError(err => {
+          console.error(`Error enriching ${dto.name}:`, err);
+          return of(this.toView(dto, dto.avatar));
+        })
+      )
+    );
 
-    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
-      return avatarPath;
-    }
-    if (avatarPath.startsWith('/uploads/')) {
-      return `http://localhost:8080${avatarPath}`;
-    }
-    return avatarPath;
+    forkJoin(calls).subscribe({
+      next: views => this.testimonials = views,
+      error: err => {
+        console.error('Error during forkJoin:', err);
+        // fallback to raw views
+        this.testimonials = dtos.map(dto => this.toView(dto, dto.avatar));
+      }
+    });
   }
 
-  onStartShopping() {
-    if (this.auth.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.router.navigate(['/signup']);
-    }
-  }
-
-  /** toggle 1 vs 3 cards as viewport crosses 768px */
-  @HostListener('window:resize')
-  onResize() {
-    if (!this.isBrowser) {
-      // Skip resizing logic on the server
-      return;
-    }
-    this.itemsToShow = window.innerWidth <= 768 ? 1 : 3;
-  }
-
-  private toView(dto: TestimonialDTO): TestimonialView {
+  private toView(dto: TestimonialDTO, avatarPath?: string|null) : TestimonialView {
     const raw   = typeof dto.reviewScore === 'number' && !isNaN(dto.reviewScore)
-      ? dto.reviewScore
-      : 0;
+      ? dto.reviewScore : 0;
     const score = Math.max(0, Math.min(5, raw));
+    const avatarUrl = this.getFullImageUrl(avatarPath) || '/assets/images/avatar.png';
+
     return {
-      avatar:  this.getFullImageUrl(dto.avatar) || 'assets/avatars/avatar-generic.png',
+      avatar:  avatarUrl,
       name:    dto.name,
       score,
       context: dto.reviewContext
     };
   }
 
+  getFullImageUrl(path?: string|null): string|null {
+    if (!path) return null;
+    if (path.startsWith('http') || path.startsWith('data:')) return path;
+    if (path.startsWith('/uploads/')) return `http://localhost:8080${path}`;
+    return path;
+  }
+
+  onStartShopping() {
+    this.router.navigate([ this.auth.isLoggedIn() ? '/dashboard' : '/signup' ]);
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (!this.isBrowser) return;
+    this.itemsToShow = window.innerWidth <= 768 ? 1 : 3;
+  }
+
   get visibleTestimonials(): TestimonialView[] {
     const n = this.testimonials.length;
-    if (!n) return [];
+    if (n === 0) return [];
     return Array.from({ length: this.itemsToShow }, (_, i) =>
       this.testimonials[(this.startIndex + i) % n]
     );
@@ -120,8 +142,12 @@ export class HomeComponent implements OnInit {
   starClass(i: number, score: number): string {
     const full = Math.floor(score);
     const half = score - full >= 0.5;
-    if (i < full)              return 'fas fa-star';
-    else if (i === full && half) return 'fas fa-star-half-alt';
-    else                        return 'far fa-star';
+    if (i < full)            return 'fas fa-star';
+    if (i === full && half)  return 'fas fa-star-half-alt';
+    return 'far fa-star';
+  }
+
+  setDefaultAvatar(evt: Event) {
+    (evt.target as HTMLImageElement).src = '/assets/images/avatar.png';
   }
 }

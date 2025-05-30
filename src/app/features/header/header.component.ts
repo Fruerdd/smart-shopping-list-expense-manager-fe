@@ -6,7 +6,8 @@ import {
   AfterViewInit,
   OnInit,
   ElementRef,
-  ViewChild
+  ViewChild,
+  OnDestroy
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
@@ -15,15 +16,28 @@ import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { AuthService } from '@app/services/auth.service';
+import { UserProfileService } from '@app/services/user-profile.service';
+import { NotificationsComponent } from '@app/features/notifications/notifications.component';
+import { Subscription, interval } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, MatIconButton, MatIcon, MatIconModule]
+  imports: [
+    CommonModule, 
+    RouterLink, 
+    RouterLinkActive, 
+    FormsModule, 
+    MatIconButton, 
+    MatIcon, 
+    MatIconModule,
+    NotificationsComponent
+  ]
 })
-export class HeaderComponent implements AfterViewInit, OnInit {
+export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('backgroundMusic') backgroundMusicRef!: ElementRef;
   @ViewChild('musicPopupDiv') musicPopupDivRef!: ElementRef;
   isPlaying = false;
@@ -45,10 +59,16 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   currentProfileUserId: string | null = null;
   userType: string | null = null;
 
+  // Notification properties
+  showNotifications = false;
+  unreadNotificationCount = 0;
+  private notificationSubscription: Subscription | undefined;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private userProfileService: UserProfileService
   ) {}
 
   get isLoggedIn(): boolean {
@@ -62,12 +82,12 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.checkViewport();
 
     if (isPlatformBrowser(this.platformId) && this.isLoggedIn) {
-      // Try to get user information from token or localStorage
       this.parseUserInfo();
       
-      // If we don't have a valid logged in user ID, get it from API
       if (!this.loggedInUserId) {
         this.getCurrentUserIdFromApi();
+      } else {
+        this.initializeNotifications();
       }
     }
 
@@ -83,10 +103,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   parseUserInfo(): void {
     try {
-      // Get user information from JWT token if possible
       const token = this.authService.getToken();
       if (token) {
-        // Basic parsing of JWT token to get user info
         const tokenPayload = JSON.parse(atob(token.split('.')[1]));
         if (tokenPayload) {
           this.loggedInUserId = tokenPayload.id || tokenPayload.userId || null;
@@ -95,7 +113,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         }
       }
 
-      // If you have additional user info in localStorage, parse it here
       const storedUser = localStorage.getItem('userInfo');
       if (storedUser) {
         const user = JSON.parse(storedUser);
@@ -104,9 +121,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         this.isAdmin = this.userType === 'ADMIN' || this.isAdmin;
       }
 
-      // If we don't have a proper UUID, try to get it from the API
       if (this.loggedInUserId && !this.isValidUUID(this.loggedInUserId)) {
-        // The token might contain an email instead of UUID, we'll need to handle this case
         this.loggedInUserId = null;
       }
     } catch (error) {
@@ -122,7 +137,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.isPlaying = !this.isPlaying;
     if (this.isPlaying) {
       this.playMusic();
-      this.backgroundMusicRef.nativeElement.muted = true; // Mute the music
+      this.backgroundMusicRef.nativeElement.muted = true;
     } else {
       this.pauseMusic();
     }
@@ -150,7 +165,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   private updateActivePageFromUrl(url: string): void {
-    // Extract profile user ID from URL if it's a profile page
     const profileMatch = url.match(/^\/user-profile\/([^\/]+)/);
     if (profileMatch) {
       this.currentProfileUserId = profileMatch[1];
@@ -209,6 +223,14 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         this.closeMenu();
       }
     }
+
+    if (this.showNotifications && event.target instanceof Element) {
+      const clickedInsideNotifications = event.target.closest('.notifications-popup');
+      const clickedNotificationButton = event.target.closest('.notifications-menu-item');
+      if (!clickedInsideNotifications && !clickedNotificationButton) {
+        this.closeNotifications();
+      }
+    }
   }
 
   checkViewport(): void {
@@ -264,13 +286,67 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   private getCurrentUserIdFromApi(): void {
-    // This is a simplified version - you may need to inject UserProfileService
-    // For now, we'll try to get it from the current route if available
-    const currentUrl = this.router.url;
-    const profileMatch = currentUrl.match(/^\/user-profile\/([^\/]+)/);
-    if (profileMatch && this.isValidUUID(profileMatch[1])) {
-      // If we're on a profile page and don't know our own ID, we can't determine ownership
-      // The profile component will handle getting the current user ID
+    this.userProfileService.getCurrentUserProfile().subscribe({
+      next: (user) => {
+        this.loggedInUserId = user.id;
+        this.initializeNotifications();
+      },
+      error: (error) => {
+        console.error('Error getting current user ID:', error);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.notificationSubscription?.unsubscribe();
+  }
+
+  private loadNotificationCount() {
+    if (!this.loggedInUserId) return;
+    
+    this.userProfileService.getUnreadNotificationCount(this.loggedInUserId).subscribe({
+      next: (count) => {
+        this.unreadNotificationCount = count;
+      },
+      error: (error) => {
+        console.error('Error loading notification count:', error);
+      }
+    });
+  }
+
+  private startNotificationPolling() {
+    if (!this.loggedInUserId) return;
+    
+    this.notificationSubscription = interval(30000)
+      .pipe(
+        switchMap(() => this.userProfileService.getUnreadNotificationCount(this.loggedInUserId!))
+      )
+      .subscribe({
+        next: (count) => {
+          this.unreadNotificationCount = count;
+        },
+        error: (error) => {
+          console.error('Error polling notification count:', error);
+        }
+      });
+  }
+
+  toggleNotifications() {
+    this.showNotifications = !this.showNotifications;
+  }
+
+  closeNotifications() {
+    this.showNotifications = false;
+  }
+
+  onNotificationCountChanged(count: number) {
+    this.unreadNotificationCount = count;
+  }
+
+  private initializeNotifications() {
+    if (this.loggedInUserId) {
+      this.loadNotificationCount();
+      this.startNotificationPolling();
     }
   }
 }
