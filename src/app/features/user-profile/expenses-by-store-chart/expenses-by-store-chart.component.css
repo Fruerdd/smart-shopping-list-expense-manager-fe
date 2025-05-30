@@ -1,0 +1,41 @@
+/* expenses-by-store-chart.component.css */
+/* same flex + absolute pattern as the other charts */
+
+.chart-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 300px;
+    position: relative;
+  }
+  
+  .chart-wrapper igx-pie-chart {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 60%;
+    width: 100%;
+  }
+  
+  .chart-wrapper igx-item-legend {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    overflow-y: auto;
+  }
+  @media (min-width: 1024px) {
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+  
+    /* first row: money-spent & category-spending sit in col 1 & 2 */
+  
+    /* second row: each of these spans both columns */
+    .price-average-card,
+    .expenses-by-store-card {
+      grid-column: 1 / -1;
+    }
+  
+    /* third row: average-saved was already full-width via .grid-span-2 */
+  }

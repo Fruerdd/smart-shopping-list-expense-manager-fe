@@ -1,0 +1,13 @@
+<!-- category-spending-chart.component.html -->
+<div class="chart-wrapper">
+    <igx-category-chart
+      #chart
+      chartType="Column"
+      [dataSource]="data"
+      labelMemberPath="category"
+      valueMemberPath="spent"
+      width="100%"
+      height="100%">
+    </igx-category-chart>
+  </div>
+  

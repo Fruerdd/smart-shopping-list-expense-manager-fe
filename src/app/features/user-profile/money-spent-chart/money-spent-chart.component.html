@@ -1,0 +1,23 @@
+<div class="chart-card">
+    <div class="card-header">
+      <span class="chart-title">Money Spent Over Time</span>
+      <div class="year-toggle">
+        <span class="year-label active">This year</span>
+        <span class="year-label">Last year</span>
+      </div>
+    </div>
+    
+    <div class="chart-container" *ngIf="isBrowser" style="height:300px">
+      <igx-category-chart
+        width="100%"
+        height="100%"
+        chartType="Line"
+        [dataSource]="moneySpentData"
+        [brushes]="['#4db6ac', '#ff8a65']"
+        [outlines]="['#26a69a', '#ff7043']"
+        isTransitionInEnabled="true"
+        isHorizontalZoomEnabled="false"
+        isVerticalZoomEnabled="false">
+      </igx-category-chart>
+    </div>
+  </div>
