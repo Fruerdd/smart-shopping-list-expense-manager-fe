@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface IProduct {
   rank:        number;
@@ -50,8 +51,8 @@ export interface ITopProduct {
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private readonly base = 'http://localhost:8080/api/products';
-  private readonly analyticsBase = `${this.base}/analytics`;
+  private readonly base = environment;
+  private readonly analyticsBase = `${this.base}/api/products/analytics`;
 
   constructor(private http: HttpClient) {}
 

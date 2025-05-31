@@ -25,6 +25,7 @@ export interface RegisterDTO {
   providedIn: 'root'
 })
 export class AuthService {
+  
   private apiUrl = environment.apiUrl + '/auth';
   private userApiUrl = environment.apiUrl + '/user';
   private storageKey = 'token';

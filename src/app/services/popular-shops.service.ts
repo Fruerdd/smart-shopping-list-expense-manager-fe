@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient }   from '@angular/common/http';
 import { Observable }   from 'rxjs';
 import { map }          from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+
 
 export interface PopularShopDataItem {
   shop:  string;
@@ -15,13 +17,14 @@ interface PopularShopDTO {
 
 @Injectable({ providedIn: 'root' })
 export class PopularShopsService {
-  private readonly base = 'http://localhost:8080/api/stores';
+  private base = environment;
+  private readonly statsUrl = `${this.base}/api/stores`;
 
   constructor(private http: HttpClient) {}
 
   getPopularShopsData(): Observable<PopularShopDataItem[]> {
     return this.http
-      .get<PopularShopDTO[]>(`${this.base}/popular`)
+      .get<PopularShopDTO[]>(`${this.statsUrl}/popular`)
       .pipe(
         map(list =>
           list.map(d => ({
