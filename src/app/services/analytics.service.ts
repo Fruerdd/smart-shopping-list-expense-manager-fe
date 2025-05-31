@@ -14,7 +14,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
-  private base = environment;
+  private base = environment.apiUrl;
   private readonly baseUrl = `${this.base}/api/profile`;
 
   constructor(private http: HttpClient) {}

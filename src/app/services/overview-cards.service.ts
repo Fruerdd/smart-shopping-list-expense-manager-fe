@@ -13,7 +13,7 @@ export interface OverviewDataItem {
 
 @Injectable({ providedIn: 'root' })
 export class OverviewCardsService {
-  private base = environment;
+  private base = environment.apiUrl;
   private readonly statsUrl = `${this.base}/api/stats`;
 
   constructor(private http: HttpClient) {}

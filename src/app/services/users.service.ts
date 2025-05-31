@@ -38,7 +38,7 @@ export interface TestimonialDTO {
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
-  private baseMain = environment;
+  private baseMain = environment.apiUrl;
 
   private readonly base = `${this.baseMain}/api/users`;
   private readonly base1 = `${this.baseMain}/api/customers`;

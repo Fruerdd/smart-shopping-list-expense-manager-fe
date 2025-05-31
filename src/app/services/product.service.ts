@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -51,14 +50,15 @@ export interface ITopProduct {
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private readonly base = environment;
+  private readonly base = environment.apiUrl;
   private readonly analyticsBase = `${this.base}/api/products/analytics`;
+  private readonly productsBase = `${this.base}/api/products`;
 
   constructor(private http: HttpClient) {}
 
   /** bulk create/update → now returns your JSON result DTO */
   bulkAddProducts(payload: AddProductPayload[]): Observable<BulkResultDTO> {
-    return this.http.post<BulkResultDTO>(`${this.base}/bulk`, payload);
+    return this.http.post<BulkResultDTO>(`${this.productsBase}/bulk`, payload);
   }
 
   getTopProducts(): Observable<ITopProduct[]> {

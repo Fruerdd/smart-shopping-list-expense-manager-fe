@@ -16,7 +16,7 @@ export interface Customer {
   providedIn: 'root'
 })
 export class AllCustomersService {
-  private base = environment;
+  private base = environment.apiUrl;
   private readonly apiUrl = `${this.base}/api/customers`;
 
   constructor(private http: HttpClient) { }

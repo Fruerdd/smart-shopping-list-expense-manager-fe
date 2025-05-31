@@ -3,7 +3,6 @@ import { UserProfileService } from './user-profile.service';
 import { AuthService } from './auth.service';
 import { Observable, of, EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from 'src/environments/environment.prod';
 
 
 @Injectable({
@@ -16,30 +15,23 @@ export class LoyaltyPointsService {
     private authService: AuthService
   ) {}
 
-  /**
-   * Award points for creating a shopping list
-   */
+  
+  // Award points for creating a shopping list
   awardPointsForListCreation(count: number = 1): Observable<string> {
     return this.awardPoints('create_list', count);
   }
 
-  /**
-   * Award points for adding favorite products
-   */
+  // Award points for adding favorite products
   awardPointsForFavoriteProduct(count: number = 1): Observable<string> {
     return this.awardPoints('add_favorite_product', count);
   }
 
-  /**
-   * Award points for adding favorite stores
-   */
+  // Award points for adding favorite stores
   awardPointsForFavoriteStore(count: number = 1): Observable<string> {
     return this.awardPoints('add_favorite_store', count);
   }
 
-  /**
-   * Generic method to award points for any activity
-   */
+  // Generic method to award points for any activity
   private awardPoints(activity: string, count: number = 1): Observable<string> {
     const currentUserId = this.getCurrentUserId();
     
@@ -56,9 +48,7 @@ export class LoyaltyPointsService {
     );
   }
 
-  /**
-   * Show a notification for points awarded
-   */
+  // Show a notification for points awarded
   showPointsNotification(message: string, showAlert: boolean = false): void {
     if (message.includes('Earned') || message.includes('Lucky')) {
       console.log('🎉 ' + message);
@@ -70,9 +60,7 @@ export class LoyaltyPointsService {
     }
   }
 
-  /**
-   * Award points with notification
-   */
+  // Award points with notification
   awardPointsWithNotification(activity: string, count: number = 1, showAlert: boolean = false): void {
     this.awardPoints(activity, count).subscribe({
       next: (message) => {
