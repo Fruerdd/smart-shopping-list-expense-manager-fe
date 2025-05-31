@@ -2,6 +2,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
 import {
   IMoneySpent,
   IPriceAverage,
@@ -12,7 +14,8 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
-    private readonly baseUrl = 'http://localhost:8080/api/profile';
+  private base = environment;
+  private readonly baseUrl = `${this.base}/api/profile`;
 
   constructor(private http: HttpClient) {}
 

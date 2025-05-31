@@ -2,6 +2,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
 
 export interface OverviewDataItem {
   title:  string;
@@ -11,7 +13,8 @@ export interface OverviewDataItem {
 
 @Injectable({ providedIn: 'root' })
 export class OverviewCardsService {
-  private readonly statsUrl = 'http://localhost:8080/api/stats';
+  private base = environment;
+  private readonly statsUrl = `${this.base}/api/stats`;
 
   constructor(private http: HttpClient) {}
 

@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+
 
 /** basic store info */
 export interface StoreDTO {
@@ -46,15 +48,15 @@ export interface StoreUpsertPayload {
 
 @Injectable({ providedIn: 'root' })
 export class StoreService {
-  private readonly base = 'http://localhost:8080/api/stores';
-
+  private base = environment;
+  private readonly apiUrl = `${this.base}/api/stores`;
   constructor(private http: HttpClient) {}
 
   /** — existing methods — */
 
   getStores(): Observable<StoreDTO[]> {
     return this.http
-      .get<{ id: string; name: string; icon: string }[]>(this.base)
+      .get<{ id: string; name: string; icon: string }[]>(this.apiUrl)
       .pipe(map(list =>
         list.map(s => ({ storeId: s.id, name: s.name, icon: s.icon }))
       ));
@@ -101,7 +103,7 @@ export class StoreService {
         location: string;
         contact: string;
         createdAt: string;
-      }>(this.base, payload)
+      }>(this.apiUrl, payload)
       .pipe(map(dto => ({
         storeId:   dto.id,
         name:      dto.name,

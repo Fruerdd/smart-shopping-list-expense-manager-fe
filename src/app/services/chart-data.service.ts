@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
 
 export interface IChartData {
   labels: string[];
@@ -16,7 +18,8 @@ export interface CityAllocationDTO {
   providedIn: 'root'
 })
 export class ChartDataService {
-  private readonly statsUrl = 'http://localhost:8080/api/stats';
+  private base = environment;
+  private readonly statsUrl = `${this.base}/api/stats`;
 
   constructor (private http: HttpClient) {}
   getPopularShopsData(): Observable<IChartData> {

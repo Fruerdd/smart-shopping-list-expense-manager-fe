@@ -2,6 +2,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
 
 /** 
  * Mirror your server‐side DTO exactly, PLUS an index signature 
@@ -36,8 +38,10 @@ export interface TestimonialDTO {
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
-  private readonly base = 'http://localhost:8080/api/users';
-  private readonly base1 = 'http://localhost:8080/api/customers';
+  private baseMain = environment;
+
+  private readonly base = `${this.baseMain}/api/users`;
+  private readonly base1 = `${this.baseMain}/api/customers`;
 
 
 

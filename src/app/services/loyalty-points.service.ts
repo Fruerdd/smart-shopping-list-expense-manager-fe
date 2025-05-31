@@ -3,6 +3,8 @@ import { UserProfileService } from './user-profile.service';
 import { AuthService } from './auth.service';
 import { Observable, of, EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment.prod';
+
 
 @Injectable({
   providedIn: 'root'
