@@ -2,6 +2,20 @@
 
 ## Project Overview
 
+You can view the live, production version of this front-end at:
+
+> **GroceryMate Front-End (Netlify)**  
+> https://grocerymate.netlify.app/home
+
+---
+
+## 📦 Installation & Local Development
+
+1. **Clone the repository**  
+   ```bash
+   git clone https://github.com/Fruerdd/smart-shopping-list-expense-manager-fe.git
+   cd smart-shopping-list-expense-manager-fe
+
 The **Smart Shopping List & Expense Manager** is a web application designed to help users efficiently manage their grocery shopping and expenses. It enables users to:
 
 - Create and organize shopping lists
