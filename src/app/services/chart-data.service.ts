@@ -18,7 +18,7 @@ export interface CityAllocationDTO {
   providedIn: 'root'
 })
 export class ChartDataService {
-  private base = environment;
+  private base = environment.apiUrl;
   private readonly statsUrl = `${this.base}/api/stats`;
 
   constructor (private http: HttpClient) {}

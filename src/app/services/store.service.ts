@@ -1,5 +1,3 @@
-// src/app/services/store.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -48,7 +46,7 @@ export interface StoreUpsertPayload {
 
 @Injectable({ providedIn: 'root' })
 export class StoreService {
-  private base = environment;
+  private base = environment.apiUrl;
   private readonly apiUrl = `${this.base}/api/stores`;
   constructor(private http: HttpClient) {}
 
@@ -71,7 +69,7 @@ export class StoreService {
         location: string;
         contact: string;
         createdAt: string;
-      }>(`${this.base}/${id}`)
+      }>(`${this.apiUrl}/${id}`)
       .pipe(map(dto => ({
         storeId:   dto.id,
         name:      dto.name,
@@ -84,7 +82,7 @@ export class StoreService {
 
   /** Now returns the extended StorePriceDTO shape */
   getStoreProducts(id: string): Observable<StorePriceDTO[]> {
-    return this.http.get<StorePriceDTO[]>(`${this.base}/${id}/products`);
+    return this.http.get<StorePriceDTO[]>(`${this.apiUrl}/${id}/products`);
   }
 
   /** — new methods — */
@@ -132,7 +130,7 @@ export class StoreService {
         location: string;
         contact: string;
         createdAt: string;
-      }>(`${this.base}/${id}`, payload)
+      }>(`${this.apiUrl}/${id}`, payload)
       .pipe(map(dto => ({
         storeId:   dto.id,
         name:      dto.name,

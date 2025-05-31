@@ -17,7 +17,7 @@ interface PopularShopDTO {
 
 @Injectable({ providedIn: 'root' })
 export class PopularShopsService {
-  private base = environment;
+  private base = environment.apiUrl;
   private readonly statsUrl = `${this.base}/api/stores`;
 
   constructor(private http: HttpClient) {}
