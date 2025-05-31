@@ -1,0 +1,9 @@
+[build]
+  base = "smart-shopping-list-expense-manager-fe"
+  command = "ng build --configuration=production"
+  publish = "dist/smart-shopping-list-expense-manager-fe"
+
+  [[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200

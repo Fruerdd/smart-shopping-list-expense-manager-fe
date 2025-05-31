@@ -1,0 +1,39 @@
+functionsDirectory = "/Users/pavelkuznecov/Documents/GitHub/smart-shopping-list-expense-manager-fe/dist/netlify/functions"
+functionsDirectoryOrigin = "config-v1"
+headers = []
+redirects = []
+
+[[edge_functions]]
+path = "/*"
+function = "ssr"
+
+[functions]
+
+[functions."*"]
+
+[[plugins]]
+origin = "config"
+package = "@netlify/angular-runtime"
+
+[plugins.inputs]
+
+[build]
+publish = "/Users/pavelkuznecov/Documents/GitHub/smart-shopping-list-expense-manager-fe/dist/frontend/browser"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm run build:ssr && npm run build:functions"
+functions = "/Users/pavelkuznecov/Documents/GitHub/smart-shopping-list-expense-manager-fe/dist/netlify/functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
