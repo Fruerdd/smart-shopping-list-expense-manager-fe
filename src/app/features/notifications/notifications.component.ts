@@ -4,6 +4,7 @@ import { NotificationDTO } from '@app/models/notification.dto';
 import { UserProfileService } from '@app/services/user-profile.service';
 import { Subscription, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { ImageUrlService } from 'src/app/services/image-url.service';
 
 @Component({
   selector: 'app-notifications',
@@ -24,7 +25,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private pollingSubscription?: Subscription;
 
   constructor(
-    private userProfileService: UserProfileService
+    private userProfileService: UserProfileService,
+    private imageUrlService: ImageUrlService
   ) {}
 
   ngOnInit() {
@@ -238,17 +240,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   getFullImageUrl(avatarPath: string | null | undefined): string | null {
-    if (!avatarPath) return null;
-    
-    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
-      return avatarPath;
-    }
-    
-    if (avatarPath.startsWith('/uploads/')) {
-      return `http://localhost:8080${avatarPath}`;
-    }
-    
-    return avatarPath;
+    return this.imageUrlService.getFullImageUrl(avatarPath);
   }
 
   setDefaultImage(event: Event) {
