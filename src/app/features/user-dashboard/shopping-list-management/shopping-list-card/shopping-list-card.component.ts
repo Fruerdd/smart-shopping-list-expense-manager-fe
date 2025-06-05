@@ -5,6 +5,7 @@ import { CollaboratorDTO, PermissionEnum } from '@app/models/collaborator.dto';
 import { AuthService } from '@app/services/auth.service';
 import { UserProfileService } from '@app/services/user-profile.service';
 import { CommonModule } from '@angular/common';
+import { ImageUrlService } from '@app/services/image-url.service';
 
 @Component({
   selector: 'app-shopping-list-card',
@@ -24,7 +25,8 @@ export class ShoppingListCardComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private userProfileService: UserProfileService
+    private userProfileService: UserProfileService,
+    private imageUrlService: ImageUrlService
   ) {
     const currentUserId = this.authService.getCurrentUserId();
     if (!currentUserId) {
@@ -59,19 +61,7 @@ export class ShoppingListCardComponent implements OnInit {
   }
 
   getFullImageUrl(avatarPath: string | null | undefined): string | null {
-    if (!avatarPath) return null;
-    
-    // If it's already a full URL or base64, return as is
-    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
-      return avatarPath;
-    }
-    
-    // If it's a relative path, prepend the API base URL
-    if (avatarPath.startsWith('/uploads/')) {
-      return `http://localhost:8080${avatarPath}`;
-    }
-    
-    return avatarPath;
+    return this.imageUrlService.getFullImageUrl(avatarPath);
   }
 
   setDefaultImage(event: Event) {

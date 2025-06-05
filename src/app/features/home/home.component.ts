@@ -17,6 +17,7 @@ import { AuthService }       from '@app/services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
 import { forkJoin, of }      from 'rxjs';
 import { map, catchError }   from 'rxjs/operators';
+import { ImageUrlService } from 'src/app/services/image-url.service';
 
 interface TestimonialView {
   avatar:  string;
@@ -44,6 +45,7 @@ export class HomeComponent implements OnInit {
     private userProfileService: UserProfileService,
     private auth: AuthService,
     private router: Router,
+    private imageUrlService: ImageUrlService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -105,10 +107,7 @@ export class HomeComponent implements OnInit {
   }
 
   getFullImageUrl(path?: string|null): string|null {
-    if (!path) return null;
-    if (path.startsWith('http') || path.startsWith('data:')) return path;
-    if (path.startsWith('/uploads/')) return `http://localhost:8080${path}`;
-    return path;
+    return this.imageUrlService.getFullImageUrl(path);
   }
 
   onStartShopping() {
