@@ -3,9 +3,9 @@
   <div class="profile-banner">
     <div class="banner-inner">
       <div class="profile-info">
-        <img [src]="getFullImageUrl(user.avatar) || '/assets/images/avatar.png'" 
-             (error)="setDefaultImage($event)" 
-             alt="Profile photo" 
+        <img [src]="getFullImageUrl(user.avatar) || '/assets/images/avatar.png'"
+             (error)="setDefaultImage($event)"
+             alt="Profile photo"
              class="profile-image" />
         <div class="profile-welcome">
           <h1>Welcome{{isOwnProfile ? '' : ' to'}}, {{user.name}}{{isOwnProfile ? '!' : "'s Profile!"}}</h1>
@@ -18,23 +18,23 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Dynamic button based on profile view -->
       <button *ngIf="isOwnProfile" class="edit-button" (click)="navigateToEditProfile()">
         Edit Profile
       </button>
-      <button *ngIf="!isOwnProfile && !isFriend && !hasPendingFriendRequest" 
-              class="edit-button friend-button" 
+      <button *ngIf="!isOwnProfile && !isFriend && !hasPendingFriendRequest"
+              class="edit-button friend-button"
               (click)="toggleFriendship()">
         <i class="fas fa-user-plus"></i> Add Friend
       </button>
-      <button *ngIf="!isOwnProfile && !isFriend && hasPendingFriendRequest" 
-              class="edit-button friend-button pending" 
+      <button *ngIf="!isOwnProfile && !isFriend && hasPendingFriendRequest"
+              class="edit-button friend-button pending"
               disabled>
         <i class="fas fa-clock"></i> Request Sent
       </button>
-      <button *ngIf="!isOwnProfile && isFriend" 
-              class="edit-button friend-button friends" 
+      <button *ngIf="!isOwnProfile && isFriend"
+              class="edit-button friend-button friends"
               (click)="toggleFriendship()">
         <i class="fas fa-user-check"></i> Remove Friend
       </button>
@@ -70,7 +70,7 @@
             <i class="fas fa-copy"></i>
           </button>
         </div>
-        
+
         <!-- Only show referral code input for own profile -->
         <div *ngIf="isOwnProfile">
           <h3>Enter referral code:</h3>
@@ -90,12 +90,12 @@
       <!-- Friends Section -->
       <div class="card friends-section">
         <h3>{{isOwnProfile ? 'Friends' : user.name + "'s Friends"}}</h3>
-        
+
         <div class="friends-list">
           <div class="friend-item" *ngFor="let friend of friends.slice(0, 3)">
-            <img [src]="getFullImageUrl(friend.avatar) || '/assets/images/avatar.png'" 
-                 alt="Friend avatar" 
-                 class="friend-avatar" 
+            <img [src]="getFullImageUrl(friend.avatar) || '/assets/images/avatar.png'"
+                 alt="Friend avatar"
+                 class="friend-avatar"
                  (error)="setDefaultImage($event)"
                  (click)="viewUserProfile(friend.id)"
                  style="cursor: pointer;" />
@@ -111,17 +111,17 @@
       <!-- Review Box Section -->
       <div class="card review-section">
         <h3>{{isOwnProfile ? 'Review Box' : user.name + "'s Review"}}</h3>
-        
+
         <!-- View Mode -->
         <div *ngIf="!isEditingReview">
-          <textarea class="review-textarea" 
+          <textarea class="review-textarea"
                     [value]="userReview?.reviewContext || ''"
                     [placeholder]="userReview?.reviewContext || 'Great App! Very helpful and easy to use. I can also share my lists...'"
                     readonly></textarea>
           <div class="rating-section">
             <div class="stars">
-              <i class="fas fa-star" 
-                 *ngFor="let star of [1,2,3,4,5]" 
+              <i class="fas fa-star"
+                 *ngFor="let star of [1,2,3,4,5]"
                  [class.filled]="star <= (userReview?.reviewScore || 5)"></i>
             </div>
             <!-- Only allow editing own review -->
@@ -133,13 +133,13 @@
 
         <!-- Edit Mode - Only for own profile -->
         <div *ngIf="isEditingReview && isOwnProfile">
-          <textarea class="review-textarea" 
+          <textarea class="review-textarea"
                     [(ngModel)]="editedReview!.reviewContext"
                     placeholder="Write your review here..."></textarea>
           <div class="rating-section">
             <div class="stars editable">
-              <i class="fas fa-star" 
-                 *ngFor="let star of [1,2,3,4,5]" 
+              <i class="fas fa-star"
+                 *ngFor="let star of [1,2,3,4,5]"
                  [class.filled]="star <= (editedReview?.reviewScore || 0)"
                  (click)="updateReviewRating(star)"></i>
             </div>
@@ -165,7 +165,7 @@
             <span class="points-number">{{user.bonus_points || loyaltyPoints || 0}}</span>
             <span class="points-label">points</span>
           </div>
-          
+
           <!-- Show tier for everyone -->
           <div class="tier-display">
             <i class="fas fa-medal" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))"></i>
@@ -174,7 +174,7 @@
             </span>
             <span class="tier-label">MEMBER</span>
           </div>
-          
+
           <!-- Info tooltip only for own profile -->
           <div *ngIf="isOwnProfile" class="info-tooltip">
             <i class="fas fa-info-circle"></i>
@@ -184,12 +184,12 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Credits only for own profile -->
         <div *ngIf="isOwnProfile" class="credits-info">
           <p>Credits Available: {{user.creditsAvailable || '0.30'}} €</p>
         </div>
-        
+
         <!-- QR Code only for own profile -->
         <div *ngIf="isOwnProfile" class="qr-code">
           <qrcode [qrdata]="user.qrCodeValue || user.id || ''"
@@ -208,8 +208,8 @@
   <div class="search-container">
     <h3>Find Users</h3>
     <div class="search-box">
-      <input 
-        type="text" 
+      <input
+        type="text"
         [(ngModel)]="searchQuery"
         (input)="onSearchInput(searchQuery)"
         placeholder="Search for users by name or email..."
@@ -218,7 +218,7 @@
         <i class="fas fa-times"></i>
       </button>
     </div>
-    
+
     <!-- Search Results -->
     <div *ngIf="showSearchResults" class="search-results">
       <div *ngIf="isSearching" class="search-loading">
@@ -228,11 +228,11 @@
         No users found
       </div>
       <div *ngIf="!isSearching && searchResults.length > 0" class="results-list">
-        <div *ngFor="let searchUser of searchResults" 
-             class="search-result-item" 
+        <div *ngFor="let searchUser of searchResults"
+             class="search-result-item"
              (click)="viewUserProfile(searchUser.id)">
-          <img [src]="getFullImageUrl(searchUser.avatar) || '/assets/images/avatar.png'" 
-               alt="User avatar" 
+          <img [src]="getFullImageUrl(searchUser.avatar) || '/assets/images/avatar.png'"
+               alt="User avatar"
                class="search-user-avatar"
                (error)="setDefaultImage($event)" />
           <div class="search-user-info">
@@ -265,9 +265,9 @@
     <div class="modal-content">
       <div class="friends-grid">
         <div class="friend-card" *ngFor="let friend of friends">
-          <img [src]="getFullImageUrl(friend.avatar) || '/assets/images/avatar.png'" 
-               alt="Friend avatar" 
-               class="friend-avatar-large" 
+          <img [src]="getFullImageUrl(friend.avatar) || '/assets/images/avatar.png'"
+               alt="Friend avatar"
+               class="friend-avatar-large"
                (error)="setDefaultImage($event)"
                (click)="viewUserProfile(friend.id)"
                style="cursor: pointer;" />
@@ -283,12 +283,8 @@
     </div>
   </div>
 </div>
-<!-- ===================================== -->
-<!-- Budget & Expense Analytics Section -->
-<!-- ===================================== -->
-<!-- user-profile.component.html -->
 
-<section class="analytics-grid" *ngIf="user && !loading">
+<section class="analytics-grid" *ngIf="user && !loading && isOwnProfile">
   <h2>Budget & Expense Analytics</h2>
 
   <div class="card-grid">
