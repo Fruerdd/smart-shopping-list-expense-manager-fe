@@ -29,7 +29,7 @@
                [class.selected]="isProductSelected(product.productId)"
                (click)="selectProduct(product)">
             <div class="product-image">
-              <img [src]="'assets/images/' + product.image || 'assets/images/item-img-generic.png'" [alt]="product.productName" height="100" width="100">
+              <img [src]="'assets/images/item-img-generic.png'" [alt]="product.productName" height="100" width="130" style="background-color: #334867;">
               <div class="selection-indicator" *ngIf="isProductSelected(product.productId)">
                 <span class="quantity">{{ getProductQuantity(product.productId) }}</span>
               </div>

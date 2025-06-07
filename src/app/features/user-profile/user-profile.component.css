@@ -213,15 +213,15 @@
 }
 
 .friend-avatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  background: #e0e0e0;
+  background: #FEBFB3;
 }
 
 .friend-name {
-  color: #333;
+  color: #083a5e;
   font-size: 14px;
   font-weight: 500;
 }
@@ -233,7 +233,7 @@
   background: #FCACC4;
   border: none;
   border-radius: 20px;
-  color: #333;
+  color: #083a5e;
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
