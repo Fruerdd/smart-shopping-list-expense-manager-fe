@@ -1,0 +1,1 @@
+import{R as n,Rc as e}from"./chunk-VE4VNBXX.js";var i=class t{getFullImageUrl(r){return r?r.startsWith("http")||r.startsWith("data:")?r:r.startsWith("/uploads/")?`${e.apiUrl}${r}`:r:null}static \u0275fac=function(o){return new(o||t)};static \u0275prov=n({token:t,factory:t.\u0275fac,providedIn:"root"})};export{i as a};
