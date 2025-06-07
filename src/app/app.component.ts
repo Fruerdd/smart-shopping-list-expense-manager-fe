@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from 'src/app/features/header/header.component';
 import { FooterComponent } from 'src/app/features/footer/footer.component';
 import { filter } from 'rxjs/operators';
+import { environment }      from '../environments/environment';
 
 
 @Component({
@@ -19,7 +20,7 @@ import { filter } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   showHeader: boolean = true;
   showFooter: boolean = true;
 
@@ -31,5 +32,8 @@ export class AppComponent {
       this.showHeader = !hiddenRoutes.includes(event.url);
       this.showFooter = !hiddenRoutes.includes(event.url);
     });
+  }
+  ngOnInit() {
+    console.log('🛰️ environment.apiUrl =', environment.apiUrl);
   }
 }
