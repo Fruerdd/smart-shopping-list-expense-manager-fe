@@ -35,6 +35,7 @@
   </div>
 </section>
 
+<!-- src/app/features/home/home.component.html -->
 <section class="testimonials-section text-center py-5" style="background-color: #FCACC4;">
   <div class="container py-5">
 
@@ -87,16 +88,11 @@
                   </li>
                 </ul>
 
-                <!-- Review -->
+                <!-- Review (centered) -->
                 <div class="review-wrapper flex-grow-1">
-                  <p class="testimonial-text mb-0">
+                  <p class="testimonial-text mb-0 text-center">
                     <i class="fas fa-quote-left pe-2"></i>
-                    <ng-container *ngIf="t.context.length <= 30; else truncated">
-                      {{ t.context }}
-                    </ng-container>
-                    <ng-template #truncated>
-                      {{ t.context | slice:0:30 }}…
-                    </ng-template>
+                    {{ t.context }}
                   </p>
                 </div>
 
@@ -119,6 +115,9 @@
     </div>
   </div>
 </section>
+
+
+
 
 
 
