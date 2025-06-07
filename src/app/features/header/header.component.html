@@ -2,7 +2,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <div class="container">
     <div class="row">
-      <div class="col-md-3 col-sm-3 col-3">
+      <div class="col-auto">
         <div class="logo-container d-flex align-items-center">
           <img src="app_logo.jpg" class="logo-image" alt="logo" (click)="scrollToTop()" style="cursor: pointer;" />
           
@@ -18,13 +18,34 @@
           </span>
         </div>
       </div>
-      <div class="col-md-9 col-sm-9 col-9 text-end">
+      <div class="col text-end">
         <div class="menu-icon" *ngIf="isMobileView" (click)="openMenu()">
           <i class="{{menu_icon}}"></i>
         </div>
 
         <div class="desktop_menu" [class.mobile_menu]="menuValue">
           <ul>
+            <!-- ───── Audio toggle as a menu item ───── -->
+            <audio
+              #backgroundMusic
+              src="/assets/music/background_tune.mp3"
+              loop
+              [volume]="volume"
+              muted
+            ></audio>
+            <div class="music-controls mobile-music-controls" *ngIf="isMobileView">
+              <button mat-icon-button (click)="togglePlay()">
+                <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+              </button>
+              <input
+                type="range"
+                id="volume-mobile"
+                min="0"
+                max="1"
+                step="0.05"
+                [(ngModel)]="volume"
+              />
+            </div>
             <!-- Login and Sign in links, visible only if the user is not logged in -->
             <li *ngIf="!isLoggedIn"
                 routerLink="/login"
@@ -157,29 +178,10 @@
           />
         </div>
 
-        <div class="music-controls mobile-music-controls" *ngIf="isMobileView">
-          <button mat-icon-button (click)="togglePlay()">
-            <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
-          </button>
-          <input
-            type="range"
-            id="volume-mobile"
-            min="0"
-            max="1"
-            step="0.05"
-            [(ngModel)]="volume"
-          />
-        </div>
       </div>
     </div>
   </div>
-  <audio
-    #backgroundMusic
-    src="/assets/music/background_tune.mp3"
-    loop
-    [volume]="volume"
-    muted
-  ></audio>
+
 
   <!-- Notifications Component -->
   <app-notifications 
