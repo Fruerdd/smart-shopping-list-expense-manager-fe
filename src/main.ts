@@ -19,6 +19,5 @@ Chart.register(ArcElement, PieController, Tooltip, Legend);
 if (environment.production) {
   enableProdMode();
 }
-console.log('🛰️  environment.apiUrl =', environment.apiUrl);
 
 bootstrapApplication(AppComponent, appConfig);
