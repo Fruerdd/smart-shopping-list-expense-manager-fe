@@ -25,3 +25,4 @@ if (!fs.existsSync(defaultEnvPath)) {
 }
 
 console.log('✅ Generated environment.prod.ts');
+console.log('🛰️  API_URL at runtime:', environment.apiUrl);
