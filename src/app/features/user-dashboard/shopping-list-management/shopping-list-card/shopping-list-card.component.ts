@@ -5,6 +5,7 @@ import { CollaboratorDTO, PermissionEnum } from '@app/models/collaborator.dto';
 import { AuthService } from '@app/services/auth.service';
 import { UserProfileService } from '@app/services/user-profile.service';
 import { CommonModule } from '@angular/common';
+import { ImageUrlService } from '@app/services/image-url.service';
 
 @Component({
   selector: 'app-shopping-list-card',
@@ -21,16 +22,19 @@ export class ShoppingListCardComponent implements OnInit {
 
   protected userId: string;
   ownerAvatarUrl: string | null = null;
+  randomListImageUrl: string;
 
   constructor(
     private authService: AuthService,
-    private userProfileService: UserProfileService
+    private userProfileService: UserProfileService,
+    private imageUrlService: ImageUrlService
   ) {
     const currentUserId = this.authService.getCurrentUserId();
     if (!currentUserId) {
       throw new Error('User must be logged in');
     }
     this.userId = currentUserId;
+    this.randomListImageUrl = this.getRandomListImage();
   }
 
   ngOnInit() {
@@ -59,19 +63,7 @@ export class ShoppingListCardComponent implements OnInit {
   }
 
   getFullImageUrl(avatarPath: string | null | undefined): string | null {
-    if (!avatarPath) return null;
-    
-    // If it's already a full URL or base64, return as is
-    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
-      return avatarPath;
-    }
-    
-    // If it's a relative path, prepend the API base URL
-    if (avatarPath.startsWith('/uploads/')) {
-      return `http://localhost:8080${avatarPath}`;
-    }
-    
-    return avatarPath;
+    return this.imageUrlService.getFullImageUrl(avatarPath);
   }
 
   setDefaultImage(event: Event) {
@@ -107,5 +99,18 @@ export class ShoppingListCardComponent implements OnInit {
     if (confirm('Are you sure you want to mark this list as done? This will archive the list.')) {
       this.markListAsDone.emit(this.shoppingList.id);
     }
+  }
+
+  private getRandomListImage(): string {
+    const listImages = [
+      'assets/images/list-img-generic1.png',
+      'assets/images/list-img-generic2.png',
+      'assets/images/list-img-generic3.png',
+      'assets/images/list-img-generic4.png',
+      'assets/images/list-img-generic5.png'
+    ];
+    
+    const randomIndex = Math.floor(Math.random() * listImages.length);
+    return listImages[randomIndex];
   }
 }

@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserProfileService } from '@app/services/user-profile.service';
+import { ImageUrlService } from '@app/services/image-url.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -23,7 +24,8 @@ export class UserEditComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private route: ActivatedRoute,
     private userProfileService: UserProfileService,
-    private router: Router
+    private router: Router,
+    private imageUrlService: ImageUrlService
   ) {}
 
   ngOnInit(): void {
@@ -89,19 +91,7 @@ export class UserEditComponent implements OnInit {
   }
 
   getFullImageUrl(avatarPath: string | null): string | null {
-    if (!avatarPath) return null;
-    
-    // If it's already a full URL or base64, return as is
-    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
-      return avatarPath;
-    }
-    
-    // If it's a relative path, prepend the API base URL
-    if (avatarPath.startsWith('/uploads/')) {
-      return `http://localhost:8080${avatarPath}`;
-    }
-    
-    return avatarPath;
+    return this.imageUrlService.getFullImageUrl(avatarPath);
   }
 
   onSubmit(): void {

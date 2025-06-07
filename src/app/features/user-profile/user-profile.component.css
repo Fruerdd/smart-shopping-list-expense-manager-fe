@@ -28,9 +28,9 @@
 }
 
 .profile-image {
-  width: 120px;
-  height: 150px;
-  border-radius: 15px;
+  width: 130px;
+  height: 130px;
+  border-radius: 80px;
   object-fit: cover;
   border: 3px solid white;
 }
@@ -213,15 +213,15 @@
 }
 
 .friend-avatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  background: #e0e0e0;
+  background: #FEBFB3;
 }
 
 .friend-name {
-  color: #333;
+  color: #083a5e;
   font-size: 14px;
   font-weight: 500;
 }
@@ -233,7 +233,7 @@
   background: #FCACC4;
   border: none;
   border-radius: 20px;
-  color: #333;
+  color: #083a5e;
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
@@ -453,19 +453,19 @@
     text-align: center;
     gap: 20px;
   }
-  
+
   .profile-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .charts-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .grid-span-2 {
     grid-column: span 1;
   }
-  
+
   .tooltip-content {
     width: 250px;
     left: 50%;
@@ -631,19 +631,19 @@
     width: 95%;
     max-height: 90vh;
   }
-  
+
   .modal-header {
     padding: 15px;
   }
-  
+
   .modal-content {
     padding: 15px;
   }
-  
+
   .friend-card {
     padding: 12px;
   }
-  
+
   .friend-avatar-large {
     width: 40px;
     height: 40px;
@@ -849,14 +849,14 @@
   .search-container {
     position: relative;
   }
-  
+
   .tier-display {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 4px;
   }
-  
+
   .friend-button {
     font-size: 12px;
     padding: 8px 16px;
@@ -943,7 +943,7 @@
   border: 1px solid #ddd;
 }
 
-.search-section .search-loading, 
+.search-section .search-loading,
 .search-section .no-results {
   padding: 20px;
   text-align: center;
@@ -1006,16 +1006,16 @@
     margin: 20px auto;
     padding: 0 15px;
   }
-  
+
   .search-section .search-container {
     padding: 20px;
   }
-  
+
   .search-section .search-input {
     font-size: 14px;
     padding: 10px 14px;
   }
-  
+
   .search-section .search-user-avatar {
     width: 40px;
     height: 40px;

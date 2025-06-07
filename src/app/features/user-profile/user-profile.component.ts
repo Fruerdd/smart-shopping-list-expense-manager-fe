@@ -14,6 +14,8 @@ import { ExpensesByStoreChartComponent } from './expenses-by-store-chart/expense
 import { PriceAverageChartComponent } from './price-average-chart/price-average-chart.component';
 import { AverageSavedChartComponent } from './average-saved-chart/average-saved-chart.component';
 import { CategorySpendingChartComponent } from './category-spending-chart/category-spending-chart.component';
+import { ImageUrlService } from '@app/services/image-url.service';
+
 @Component({
   selector: 'app-user-profile',
   standalone: true,
@@ -58,7 +60,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private userProfileService: UserProfileService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private imageUrlService: ImageUrlService
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -90,17 +93,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   getFullImageUrl(avatarPath: string | null | undefined): string | null {
-    if (!avatarPath) return null;
-    
-    if (avatarPath.startsWith('http') || avatarPath.startsWith('data:')) {
-      return avatarPath;
-    }
-    
-    if (avatarPath.startsWith('/uploads/')) {
-      return `http://localhost:8080${avatarPath}`;
-    }
-    
-    return avatarPath;
+    return this.imageUrlService.getFullImageUrl(avatarPath);
   }
 
   getLoyaltyTier(points: number): string {
