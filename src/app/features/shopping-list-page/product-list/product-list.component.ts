@@ -17,6 +17,7 @@ export class ProductListComponent {
   @Input() selectedProducts: ShoppingListItemDTO[] = [];
   @Input() categories: CategoryDTO[] = [];
   @Input() searchTerm = '';
+  @Input() preferredStore: string | null = null;
 
   @Output() searchChange = new EventEmitter<string>();
   @Output() toggleCategoryEvent = new EventEmitter<CategoryDTO>();
@@ -58,5 +59,33 @@ export class ProductListComponent {
 
   isCategoryExpanded(category: CategoryDTO): boolean {
     return !this.collapsedCategories.has(category.id);
+  }
+
+  getDisplayStoreName(product: ShoppingListItemDTO): string {
+    if (product.storeName) {
+      return product.storeName;
+    }
+    return this.preferredStore || 'No store selected';
+  }
+
+  getDisplayPrice(product: ShoppingListItemDTO): string {
+    if (product.price !== null && product.price !== undefined) {
+      return `${product.price} KM`;
+    }
+    return 'Price not available';
+  }
+
+  getBestPriceInfo(product: ShoppingListItemDTO): { bestStore: string, bestPrice: string, selectedStorePrice?: string } | null {
+    const bestPriceInfo = {
+      bestStore: (product as any).originalBestStore || product.storeName || 'Unknown',
+      bestPrice: (product as any).originalBestPrice ? `${(product as any).originalBestPrice} KM` : 'N/A',
+      selectedStorePrice: undefined as string | undefined
+    };
+
+    if (this.preferredStore && this.preferredStore !== bestPriceInfo.bestStore) {
+      bestPriceInfo.selectedStorePrice = this.getDisplayPrice(product);
+    }
+
+    return bestPriceInfo;
   }
 }
