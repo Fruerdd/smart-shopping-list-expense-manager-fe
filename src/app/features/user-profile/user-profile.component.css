@@ -1076,3 +1076,19 @@
     gap: 1.5rem;
   }
 }
+
+/* at the very end of user-profile.component.css */
+
+@media (max-width: 768px) {
+  /* 1. Target only your analytics grid’s card-grid */
+  .analytics-grid .card-grid {
+    /* always one column */
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 2. Prevent any “span-2” from spanning two columns */
+  .analytics-grid .grid-span-2 {
+    grid-column: span 1 !important;
+  }
+}
+

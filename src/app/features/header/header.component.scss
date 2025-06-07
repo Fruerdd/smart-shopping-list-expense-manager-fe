@@ -92,6 +92,7 @@ header {
   display: flex !important;
   align-items: center !important;
   flex-wrap: nowrap !important;
+  z-index: 100;
 }
 
 .log-out-button {
@@ -190,6 +191,12 @@ header {
     .desktop_menu {
       display: none;
     }
+    .text-end {
+      display: flex !important;
+      justify-content: flex-end;
+      align-items: center;
+    }
+  
 
     .desktop_menu ul{
       display: block;
@@ -203,9 +210,10 @@ header {
       border-bottom: 1px solid white;
     }
     .menu-icon {
-      display: block;
+      display: inline-flex !important;
       color: white;
       font-size: 40px;
+      padding: 10px !important;
       padding-top: 10px;
     }
     .mobile_menu {
@@ -239,6 +247,8 @@ header {
       gap: 10px;
       padding: 5px 0;
     }
+
+    
 
     .mobile-music-controls button[mat-icon-button] {
       color: #FCACC4;

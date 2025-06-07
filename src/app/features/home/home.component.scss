@@ -44,8 +44,43 @@
 
 /* Testimonials Section */
 .testimonials-section {
-  background: #f3f2f2;
-  color: #0B3B5B;
+  .position-relative {
+    overflow: visible !important;
+  }
+
+  .testimonial-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    height: 350px;
+  }
+
+  .rating-stars i {
+    color: #ffc107;
+    font-size: 1.2rem;
+    margin: 0 4px;
+  }
+
+/* Dots pagination */
+.dots-container {
+  text-align: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0 6px;
+  border-radius: 50%;
+  background-color: rgba(8, 59, 91, 0.3);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dot.active {
+  background-color: #083B5B;
+}
+
 
   .position-relative {
     overflow: visible !important;
