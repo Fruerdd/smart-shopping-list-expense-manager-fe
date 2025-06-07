@@ -5,6 +5,8 @@ import {CommonModule} from '@angular/common';
 import {ShoppingListPageService} from '@app/services/shopping-list-page.service';
 import {FavoriteProductsService} from '@app/services/favorite-products.service';
 import {LoyaltyPointsService} from '@app/services/loyalty-points.service';
+import {ProductService} from '@app/services/product.service';
+import {PriceComparisonService} from '@app/services/price-comparison.service';
 import {filter, finalize, switchMap, tap, debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {forkJoin, map, Observable, of, Subject} from 'rxjs';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
@@ -79,7 +81,9 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private shoppingListService: ShoppingListPageService,
     private favoriteProductsService: FavoriteProductsService,
-    private loyaltyPointsService: LoyaltyPointsService
+    private loyaltyPointsService: LoyaltyPointsService,
+    private productService: ProductService,
+    private priceComparisonService: PriceComparisonService
   ) {
     const userInfo = localStorage.getItem('userInfo');
     this.userId = userInfo ? JSON.parse(userInfo).id : '';
@@ -129,19 +133,42 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       }),
       switchMap(() => this.shoppingListService.getCategories()),
       tap(categories => {
-        // Add favorites category if it doesn't exist
-        const favoritesCategory = {
-          id: 'favorite',
-          name: 'Favorites',
-          icon: 'favorite',
-          products: this.getFavoriteProducts()
-        };
+        const specialCategories = [];
+        const existingCategoryIds = categories.map(cat => cat.id);
+
+        // Only add favorites category if user has favorite products
+        const favoriteProducts = this.getFavoriteProducts();
+        if (favoriteProducts.length > 0 && !existingCategoryIds.includes('favorite')) {
+          specialCategories.push({
+            id: 'favorite',
+            name: 'Favorites',
+            icon: 'favorite',
+            products: favoriteProducts
+          });
+        }
+
+        if (!existingCategoryIds.includes('peoples-choice')) {
+          specialCategories.push({
+            id: 'peoples-choice',
+            name: 'People\'s Choice',
+            icon: 'group',
+            products: []
+          });
+        }
+
+        if (!existingCategoryIds.includes('best-price')) {
+          specialCategories.push({
+            id: 'best-price',
+            name: 'Best Price',
+            icon: 'attach_money',
+            products: []
+          });
+        }
         
-        const hasFavoritesCategory = categories.some(cat => cat.id === 'favorite');
-        this.categories = hasFavoritesCategory 
-          ? categories 
-          : [favoritesCategory, ...categories];
+        this.categories = [...specialCategories, ...categories];
         this.originalCategories = JSON.parse(JSON.stringify(this.categories));
+        
+        this.loadSpecialCategories();
       }),
       switchMap(() => {
         if (this.listId) {
@@ -701,5 +728,106 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     return this.filteredProducts.filter(product => 
       this.favoriteProducts.some(fav => fav.productId === product.productId)
     );
+  }
+
+  private loadSpecialCategories(): void {
+    // Load People's Choice category
+    this.productService.getTopProducts().subscribe(topProducts => {
+      const peoplesChoiceCategory = this.categories.find(cat => cat.id === 'peoples-choice');
+      if (peoplesChoiceCategory && topProducts.length > 0) {
+        // Deduplicate by product name and keep the cheapest price
+        const uniqueProducts = this.deduplicateProductsByPrice(
+          topProducts.map(product => ({
+            id: '',
+            productId: '',
+            productName: product.productName,
+            price: product.price,
+            storeName: product.storeName,
+            storeId: '',
+            isChecked: false,
+            quantity: 1
+          }))
+        );
+        peoplesChoiceCategory.products = uniqueProducts.slice(0, 10);
+      }
+    });
+
+    // Load Best Price category
+    this.priceComparisonService.getAllItems(this.userId).subscribe(allProducts => {
+      const bestPriceCategory = this.categories.find(cat => cat.id === 'best-price');
+      if (bestPriceCategory) {
+        
+        if (allProducts && allProducts.length > 0) {
+          // Get price information for each product
+          const priceRequests = allProducts.map(product => 
+            this.priceComparisonService.getItemPrices(this.userId, product.id).pipe(
+              map(prices => {
+                if (prices && prices.length > 0) {
+                  // Find the cheapest price across all stores
+                  const cheapestPrice = prices.reduce((min, current) => 
+                    (!min || (current.price && current.price < min.price)) ? current : min
+                  );
+                  
+                  return {
+                    id: product.id,
+                    productId: product.id,
+                    productName: product.name,
+                    price: cheapestPrice.price,
+                    storeName: cheapestPrice.storeName,
+                    storeId: cheapestPrice.storeId,
+                    isChecked: false,
+                    quantity: 1
+                  };
+                }
+                return null;
+              })
+            )
+          );
+
+          forkJoin(priceRequests).subscribe(productsWithPrices => {
+            // Filter out null results and products without valid prices
+            const validProducts = productsWithPrices.filter(product => 
+              product && product.price && product.price > 0
+            ) as ShoppingListItemDTO[];
+            
+            // Deduplicate by product name and keep cheapest
+            const uniqueProducts = this.deduplicateProductsByPrice(validProducts);
+            
+            // Sort by price and take top 10
+            const cheapestProducts = uniqueProducts
+              .sort((a, b) => (a.price || 0) - (b.price || 0))
+              .slice(0, 10);
+            
+            bestPriceCategory.products = cheapestProducts;
+          });
+        } else {
+          bestPriceCategory.products = [];
+        }
+      } else {
+        bestPriceCategory!.products = [];
+      }
+    });
+  }
+
+  private deduplicateProductsByPrice(products: ShoppingListItemDTO[]): ShoppingListItemDTO[] {
+    const productMap = new Map<string, ShoppingListItemDTO>();
+    
+    products.forEach(product => {
+      const key = product.productName.toLowerCase().trim();
+      const existingProduct = productMap.get(key);
+      
+      if (!existingProduct) {
+        productMap.set(key, product);
+      } else {
+        const currentPrice = product.price || 0;
+        const existingPrice = existingProduct.price || 0;
+        
+        if (currentPrice > 0 && (existingPrice === 0 || currentPrice < existingPrice)) {
+          productMap.set(key, product);
+        }
+      }
+    });
+    
+    return Array.from(productMap.values());
   }
 }

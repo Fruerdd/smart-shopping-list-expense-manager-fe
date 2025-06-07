@@ -22,6 +22,7 @@ export class ShoppingListCardComponent implements OnInit {
 
   protected userId: string;
   ownerAvatarUrl: string | null = null;
+  randomListImageUrl: string;
 
   constructor(
     private authService: AuthService,
@@ -33,6 +34,7 @@ export class ShoppingListCardComponent implements OnInit {
       throw new Error('User must be logged in');
     }
     this.userId = currentUserId;
+    this.randomListImageUrl = this.getRandomListImage();
   }
 
   ngOnInit() {
@@ -97,5 +99,18 @@ export class ShoppingListCardComponent implements OnInit {
     if (confirm('Are you sure you want to mark this list as done? This will archive the list.')) {
       this.markListAsDone.emit(this.shoppingList.id);
     }
+  }
+
+  private getRandomListImage(): string {
+    const listImages = [
+      'assets/images/list-img-generic1.png',
+      'assets/images/list-img-generic2.png',
+      'assets/images/list-img-generic3.png',
+      'assets/images/list-img-generic4.png',
+      'assets/images/list-img-generic5.png'
+    ];
+    
+    const randomIndex = Math.floor(Math.random() * listImages.length);
+    return listImages[randomIndex];
   }
 }
