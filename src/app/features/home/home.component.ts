@@ -81,10 +81,22 @@ export class HomeComponent implements OnInit {
         catchError(() => of(this.toView(dto, dto.avatar)))
       )
     );
-
+  
     forkJoin(calls).subscribe({
-      next: views => this.testimonials = views,
-      error: () => this.testimonials = dtos.map(dto => this.toView(dto, dto.avatar))
+      next: views => {
+        // ① filter out anything under score 4
+        this.testimonials = views
+          .filter(v => v.score >= 4);              // ← drop below-4 reviews
+        // ② reset pagination if you want to start at page 0
+        this.startIndex   = 0;
+      },
+      error: () => {
+        // apply same filter in the error fallback
+        this.testimonials = dtos
+          .map(dto => this.toView(dto, dto.avatar))
+          .filter(v => v.score >= 4);
+        this.startIndex   = 0;
+      }
     });
   }
 
@@ -123,10 +135,9 @@ export class HomeComponent implements OnInit {
 
   // slice out the visible 3 (or 1 on mobile)
   get visibleTestimonials(): TestimonialView[] {
-    const n = this.testimonials.length;
-    if (n === 0) return [];
-    return Array.from({ length: this.itemsToShow }, (_, i) =>
-      this.testimonials[(this.startIndex + i) % n]
+    return this.testimonials.slice(
+      this.startIndex,
+      this.startIndex + this.itemsToShow
     );
   }
 
