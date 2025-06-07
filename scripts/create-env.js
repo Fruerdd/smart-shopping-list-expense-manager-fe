@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+
+console.log('🔎 process.env.API_URL =', process.env.API_URL);
 const prodEnvPath = path.resolve(__dirname, '../src/environments/environment.prod.ts');
 const defaultEnvPath = path.resolve(__dirname, '../src/environments/environment.ts');
 
