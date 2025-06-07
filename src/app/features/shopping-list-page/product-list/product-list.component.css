@@ -92,7 +92,7 @@
 
 .product-row {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 12px;
 }
 
@@ -138,9 +138,50 @@
   margin: 0 0 5px;
 }
 
+.price-store-container {
+  height: 65px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 5px;
+}
+
 .product-store, .product-price {
   margin: 0 0 5px;
   color: #0B3B5B;
+}
+
+.product-store:empty::after {
+  content: "No store selected";
+  color: #999;
+  font-style: italic;
+}
+
+.product-price:empty::after {
+  content: "Price not available";
+  color: #999;
+  font-style: italic;
+}
+
+.best-price-info {
+  margin: 5px 0;
+}
+
+.best-price-label {
+  margin: 0 0 5px;
+  color: #F9A825;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.selected-store-price {
+  margin: 0 0 3px;
+  color: #0B3B5B;
+  font-size: 11px;
+}
+
+.price-info-area {
+  margin: 5px 0;
 }
 
 .compare-btn {
@@ -171,4 +212,11 @@
   justify-content: center;
   align-items: center;
   font-size: 12px;
+}
+
+.product-store-regular {
+  color: #0B3B5B;
+}
+.product-price-regular {
+  color: #0B3B5B;
 }

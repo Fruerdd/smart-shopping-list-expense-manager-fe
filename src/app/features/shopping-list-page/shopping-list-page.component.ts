@@ -658,36 +658,106 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
   }
 
   private updateProductPricesForStore(storeName: string): void {
-    if (!storeName || this.selectedProducts.length === 0 || !this.currentStore) return;
+    if (!storeName || !this.currentStore) return;
 
     if (this.isLoading) {
       return; // Prevent multiple simultaneous updates
     }
 
     this.isLoading = true;
-    const productUpdates = this.selectedProducts.map(product =>
-      this.shoppingListService.getItemPriceComparisons(product.productId).pipe(
-        map(prices => {
-          const storePrice = prices.find(p => p.storeName === storeName);
-          return {
-            ...product,
-            storeName: storeName,
-            storeId: this.currentStore?.id,
-            price: storePrice?.price,
-            quantity: product.quantity || 1
-          };
-        })
-      )
-    );
+    
+    // Update selected products
+    const selectedProductUpdates = this.selectedProducts.length > 0 ? 
+      this.selectedProducts.map(product =>
+        this.shoppingListService.getItemPriceComparisons(product.productId).pipe(
+          map(prices => {
+            const storePrice = prices.find(p => p.storeName === storeName);
+            return {
+              ...product,
+              storeName: storeName,
+              storeId: this.currentStore?.id,
+              price: storePrice?.price,
+              quantity: product.quantity || 1
+            };
+          })
+        )
+      ) : [];
 
-    forkJoin(productUpdates).pipe(
+    // Update all products in categories
+    const categoryProductUpdates: Observable<any>[] = [];
+    this.categories.forEach(category => {
+      if (category.products && category.products.length > 0) {
+        category.products.forEach(product => {
+          if (product.productId) {
+            categoryProductUpdates.push(
+              this.shoppingListService.getItemPriceComparisons(product.productId).pipe(
+                map(prices => {
+                  const storePrice = prices.find(p => p.storeName === storeName);
+                  return {
+                    ...product,
+                    storeName: storePrice ? storeName : product.storeName,
+                    storeId: storePrice ? this.currentStore?.id : product.storeId,
+                    price: storePrice?.price || product.price,
+                    categoryId: category.id
+                  };
+                })
+              )
+            );
+          }
+        });
+      }
+    });
+
+    const allUpdates = [...selectedProductUpdates, ...categoryProductUpdates];
+    
+    if (allUpdates.length === 0) {
+      this.isLoading = false;
+      return;
+    }
+
+    forkJoin(allUpdates).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (updatedProducts) => {
-        this.selectedProducts = [...updatedProducts];
+        // Update selected products
+        if (selectedProductUpdates.length > 0) {
+          this.selectedProducts = [...updatedProducts.slice(0, selectedProductUpdates.length)];
+        }
+        
+        // Update category products
+        const categoryUpdates = updatedProducts.slice(selectedProductUpdates.length);
+        const categoryUpdateMap = new Map<string, ShoppingListItemDTO[]>();
+        
+        categoryUpdates.forEach((product: any) => {
+          const categoryId = product.categoryId;
+          if (!categoryUpdateMap.has(categoryId)) {
+            categoryUpdateMap.set(categoryId, []);
+          }
+          categoryUpdateMap.get(categoryId)!.push(product);
+        });
+        
+        this.categories.forEach(category => {
+          const updatedCategoryProducts = categoryUpdateMap.get(category.id);
+          if (updatedCategoryProducts) {
+            if (category.id === 'best-price') {
+              const preservedProducts = updatedCategoryProducts.map(updatedProduct => {
+                const originalProduct = category.products.find(p => p.productId === updatedProduct.productId);
+                return {
+                  ...updatedProduct,
+                  originalBestPrice: (originalProduct as any)?.originalBestPrice,
+                  originalBestStore: (originalProduct as any)?.originalBestStore
+                };
+              });
+              category.products = [...preservedProducts];
+            } else {
+              category.products = [...updatedCategoryProducts];
+            }
+          }
+        });
+
         // Force update of filtered products to reflect new store
         this.filteredProducts = this.filteredProducts.map(p => {
-          const updatedProduct = updatedProducts.find(up => up.productId === p.productId);
+          const updatedProduct = updatedProducts.find((up: any) => up.productId === p.productId);
           if (updatedProduct) {
             return {
               ...p,
@@ -735,20 +805,43 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     this.productService.getTopProducts().subscribe(topProducts => {
       const peoplesChoiceCategory = this.categories.find(cat => cat.id === 'peoples-choice');
       if (peoplesChoiceCategory && topProducts.length > 0) {
-        // Deduplicate by product name and keep the cheapest price
-        const uniqueProducts = this.deduplicateProductsByPrice(
-          topProducts.map(product => ({
-            id: '',
-            productId: '',
-            productName: product.productName,
-            price: product.price,
-            storeName: product.storeName,
-            storeId: '',
-            isChecked: false,
-            quantity: 1
-          }))
-        );
-        peoplesChoiceCategory.products = uniqueProducts.slice(0, 10);
+        // Get all available products to match with top products
+        this.shoppingListService.getAllProducts().subscribe(allProducts => {
+          const matchedProducts = topProducts.map(topProduct => {
+            // Find matching product in available products by name
+            const matchingProduct = allProducts.find(p => 
+              p.productName.toLowerCase().trim() === topProduct.productName.toLowerCase().trim()
+            );
+            
+            if (matchingProduct) {
+              return {
+                id: matchingProduct.productId,
+                productId: matchingProduct.productId,
+                productName: matchingProduct.productName,
+                price: topProduct.price,
+                storeName: topProduct.storeName,
+                storeId: matchingProduct.storeId || '',
+                isChecked: false,
+                quantity: 1
+              };
+            } else {
+              // If no matching product found, create a placeholder
+              return {
+                id: this.generateProductId(topProduct.productName),
+                productId: this.generateProductId(topProduct.productName),
+                productName: topProduct.productName,
+                price: topProduct.price,
+                storeName: topProduct.storeName,
+                storeId: '',
+                isChecked: false,
+                quantity: 1
+              };
+            }
+          });
+          
+          const uniqueProducts = this.deduplicateProductsByPrice(matchedProducts);
+          peoplesChoiceCategory.products = uniqueProducts.slice(0, 10);
+        });
       }
     });
 
@@ -776,8 +869,10 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
                     storeName: cheapestPrice.storeName,
                     storeId: cheapestPrice.storeId,
                     isChecked: false,
-                    quantity: 1
-                  };
+                    quantity: 1,
+                    originalBestPrice: cheapestPrice.price,
+                    originalBestStore: cheapestPrice.storeName
+                  } as any;
                 }
                 return null;
               })
@@ -829,5 +924,9 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     });
     
     return Array.from(productMap.values());
+  }
+
+  private generateProductId(productName: string): string {
+    return 'product-' + productName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-' + Date.now();
   }
 }
