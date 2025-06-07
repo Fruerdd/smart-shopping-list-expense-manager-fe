@@ -104,4 +104,19 @@ export class AuthService {
       storage.removeItem('currentUserId');
     }
   }
+
+  private getUserTypeFromToken(): 'USER' | 'ADMIN' | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.userType as 'USER' | 'ADMIN' | null;
+    } catch {
+      return null;
+    }
+  }
+
+  isAdminUser(): boolean {
+    return this.getUserTypeFromToken() === 'ADMIN';
+  }
 }

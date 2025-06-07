@@ -91,7 +91,7 @@
                 [ngClass]="{'active': activePage === 'admin-page'}">
               Admin Dashboard
             </li>
-            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isOtherUserProfilePage && !isShoppingListPage && !isEditProfilePage"
+            <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isOtherUserProfilePage && !isShoppingListPage && !isEditProfilePage && !isAdminPage"
                 (click)="activatePage('log-out')"
                 [ngClass]="{'active': activePage === 'log-out'}" class="log-out-button">
               Log Out

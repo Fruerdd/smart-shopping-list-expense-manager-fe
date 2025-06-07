@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { ServerRoute, RenderMode } from '@angular/ssr';
 import { AddEditStoreComponent } from './features/admin-page/add-edit-store/add-edit-store.component';
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -30,6 +31,7 @@ export const routes: Routes = [
     path: 'admin-page',
     loadComponent: () => import('./features/admin-page/admin-page.component')
       .then(m => m.AdminPageComponent),
+      canActivate: [AdminGuard],
       children: [
         {
           path: 'add-users',
