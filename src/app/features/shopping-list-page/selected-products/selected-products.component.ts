@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '
 import {CommonModule} from '@angular/common';
 import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
 import {MatIconModule} from '@angular/material/icon';
+import { SearchEventService } from '@app/services/search-event.service';
 
 @Component({
   selector: 'app-selected-products',
@@ -12,6 +13,7 @@ import {MatIconModule} from '@angular/material/icon';
 })
 export class SelectedProductsComponent implements OnChanges {
   @Input() selectedProducts: ShoppingListItemDTO[] = [];
+  @Input() searchTerm = '';
   @Input() isEditMode = false;
   @Input() preferredStore: string | null = null;
   @Input() listFormValid = false;
@@ -23,6 +25,8 @@ export class SelectedProductsComponent implements OnChanges {
   @Output() changeStore = new EventEmitter<void>();
   @Output() updateProductStore = new EventEmitter<{ productId: string, newStore: string }>();
 
+  constructor(private searchEventService: SearchEventService) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['preferredStore'] && !changes['preferredStore'].firstChange) {
       const currentStore = changes['preferredStore'].currentValue;
@@ -32,7 +36,25 @@ export class SelectedProductsComponent implements OnChanges {
         this.switchSelectedItemsToNewStore(currentStore);
       }
     }
+    const listChange = changes['selectedProducts'];
+  if (listChange && !listChange.firstChange) {
+    const prev = listChange.previousValue  as ShoppingListItemDTO[] || [];
+    const curr = listChange.currentValue   as ShoppingListItemDTO[] || [];
+    const added = curr.filter(c => !prev.some(p => p.id === c.id));
+
+    // ← defer to next macrotask so CD finishes before we fire any HTTP
+    setTimeout(() => {
+      added.forEach(item =>
+        this.searchEventService
+          .log({ productId: item.id, searchTerm: this.searchTerm })
+          .subscribe({
+            next: () => {/* no op */},
+            error: e => console.error('search-log failed', e)
+          })
+      );
+    });
   }
+}
 
   private switchSelectedItemsToNewStore(newStore: string): void {
     this.selectedProducts.forEach(product => {
@@ -73,4 +95,6 @@ export class SelectedProductsComponent implements OnChanges {
       return total + ((product.price || 0) * (product.quantity || 1));
     }, 0);
   }
+
+  
 }
