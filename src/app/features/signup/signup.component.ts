@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService, RegisterDTO } from '@app/services/auth.service';
+import {Component} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {Router, RouterLink} from '@angular/router';
+import {AuthService, RegisterDTO} from '@app/services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -13,7 +13,7 @@ import { AuthService, RegisterDTO } from '@app/services/auth.service';
 })
 export class SignupComponent {
   signupForm: FormGroup;
-  imageUrl: string = 'assets/images/slika1.jpg';
+  imageUrl: string = 'assets/images/signup_image.png';
 
   constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
     this.signupForm = this.fb.group({
@@ -27,7 +27,7 @@ export class SignupComponent {
   onSubmit() {
     if (this.signupForm.valid) {
       // Destructure form values
-      const { password, confirmPassword, email, name } = this.signupForm.value;
+      const {password, confirmPassword, email, name} = this.signupForm.value;
 
       // Check if passwords match
       if (password !== confirmPassword) {
@@ -36,11 +36,11 @@ export class SignupComponent {
       }
 
       // Create the RegisterDTO object to send to the backend
-      const newUser: RegisterDTO = { name, email, password };
+      const newUser: RegisterDTO = {name, email, password};
 
       // Call the register method from AuthService
       this.authService.register(newUser).subscribe({
-        next: (response) => {
+        next: () => {
           // Display success message
           this.showMessageBox('Registration successful!', 'Success');
           this.router.navigate(['/login']); // Navigate to login page on success

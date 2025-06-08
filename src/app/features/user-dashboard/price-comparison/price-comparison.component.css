@@ -163,3 +163,114 @@ h2 {
   font-size: 14px;
   color: #0B3B5B;
 }
+
+@media (max-width: 768px) {
+  .price-comparison-container {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .search-section {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .search-container {
+    width: 100%;
+    flex-shrink: 0;
+  }
+  
+  .search-results {
+    max-height: 200px;
+  }
+  
+  .search-results-list {
+    padding: 0;
+  }
+  
+  .search-result-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .search-result-item:last-child {
+    border-bottom: none;
+  }
+  
+  .item-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    color: #0B3B5B;
+  }
+  
+  .item-name {
+    color: #0B3B5B;
+  }
+  
+  .no-results {
+    font-style: italic;
+  }
+  
+  .price-results {
+    width: 100%;
+    margin-top: 15px;
+    flex-shrink: 0;
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .price-results-header {
+    flex-shrink: 0;
+  }
+  
+  .price-results-header h3 {
+    font-size: 16px;
+  }
+  
+  .price-results-list {
+    max-height: 300px;
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: #0B3B5B transparent;
+  }
+  
+  .price-results-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .price-results-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .price-results-list::-webkit-scrollbar-thumb {
+    background: #0B3B5B;
+    border-radius: 3px;
+  }
+  
+  .store-price-item {
+    transition: background-color 0.2s;
+  }
+  
+  .store-price-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .store-icon {
+    color: #0B3B5B;
+  }
+  
+  .price {
+    font-size: 16px;
+  }
+  
+  .search-input {
+    font-size: 14px;
+    padding: 12px;
+  }
+}

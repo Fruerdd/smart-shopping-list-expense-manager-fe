@@ -1,48 +1,50 @@
- <h2 id="list-header">{{ isEditMode ? 'Edit Shopping List' : 'Shopping List' }}</h2>
+<h2 id="list-header">{{ isEditMode ? 'Edit Shopping List' : 'Shopping List' }}</h2>
 
-  <div class="list-preview-content" *ngIf="selectedProducts.length > 0; else emptyList">
-    <div class="selected-items-container" [ngStyle]="{'max-height': getContainerHeight()}">
-      <div class="selected-item" *ngFor="let item of selectedProducts">
-        <div class="selected-item-image">
-          <img src="assets/images/item-img-generic.png" [alt]="item.productName" height="50" width="50">
+<div class="list-preview-content" *ngIf="selectedProducts.length > 0; else emptyList">
+  <div class="selected-items-container" [ngStyle]="{'max-height': getContainerHeight()}">
+    <div class="selected-item" *ngFor="let item of selectedProducts">
+      <div class="selected-item-image">
+        <img src="assets/images/item-img-generic.png" [alt]="item.productName" height="50" width="50">
+      </div>
+      <div class="selected-item-details">
+        <p class="selected-item-name">{{ item.productName }}</p>
+        <p class="selected-item-price" *ngIf="item.price">{{ item.price }} KM</p>
+        <p class="selected-item-store" *ngIf="item.storeName">{{ item.storeName }}</p>
+      </div>
+      <div class="selected-item-actions">
+        <div class="quantity-control">
+          <button class="quantity-btn" (click)="updateItemQuantity(item.id, (item.quantity || 1) - 1)"
+                  [disabled]="(item.quantity || 1) <= 1">-
+          </button>
+          <span class="quantity-value">{{ item.quantity || 1 }}</span>
+          <button class="quantity-btn" (click)="updateItemQuantity(item.id, (item.quantity || 1) + 1)">+</button>
         </div>
-        <div class="selected-item-details">
-          <p class="selected-item-name">{{ item.productName }}</p>
-          <p class="selected-item-price" *ngIf="item.price">{{ item.price }} KM</p>
-          <p class="selected-item-store" *ngIf="item.storeName">{{ item.storeName }}</p>
-        </div>
-        <div class="selected-item-actions">
-          <div class="quantity-control">
-            <button class="quantity-btn" (click)="updateItemQuantity(item.id, (item.quantity || 1) - 1)" [disabled]="(item.quantity || 1) <= 1">-</button>
-            <span class="quantity-value">{{ item.quantity || 1 }}</span>
-            <button class="quantity-btn" (click)="updateItemQuantity(item.id, (item.quantity || 1) + 1)">+</button>
-          </div>
-          <button class="remove-item-btn" (click)="onRemoveProduct(item)" title="Remove item">×</button>
-        </div>
+        <button class="remove-item-btn" (click)="onRemoveProduct(item)" title="Remove item">×</button>
       </div>
     </div>
-    <div class="list-total" *ngIf="selectedProducts.length > 0">
-      <p><strong>Total Items:</strong> {{ selectedProducts.length }}</p>
-      <p><strong>Total Price:</strong> {{ getTotalPrice() | number:'1.2-2' }} KM</p>
-    </div>
   </div>
-
-  <ng-template #emptyList>
-    <div class="list-preview-image">
-      <img src="assets/images/shopping-list-icon.png" alt="Shopping List" height="400" width="400">
-    </div>
-    <p class="list-info">The List is still empty! <br>
-      Once you select the products you would like to add, they will appear here!</p>
-  </ng-template>
-
-  <div class="list-instruction">
-    <mat-icon class="info-icon">info</mat-icon>
-    <span>Remember you can use your points to get discounts in our partnering stores</span>
+  <div class="list-total" *ngIf="selectedProducts.length > 0">
+    <p><strong>Total Items:</strong> {{ selectedProducts.length }}</p>
+    <p><strong>Total Price:</strong> {{ getTotalPrice() | number:'1.2-2' }} KM</p>
   </div>
+</div>
 
-  <div class="action-buttons">
-    <button class="secondary-btn" *ngIf="isEditMode" (click)="onCancelEdit()">CANCEL</button>
-    <button class="create-list-btn" (click)="onSaveList()" [disabled]="!listFormValid || selectedProducts.length === 0">
-      {{ isEditMode ? 'UPDATE LIST' : 'CREATE A LIST' }}
-    </button>
+<ng-template #emptyList>
+  <div class="list-preview-image">
+    <img src="assets/images/shopping-list-icon.png" alt="Shopping List" height="400" width="400">
   </div>
+  <p class="list-info">The List is still empty! <br>
+    Once you select the products you would like to add, they will appear here!</p>
+</ng-template>
+
+<div class="list-instruction">
+  <mat-icon class="info-icon">info</mat-icon>
+  <span>Remember you can use your points to get discounts in our partnering stores</span>
+</div>
+
+<div class="action-buttons">
+  <button class="secondary-btn" *ngIf="isEditMode" (click)="onCancelEdit()">CANCEL</button>
+  <button class="create-list-btn" (click)="onSaveList()" [disabled]="!listFormValid || selectedProducts.length === 0">
+    {{ isEditMode ? 'UPDATE LIST' : 'CREATE A LIST' }}
+  </button>
+</div>

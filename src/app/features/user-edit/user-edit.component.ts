@@ -1,9 +1,9 @@
-import {Component, OnInit, Inject, PLATFORM_ID, ViewChild, ElementRef} from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserProfileService } from '@app/services/user-profile.service';
-import { ImageUrlService } from '@app/services/image-url.service';
+import {Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {UserProfileService} from '@app/services/user-profile.service';
+import {ImageUrlService} from '@app/services/image-url.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -14,7 +14,7 @@ import { ImageUrlService } from '@app/services/image-url.service';
 })
 export class UserEditComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  
+
   user: any;
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
@@ -26,7 +26,8 @@ export class UserEditComponent implements OnInit {
     private userProfileService: UserProfileService,
     private router: Router,
     private imageUrlService: ImageUrlService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -54,21 +55,21 @@ export class UserEditComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         alert('Please select a valid image file.');
         return;
       }
-      
+
       // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB.');
         return;
       }
-      
+
       this.selectedFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {

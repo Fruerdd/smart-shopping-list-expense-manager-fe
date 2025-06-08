@@ -1,68 +1,68 @@
 <div class="login-page">
-    <div class="phone-placeholder">
-      <img [src]="imageUrl" alt="Example Image" />
+  <div class="phone-placeholder">
+    <img [src]="imageUrl" alt="Signup Image"/>
+  </div>
+
+  <div class="login-card">
+    <div class="login-header">
+      <h2>GroceryMate</h2>
     </div>
 
-    <div class="login-card">
-      <div class="login-header">
-        <h2>GroceryMate</h2>
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <input
+        type="email"
+        formControlName="email"
+        placeholder="Email"
+      />
+      <div
+        *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+        class="error"
+      >
+        Valid email is required.
+      </div>
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Password"
+      />
+      <div
+        *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+        class="error"
+      >
+        Password is required.
+      </div>
+      <input
+        type="password"
+        formControlName="confirmPassword"
+        placeholder="Confirm Password"
+      />
+      <div
+        *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched"
+        class="error"
+      >
+        Confirming password is required.
+      </div>
+      <input
+        type="text"
+        formControlName="name"
+        placeholder="Name"
+      />
+      <div
+        *ngIf="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
+        class="error"
+      >
+        Name is required.
       </div>
 
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-        <input
-          type="email"
-          formControlName="email"
-          placeholder="Email"
-        />
-        <div
-          *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
-          class="error"
-        >
-          Valid email is required.
-        </div>
-        <input
-          type="password"
-          formControlName="password"
-          placeholder="Password"
-        />
-        <div
-          *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
-          class="error"
-        >
-          Password is required.
-        </div>
-        <input
-          type="password"
-          formControlName="confirmPassword"
-          placeholder="Confirm Password"
-        />
-        <div
-          *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched"
-          class="error"
-        >
-          Confirming password is required.
-        </div>
-        <input
-          type="text"
-          formControlName="name"
-          placeholder="Name"
-        />
-        <div
-          *ngIf="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
-          class="error"
-        >
-          Name is required.
-        </div>
+      <!-- Submit Button -->
+      <button type="submit" [disabled]="signupForm.invalid">Sign up</button>
+    </form>
 
-        <!-- Submit Button -->
-        <button type="submit" [disabled]="signupForm.invalid">Sign up</button>
-      </form>
+    <div class="or-divider">OR</div>
 
-      <div class="or-divider">OR</div>
-
-      <p class="signup-text">
-        Already have an account?
-        <a routerLink="/login" href="/login">Log in</a>
-      </p>
-    </div>
+    <p class="signup-text">
+      Already have an account?
+      <a routerLink="/login" href="/login">Log in</a>
+    </p>
   </div>
+</div>

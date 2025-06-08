@@ -6,14 +6,16 @@
         <img [src]="getFullImageUrl(user.avatar) || '/assets/images/avatar.png'"
              (error)="setDefaultImage($event)"
              alt="Profile photo"
-             class="profile-image" />
+             class="profile-image"/>
         <div class="profile-welcome">
-          <h1>Welcome{{isOwnProfile ? '' : ' to'}}, {{user.name}}{{isOwnProfile ? '!' : "'s Profile!"}}</h1>
-          <p class="location"><i class="fas fa-map-marker-alt"></i> {{user.address}}</p>
+          <h1>Welcome{{ isOwnProfile ? '' : ' to' }}, {{ user.name }}{{ isOwnProfile ? '!' : "'s Profile!" }}</h1>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> {{ user.address }}</p>
           <div class="loyalty-tier">
-            <i class="fas fa-medal" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))"></i>
-            <span class="tier-label" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))">
-              {{getLoyaltyTier(user.bonus_points || loyaltyPoints || 0)}} MEMBER
+            <i class="fas fa-medal"
+               [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))"></i>
+            <span class="tier-label"
+                  [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))">
+              {{ getLoyaltyTier(user.bonus_points || loyaltyPoints || 0) }} MEMBER
             </span>
           </div>
         </div>
@@ -49,23 +51,23 @@
         <h3>About Me</h3>
         <div class="info-item">
           <i class="fas fa-user"></i>
-          <span class="value">{{user.name}}</span>
+          <span class="value">{{ user.name }}</span>
         </div>
         <div class="info-item">
           <i class="fas fa-envelope"></i>
-          <span class="value">{{user.email}}</span>
+          <span class="value">{{ user.email }}</span>
         </div>
         <div class="info-item" *ngIf="user.phone">
           <i class="fas fa-phone"></i>
-          <span class="value">{{user.phone}}</span>
+          <span class="value">{{ user.phone }}</span>
         </div>
       </div>
 
       <!-- Coupon Code Section -->
       <div class="card coupon-section">
-        <h3>{{isOwnProfile ? 'Your' : user.name + "'s"}} referral code:</h3>
+        <h3>{{ isOwnProfile ? 'Your' : user.name + "'s" }} referral code:</h3>
         <div class="coupon-box">
-          <input type="text" [value]="user.couponCode || 'YOUR1464'" readonly class="coupon-input" #referralInput />
+          <input type="text" [value]="user.couponCode || 'YOUR1464'" readonly class="coupon-input" #referralInput/>
           <button class="copy-btn" (click)="copyCoupon(referralInput.value)">
             <i class="fas fa-copy"></i>
           </button>
@@ -79,7 +81,7 @@
             You can only use one referral code per account. Enter a friend's referral code to earn bonus points!
           </p>
           <div class="coupon-box">
-            <input type="text" placeholder="Enter referral code (e.g., REF123)" class="coupon-input" #newReferralInput />
+            <input type="text" placeholder="Enter referral code (e.g., REF123)" class="coupon-input" #newReferralInput/>
             <button class="submit-btn" (click)="submitReferral(newReferralInput.value)">
               <i class="fas fa-arrow-right"></i>
             </button>
@@ -89,7 +91,7 @@
 
       <!-- Friends Section -->
       <div class="card friends-section">
-        <h3>{{isOwnProfile ? 'Friends' : user.name + "'s Friends"}}</h3>
+        <h3>{{ isOwnProfile ? 'Friends' : user.name + "'s Friends" }}</h3>
 
         <div class="friends-list">
           <div class="friend-item" *ngFor="let friend of friends.slice(0, 3)">
@@ -98,11 +100,12 @@
                  class="friend-avatar"
                  (error)="setDefaultImage($event)"
                  (click)="viewUserProfile(friend.id)"
-                 style="cursor: pointer;" />
-            <span class="friend-name" (click)="viewUserProfile(friend.id)" style="cursor: pointer;">{{friend.name}}</span>
+                 style="cursor: pointer;"/>
+            <span class="friend-name" (click)="viewUserProfile(friend.id)"
+                  style="cursor: pointer;">{{ friend.name }}</span>
           </div>
           <div *ngIf="friends.length === 0" class="no-friends">
-            <p>{{isOwnProfile ? 'No friends added yet' : 'This user has no friends yet'}}</p>
+            <p>{{ isOwnProfile ? 'No friends added yet' : 'This user has no friends yet' }}</p>
           </div>
         </div>
         <button class="see-all-btn" *ngIf="friends.length > 0" (click)="showAllFriends()">See All</button>
@@ -110,7 +113,7 @@
 
       <!-- Review Box Section -->
       <div class="card review-section">
-        <h3>{{isOwnProfile ? 'Review Box' : user.name + "'s Review"}}</h3>
+        <h3>{{ isOwnProfile ? 'Review Box' : user.name + "'s Review" }}</h3>
 
         <!-- View Mode -->
         <div *ngIf="!isEditingReview">
@@ -157,20 +160,22 @@
 
       <!-- Loyalty Points Section -->
       <div class="card loyalty-section">
-        <h3>Loyalty {{isOwnProfile ? 'Points' : 'Status'}}</h3>
+        <h3>Loyalty {{ isOwnProfile ? 'Points' : 'Status' }}</h3>
         <div class="points-info">
           <!-- Show points only for own profile -->
           <div *ngIf="isOwnProfile" class="points-circle">
             <i class="fas fa-plus-circle"></i>
-            <span class="points-number">{{user.bonus_points || loyaltyPoints || 0}}</span>
+            <span class="points-number">{{ user.bonus_points || loyaltyPoints || 0 }}</span>
             <span class="points-label">points</span>
           </div>
 
           <!-- Show tier for everyone -->
           <div class="tier-display">
-            <i class="fas fa-medal" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))"></i>
-            <span class="tier-name" [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))">
-              {{getLoyaltyTier(user.bonus_points || loyaltyPoints || 0)}}
+            <i class="fas fa-medal"
+               [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))"></i>
+            <span class="tier-name"
+                  [style.color]="getTierColor(getLoyaltyTier(user.bonus_points || loyaltyPoints || 0))">
+              {{ getLoyaltyTier(user.bonus_points || loyaltyPoints || 0) }}
             </span>
             <span class="tier-label">MEMBER</span>
           </div>
@@ -180,20 +185,22 @@
             <i class="fas fa-info-circle"></i>
             <div class="tooltip-content">
               <h4>How to Earn Points</h4>
-              <p>Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns you points which can then be used for discounts by scanning your unique QR code in any of the supported stores!</p>
+              <p>Creating lists, selecting your favorite items and stores, adding and sharing lists with friends earns
+                you points which can then be used for discounts by scanning your unique QR code in any of the supported
+                stores!</p>
             </div>
           </div>
         </div>
 
         <!-- Credits only for own profile -->
         <div *ngIf="isOwnProfile" class="credits-info">
-          <p>Credits Available: {{user.creditsAvailable || '0'}} KM</p>
+          <p>Credits Available: {{ user.creditsAvailable || '0' }} KM</p>
         </div>
 
         <!-- QR Code only for own profile -->
         <div *ngIf="isOwnProfile" class="qr-code">
           <qrcode [qrdata]="user.qrCodeValue || user.id || ''"
-                  [width]="100"
+                  [width]="140"
                   [errorCorrectionLevel]="'M'"
                   [allowEmptyString]="true">
           </qrcode>
@@ -234,10 +241,10 @@
           <img [src]="getFullImageUrl(searchUser.avatar) || '/assets/images/avatar.png'"
                alt="User avatar"
                class="search-user-avatar"
-               (error)="setDefaultImage($event)" />
+               (error)="setDefaultImage($event)"/>
           <div class="search-user-info">
-            <span class="search-user-name">{{searchUser.name}}</span>
-            <span class="search-user-email">{{searchUser.email}}</span>
+            <span class="search-user-name">{{ searchUser.name }}</span>
+            <span class="search-user-email">{{ searchUser.email }}</span>
           </div>
         </div>
       </div>
@@ -257,7 +264,7 @@
 <div *ngIf="showFriendsModal" class="modal-overlay" (click)="closeFriendsModal()">
   <div class="friends-modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>All Friends ({{friends.length}})</h3>
+      <h3>All Friends ({{ friends.length }})</h3>
       <button class="close-btn" (click)="closeFriendsModal()">
         <i class="fas fa-times"></i>
       </button>
@@ -270,10 +277,11 @@
                class="friend-avatar-large"
                (error)="setDefaultImage($event)"
                (click)="viewUserProfile(friend.id)"
-               style="cursor: pointer;" />
+               style="cursor: pointer;"/>
           <div class="friend-info">
-            <span class="friend-name" (click)="viewUserProfile(friend.id)" style="cursor: pointer;">{{friend.name}}</span>
-            <span class="friend-email">{{friend.email}}</span>
+            <span class="friend-name" (click)="viewUserProfile(friend.id)"
+                  style="cursor: pointer;">{{ friend.name }}</span>
+            <span class="friend-email">{{ friend.email }}</span>
           </div>
         </div>
       </div>
@@ -284,7 +292,7 @@
   </div>
 </div>
 
-<section class="analytics-grid" *ngIf="user && !loading && isOwnProfile">
+<section class="analytics-grid" id="analytics-grid" *ngIf="user && !loading && isOwnProfile">
   <h2>Budget & Expense Analytics</h2>
 
   <div class="card-grid">

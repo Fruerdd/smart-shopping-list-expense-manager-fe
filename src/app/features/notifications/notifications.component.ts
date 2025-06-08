@@ -1,10 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NotificationDTO } from '@app/models/notification.dto';
-import { UserProfileService } from '@app/services/user-profile.service';
-import { Subscription, interval } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { ImageUrlService } from 'src/app/services/image-url.service';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {NotificationDTO} from '@app/models/notification.dto';
+import {UserProfileService} from '@app/services/user-profile.service';
+import {interval, Subscription} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
+import {ImageUrlService} from 'src/app/services/image-url.service';
 
 @Component({
   selector: 'app-notifications',
@@ -27,7 +27,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   constructor(
     private userProfileService: UserProfileService,
     private imageUrlService: ImageUrlService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     if (this.currentUserId) {
@@ -45,7 +46,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   private startPolling() {
     if (!this.currentUserId) return;
-    
+
     // Poll for unread notification count every 30 seconds
     this.pollingSubscription = interval(30000)
       .pipe(
@@ -56,7 +57,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           const previousCount = this.unreadCount;
           this.unreadCount = count;
           this.notificationCountChanged.emit(count);
-          
+
           // If count changed, reload notifications
           if (count !== previousCount) {
             this.loadNotifications();
@@ -70,13 +71,13 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   loadNotifications() {
     if (!this.currentUserId) return;
-    
+
     this.loading = true;
     this.userProfileService.getUserNotifications(this.currentUserId).subscribe({
       next: (notifications) => {
         const threeDaysAgo = new Date();
         threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-        
+
         this.notifications = notifications.filter(notification => {
           const notificationDate = new Date(notification.createdAt);
           return notificationDate >= threeDaysAgo;
@@ -93,7 +94,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   loadUnreadCount() {
     if (!this.currentUserId) return;
-    
+
     this.userProfileService.getUnreadNotificationCount(this.currentUserId).subscribe({
       next: (count) => {
         this.unreadCount = count;
@@ -105,7 +106,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   acceptFriendRequest(notification: NotificationDTO) {
     if (!this.currentUserId) return;
-    
+
     this.userProfileService.acceptFriendRequest(this.currentUserId, notification.sourceUserId).subscribe({
       next: (response) => {
         console.log('Friend request accepted:', response);
@@ -122,7 +123,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   declineFriendRequest(notification: NotificationDTO) {
     if (!this.currentUserId) return;
-    
+
     this.userProfileService.declineFriendRequest(this.currentUserId, notification.sourceUserId).subscribe({
       next: (response) => {
         console.log('Friend request declined:', response);
@@ -151,17 +152,17 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   markAllAsRead() {
     if (!this.currentUserId) return;
-    
+
     const nonFriendRequestNotifications = this.notifications.filter(
       n => !n.isRead && n.notificationType !== 'FRIEND_REQUEST'
     );
-    
+
     if (nonFriendRequestNotifications.length === 0) {
       return;
     }
 
     this.userProfileService.markAllNotificationsAsRead(this.currentUserId).subscribe({
-      next: (response) => {
+      next: () => {
         this.notifications.forEach(n => {
           if (n.notificationType !== 'FRIEND_REQUEST') {
             n.isRead = true;
@@ -171,7 +172,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Backend mark-all-as-read failed, using individual marking:', error);
-        
+
         this.markNotificationsIndividually(nonFriendRequestNotifications);
       }
     });
@@ -180,13 +181,13 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private markNotificationsIndividually(notifications: NotificationDTO[]) {
     let completedCount = 0;
     const totalCount = notifications.length;
-    
+
     notifications.forEach(notification => {
       this.userProfileService.markNotificationAsRead(notification.id).subscribe({
         next: () => {
           notification.isRead = true;
           completedCount++;
-          
+
           if (completedCount === totalCount) {
             this.loadUnreadCount();
           }
@@ -194,7 +195,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error(`Error marking notification ${notification.id} as read:`, error);
           completedCount++;
-          
+
           if (completedCount === totalCount) {
             this.loadUnreadCount();
           }
@@ -209,11 +210,16 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   getNotificationIcon(type: string): string {
     switch (type) {
-      case 'FRIEND_REQUEST': return 'fas fa-user-plus';
-      case 'COLLABORATOR_ADDED': return 'fas fa-list';
-      case 'REFERRAL_REWARD': return 'fas fa-gift';
-      case 'SYSTEM_MESSAGE': return 'fas fa-info-circle';
-      default: return 'fas fa-bell';
+      case 'FRIEND_REQUEST':
+        return 'fas fa-user-plus';
+      case 'COLLABORATOR_ADDED':
+        return 'fas fa-list';
+      case 'REFERRAL_REWARD':
+        return 'fas fa-gift';
+      case 'SYSTEM_MESSAGE':
+        return 'fas fa-info-circle';
+      default:
+        return 'fas fa-bell';
     }
   }
 
@@ -231,10 +237,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     return `${diffInDays}d ago`;
   }
 
-  hasUnreadNotifications(): boolean {
-    return this.notifications.some(n => !n.isRead);
-  }
-
   hasUnreadNonFriendRequestNotifications(): boolean {
     return this.notifications.some(n => !n.isRead && n.notificationType !== 'FRIEND_REQUEST');
   }
@@ -247,4 +249,4 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLImageElement;
     target.src = '/assets/images/avatar.png';
   }
-} 
+}

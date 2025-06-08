@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError, map } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { UserDTO } from '@app/models/user.dto';
-import { AuthService } from './auth.service';
-import { UserStatisticsDTO } from '@app/models/user-statistics.dto';
-import { ReviewDTO } from '@app/models/review.dto';
-import { NotificationDTO } from '@app/models/notification.dto';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {catchError, map, Observable, throwError} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {UserDTO} from '@app/models/user.dto';
+import {AuthService} from './auth.service';
+import {ReviewDTO} from '@app/models/review.dto';
+import {NotificationDTO} from '@app/models/notification.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,8 @@ export class UserProfileService {
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) {}
+  ) {
+  }
 
   getUserProfile(userId: string): Observable<UserDTO> {
     return this.http.get<UserDTO>(`${this.apiUrl}/profile/${userId}`).pipe(
@@ -43,13 +43,7 @@ export class UserProfileService {
   }
 
   getUsersByIds(userIds: string[]): Observable<UserDTO[]> {
-    return this.http.post<UserDTO[]>(`${environment.apiUrl}/api/users/bulk`, { userIds }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  getUserStatistics(userId: string): Observable<UserStatisticsDTO> {
-    return this.http.get<UserStatisticsDTO>(`${this.apiUrl}/statistics/${userId}`).pipe(
+    return this.http.post<UserDTO[]>(`${environment.apiUrl}/api/users/bulk`, {userIds}).pipe(
       catchError(this.handleError)
     );
   }
@@ -74,7 +68,7 @@ export class UserProfileService {
 
   updateLoyaltyPoints(userId: string, points: number): Observable<number> {
     return this.http.put<number>(`${this.apiUrl}/profile/loyalty-points/${userId}`, null, {
-      params: { points: points.toString() }
+      params: {points: points.toString()}
     }).pipe(
       catchError(this.handleError)
     );
@@ -94,7 +88,7 @@ export class UserProfileService {
 
   applyReferralCode(userId: string, referralCode: string): Observable<string> {
     return this.http.post<string>(`${this.apiUrl}/profile/referral/${userId}`, null, {
-      params: { referralCode },
+      params: {referralCode},
       responseType: 'text' as 'json'
     }).pipe(
       catchError(this.handleError)
@@ -111,7 +105,7 @@ export class UserProfileService {
 
   awardLoyaltyPoints(userId: string, activity: string, count: number = 1): Observable<string> {
     return this.http.post<string>(`${this.apiUrl}/profile/award-points/${userId}`, null, {
-      params: { 
+      params: {
         activity: activity,
         count: count.toString()
       },
@@ -124,7 +118,7 @@ export class UserProfileService {
   uploadProfilePicture(userId: string, file: File): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
-    
+
     return this.http.post<string>(`${this.apiUrl}/profile/upload-picture/${userId}`, formData, {
       responseType: 'text' as 'json'
     }).pipe(
@@ -134,7 +128,7 @@ export class UserProfileService {
 
   searchUsers(query: string): Observable<UserDTO[]> {
     return this.http.get<UserDTO[]>(`${this.apiUrl}/search`, {
-      params: { q: query }
+      params: {q: query}
     }).pipe(
       catchError(this.handleError)
     );
@@ -143,7 +137,7 @@ export class UserProfileService {
   // Friend management methods
   sendFriendRequest(userId: string, friendId: string): Observable<string> {
     return this.http.post<string>(`${this.apiUrl}/friends/${userId}/request`, null, {
-      params: { friendId },
+      params: {friendId},
       responseType: 'text' as 'json'
     }).pipe(
       catchError(this.handleError)
@@ -152,7 +146,7 @@ export class UserProfileService {
 
   acceptFriendRequest(userId: string, requesterId: string): Observable<string> {
     return this.http.post<string>(`${this.apiUrl}/friends/${userId}/accept`, null, {
-      params: { requesterId },
+      params: {requesterId},
       responseType: 'text' as 'json'
     }).pipe(
       catchError(this.handleError)
@@ -161,7 +155,7 @@ export class UserProfileService {
 
   declineFriendRequest(userId: string, requesterId: string): Observable<string> {
     return this.http.post<string>(`${this.apiUrl}/friends/${userId}/decline`, null, {
-      params: { requesterId },
+      params: {requesterId},
       responseType: 'text' as 'json'
     }).pipe(
       catchError(this.handleError)
@@ -170,7 +164,7 @@ export class UserProfileService {
 
   removeFriend(userId: string, friendId: string): Observable<string> {
     return this.http.delete<string>(`${this.apiUrl}/friends/${userId}/remove`, {
-      params: { friendId },
+      params: {friendId},
       responseType: 'text' as 'json'
     }).pipe(
       catchError(this.handleError)
@@ -217,12 +211,12 @@ export class UserProfileService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
-    
+
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
     } else {
       let backendMessage = '';
-      
+
       if (typeof error.error === 'string') {
         try {
           const parsedError = JSON.parse(error.error);
@@ -233,7 +227,7 @@ export class UserProfileService {
       } else if (error.error && typeof error.error === 'object') {
         backendMessage = error.error.message || error.error.error || '';
       }
-      
+
       if (backendMessage && backendMessage.includes('"')) {
         const match = backendMessage.match(/"([^"]+)"/);
         if (match && match[1]) {

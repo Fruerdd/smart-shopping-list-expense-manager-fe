@@ -1,60 +1,53 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-
-export interface IProduct {
-  rank:        number;
-  productName: string;
-  price:       number;
-  stock:       number;
-  store:       string;
-}
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
 
 export interface BulkResultDTO {
   success: boolean;
   errors?: string[];
-  count:   number;
+  count: number;
 }
 
 export interface IDailySearch {
-  day:      string;   // e.g. "2024-10-06"
+  day: string;   // e.g. "2024-10-06"
   searches: number;
 }
 
 export interface IMonthlyProductAdd {
-  month:      string; // e.g. "2024-10"
+  month: string; // e.g. "2024-10"
   addedCount: number;
 }
 
 export interface AddProductPayload {
-  storePriceId?: string;  
-  storeId:     string;
-  productId?:  string;    
-  productName: string;   
-  category?:   any;       
-  description?: string;   
-  price:       number;
-  barcode:     string;
-  isActive:    boolean;
+  storePriceId?: string;
+  storeId: string;
+  productId?: string;
+  productName: string;
+  category?: any;
+  description?: string;
+  price: number;
+  barcode: string;
+  isActive: boolean;
 }
 
 export interface ITopProduct {
-  rank:        number;
+  rank: number;
   productName: string;
-  price:       number;
+  price: number;
   searchCount: number;
-  storeName:   string;
+  storeName: string;
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class ProductService {
   private readonly base = environment.apiUrl;
   private readonly analyticsBase = `${this.base}/api/products/analytics`;
   private readonly productsBase = `${this.base}/api/products`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   /** bulk create/update → now returns your JSON result DTO */
   bulkAddProducts(payload: AddProductPayload[]): Observable<BulkResultDTO> {

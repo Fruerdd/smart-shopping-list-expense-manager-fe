@@ -1,11 +1,11 @@
 <header>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <div class="container">
-    <div class="row">
+    <div class="row align-items-center">
       <div class="col-auto">
         <div class="logo-container d-flex align-items-center">
-          <img src="app_logo.jpg" class="logo-image" alt="logo" (click)="scrollToTop()" style="cursor: pointer;" />
-          
+          <img src="app_logo.jpg" class="logo-image" alt="logo" (click)="scrollToTopAndActivateHome()" style="cursor: pointer;" />
+
           <!-- Always show a title -->
           <span class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
             <span *ngIf="isAdminPage">Admin Dashboard</span>
@@ -18,7 +18,7 @@
           </span>
         </div>
       </div>
-      <div class="col text-end">
+      <div class="col">
         <div class="menu-icon" *ngIf="isMobileView" (click)="openMenu()">
           <i class="{{menu_icon}}"></i>
         </div>
@@ -104,6 +104,7 @@
             <!-- User dashboard specific links -->
             <ng-container *ngIf="isDashboardPage">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
+              <li [routerLink]="['/user-profile', loggedInUserId]" routerLinkActive="active" (click)="activatePage('user-profile')">My Profile</li>
               <li (click)="scrollToSection('shopping-list')" [ngClass]="{'active': activePage === 'shopping-list'}">Shopping List</li>
               <li (click)="scrollToSection('favorites-section')" [ngClass]="{'active': activePage === 'favorites'}">Favorites</li>
               <li (click)="scrollToSection('price-comparison')" [ngClass]="{'active': activePage === 'price-comparison'}">Price Comparison</li>
@@ -115,7 +116,8 @@
             <!-- My Profile specific links -->
             <ng-container *ngIf="isMyProfilePage">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
-              <li (click)="scrollToSection('analytics')" [ngClass]="{'active': activePage === 'analytics'}">Analytics</li>
+              <li routerLink="/dashboard" routerLinkActive="active" (click)="activatePage('dashboard')">Dashboard</li>
+              <li (click)="scrollToSection('analytics-grid')" [ngClass]="{'active': activePage === 'analytics'}">Analytics</li>
               <li class="notifications-menu-item" (click)="toggleNotifications()">
                 <i class="fas fa-bell"></i>
                 <span class="notification-badge" *ngIf="unreadNotificationCount > 0">{{unreadNotificationCount}}</span>
@@ -184,7 +186,7 @@
 
 
   <!-- Notifications Component -->
-  <app-notifications 
+  <app-notifications
     [currentUserId]="loggedInUserId"
     [isVisible]="showNotifications"
     (closeNotifications)="closeNotifications()"

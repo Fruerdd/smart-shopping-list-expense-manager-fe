@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ProductDTO } from '@app/models/product.dto';
-import { StorePriceDTO } from '@app/models/store-price.dto';
-import { environment } from '../../environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {ProductDTO} from '@app/models/product.dto';
+import {StorePriceDTO} from '@app/models/store-price.dto';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,8 @@ import { environment } from '../../environments/environment';
 export class PriceComparisonService {
   private readonly apiUrl = `${environment.apiUrl}/api/users`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getAllItems(userId: string): Observable<ProductDTO[]> {
     return this.http.get<ProductDTO[]>(`${this.apiUrl}/${userId}/products`);

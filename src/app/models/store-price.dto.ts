@@ -1,5 +1,5 @@
 export interface StorePriceDTO {
-    storeId: string;
-    storeName: string;
-    price: number;
-  }
+  storeId: string;
+  storeName: string;
+  price: number;
+}

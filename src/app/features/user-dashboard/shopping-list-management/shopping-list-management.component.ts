@@ -1,15 +1,14 @@
 import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
-import { ShoppingListService } from '@app/services/shopping-list.service';
-import { ShoppingListCardComponent } from './shopping-list-card/shopping-list-card.component';
-import { SharedWithPopupComponent } from './shared-with-popup/shared-with-popup.component';
-import { ShoppingListDetailsComponent } from './shopping-list-details/shopping-list-details.component';
-import { NgForOf, AsyncPipe, NgIf } from '@angular/common';
-import { Observable, tap, catchError, of } from 'rxjs';
-import { ShoppingListDTO } from '@app/models/shopping-list.dto';
-import { AuthService } from '@app/services/auth.service';
-import { CollaboratorDTO } from '@app/models/collaborator.dto';
-import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
-import { PermissionEnum } from '@app/models/collaborator.dto';
+import {ShoppingListService} from '@app/services/shopping-list.service';
+import {ShoppingListCardComponent} from './shopping-list-card/shopping-list-card.component';
+import {SharedWithPopupComponent} from './shared-with-popup/shared-with-popup.component';
+import {ShoppingListDetailsComponent} from './shopping-list-details/shopping-list-details.component';
+import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
+import {catchError, Observable, of, tap} from 'rxjs';
+import {ShoppingListDTO} from '@app/models/shopping-list.dto';
+import {AuthService} from '@app/services/auth.service';
+import {CollaboratorDTO, PermissionEnum} from '@app/models/collaborator.dto';
+import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
 
 @Component({
   selector: 'app-shopping-list-management',
@@ -35,11 +34,13 @@ export class ShoppingListManagementComponent implements OnInit {
   private currentListId: string | null = null;
 
   @Output() editList = new EventEmitter<ShoppingListDTO>();
+
   editShoppingList(list: ShoppingListDTO): void {
     this.editList.emit(list);
   }
 
   @Output() createAList = new EventEmitter<void>();
+
   createShoppingList(): void {
     this.createAList.emit();
   }
@@ -79,20 +80,14 @@ export class ShoppingListManagementComponent implements OnInit {
     );
   }
 
-  updateItem(event: {listId: string, itemId: string, item: ShoppingListItemDTO, onError: () => void}): void {
+  updateItem(event: { listId: string, itemId: string, item: ShoppingListItemDTO, onError: () => void }): void {
     this.shoppingListService.updateShoppingListItem(
       this.userId,
       event.listId,
       event.itemId,
       event.item
     ).subscribe({
-      next: (updatedItem) => {
-        if (this.selectedList) {
-          const itemToUpdate = this.selectedList.items.find(i => i.id === event.itemId);
-          if (itemToUpdate) {
-            itemToUpdate.isChecked = event.item.isChecked;
-          }
-        }
+      next: () => {
       },
       error: (error) => {
         console.error('Failed to update item:', error);
@@ -147,7 +142,7 @@ export class ShoppingListManagementComponent implements OnInit {
 
   onUpdatePermission(event: { collaboratorId: string, permission: PermissionEnum }): void {
     if (!this.currentListId) return;
-    
+
     const collaborator: CollaboratorDTO = {
       userId: event.collaboratorId,
       permission: event.permission
@@ -156,18 +151,15 @@ export class ShoppingListManagementComponent implements OnInit {
     this.shoppingListService.updateCollaborator(this.userId, this.currentListId, event.collaboratorId, collaborator)
       .subscribe({
         next: () => {
-          // Update the local state to reflect the change
-          this.selectedSharedUsers = this.selectedSharedUsers.map(user => 
-            user.userId === event.collaboratorId 
-              ? { ...user, permission: event.permission }
+          this.selectedSharedUsers = this.selectedSharedUsers.map(user =>
+            user.userId === event.collaboratorId
+              ? {...user, permission: event.permission}
               : user
           );
-          // Refresh the shopping lists to get the updated data
           this.loadShoppingLists();
         },
         error: (error) => {
           console.error('Error updating collaborator:', error);
-          // You might want to show an error message to the user here
         }
       });
   }
@@ -178,14 +170,11 @@ export class ShoppingListManagementComponent implements OnInit {
     this.shoppingListService.removeCollaborator(this.userId, this.currentListId, collaboratorId)
       .subscribe({
         next: () => {
-          // Update the local state to reflect the removal
           this.selectedSharedUsers = this.selectedSharedUsers.filter(user => user.userId !== collaboratorId);
-          // Refresh the shopping lists to get the updated data
           this.loadShoppingLists();
         },
         error: (error) => {
           console.error('Error removing collaborator:', error);
-          // You might want to show an error message to the user here
         }
       });
   }

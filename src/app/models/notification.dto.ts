@@ -10,9 +10,3 @@ export interface NotificationDTO {
   isRead: boolean;
   createdAt: Date;
 }
-
-export interface FriendshipStatus {
-  isFriend: boolean;
-  hasPendingRequest: boolean;
-  hasReceivedRequest: boolean;
-} 

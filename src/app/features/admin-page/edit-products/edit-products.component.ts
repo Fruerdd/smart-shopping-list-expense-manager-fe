@@ -1,36 +1,28 @@
-// src/app/features/admin-page/edit-products/edit-products.component.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule }       from '@angular/common';
-import { FormsModule }        from '@angular/forms';
-import { RouterModule }       from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
 
-import {
-  StoreService,
-  StoreDTO,
-  StorePriceDTO
-} from '../../../services/store.service';
-import {
-  ProductService,
-  AddProductPayload,
-  BulkResultDTO         // ← import your result DTO
-} from '../../../services/product.service';
+import {StoreDTO, StorePriceDTO, StoreService} from '@app/services/store.service';
+import {AddProductPayload, BulkResultDTO, ProductService} from '@app/services/product.service';
 
 @Component({
   selector: 'app-edit-products',
   standalone: true,
-  imports: [ CommonModule, FormsModule, RouterModule ],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './edit-products.component.html',
   styleUrls: ['./edit-products.component.css']
 })
 export class EditProductsComponent implements OnInit {
-  stores: StoreDTO[]        = [];
+  stores: StoreDTO[] = [];
   selectedStoreId = '';
   products: StorePriceDTO[] = [];
 
   constructor(
-    private storeSvc:   StoreService,
+    private storeSvc: StoreService,
     private productSvc: ProductService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.storeSvc.getStores()
@@ -52,14 +44,14 @@ export class EditProductsComponent implements OnInit {
       const priceNum = parseFloat(String(p.price).replace(',', '.'));
       return {
         storePriceId: p.storePriceId,
-        storeId:      p.storeId,
-        productId:    p.productId,
-        productName:  p.productName,
-        category:     p.category,
-        description:  p.description,
-        price:        priceNum,
-        barcode:      p.barcode ?? '',
-        isActive:     p.isActive
+        storeId: p.storeId,
+        productId: p.productId,
+        productName: p.productName,
+        category: p.category,
+        description: p.description,
+        price: priceNum,
+        barcode: p.barcode ?? '',
+        isActive: p.isActive
       };
     });
 

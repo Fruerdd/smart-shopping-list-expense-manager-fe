@@ -100,10 +100,6 @@ export class PriceComparisonComponent implements OnInit {
     );
   }
 
-  sanitizeSvg(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
-
   clearSearch(): void {
     this.searchTerm = '';
     this.selectedItem = null;

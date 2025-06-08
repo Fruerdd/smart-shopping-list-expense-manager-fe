@@ -2,8 +2,8 @@
   <div class="notifications-header">
     <h3>Notifications</h3>
     <div class="header-actions">
-      <button *ngIf="hasUnreadNonFriendRequestNotifications()" 
-              class="mark-all-read-btn" 
+      <button *ngIf="hasUnreadNonFriendRequestNotifications()"
+              class="mark-all-read-btn"
               (click)="markAllAsRead()">
         <i class="fas fa-check-double"></i> Mark all as read
       </button>
@@ -24,39 +24,39 @@
     </div>
 
     <div *ngIf="!loading && notifications.length > 0" class="notifications-list">
-      <div *ngFor="let notification of notifications" 
-           class="notification-item" 
+      <div *ngFor="let notification of notifications"
+           class="notification-item"
            [class.unread]="!notification.isRead">
-        
+
         <!-- Notification Icon -->
         <div class="notification-icon">
-          <i [class]="getNotificationIcon(notification.notificationType)" 
+          <i [class]="getNotificationIcon(notification.notificationType)"
              [class.unread-icon]="!notification.isRead"></i>
         </div>
 
         <!-- Notification Content -->
         <div class="notification-content">
           <div class="notification-header">
-            <span class="notification-title">{{notification.title}}</span>
-            <span class="notification-time">{{getTimeAgo(notification.createdAt)}}</span>
+            <span class="notification-title">{{ notification.title }}</span>
+            <span class="notification-time">{{ getTimeAgo(notification.createdAt) }}</span>
           </div>
-          
-          <p class="notification-message">{{notification.message}}</p>
-          
+
+          <p class="notification-message">{{ notification.message }}</p>
+
           <!-- Source user info for friend requests -->
           <div *ngIf="notification.notificationType === 'FRIEND_REQUEST'" class="source-user-info">
-            <img [src]="getFullImageUrl(notification.sourceUserAvatar) || '/assets/images/avatar.png'" 
+            <img [src]="getFullImageUrl(notification.sourceUserAvatar) || '/assets/images/avatar.png'"
                  (error)="setDefaultImage($event)"
-                 alt="User avatar" 
+                 alt="User avatar"
                  class="source-avatar">
-            <span class="source-name">{{notification.sourceUserName}}</span>
+            <span class="source-name">{{ notification.sourceUserName }}</span>
           </div>
         </div>
 
         <!-- Notification Actions -->
         <div class="notification-actions">
           <!-- Friend Request Actions -->
-          <div *ngIf="notification.notificationType === 'FRIEND_REQUEST' && !notification.isRead" 
+          <div *ngIf="notification.notificationType === 'FRIEND_REQUEST' && !notification.isRead"
                class="friend-request-actions">
             <button class="accept-btn" (click)="acceptFriendRequest(notification)">
               <i class="fas fa-check"></i> Accept
@@ -67,7 +67,7 @@
           </div>
 
           <!-- Other Notification Actions -->
-          <div *ngIf="notification.notificationType !== 'FRIEND_REQUEST' && !notification.isRead" 
+          <div *ngIf="notification.notificationType !== 'FRIEND_REQUEST' && !notification.isRead"
                class="general-actions">
             <button class="mark-read-btn" (click)="markAsRead(notification)">
               <i class="fas fa-check"></i> Mark as read
@@ -85,4 +85,4 @@
 </div>
 
 <!-- Backdrop -->
-<div *ngIf="isVisible" class="notifications-backdrop" (click)="closePopup()"></div> 
+<div *ngIf="isVisible" class="notifications-backdrop" (click)="closePopup()"></div>

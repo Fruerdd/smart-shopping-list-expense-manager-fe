@@ -11,53 +11,47 @@
   /* Keep flex layout */
   display: flex;
   flex-direction: column;
-  min-height: 300px;  /* whatever your base height is */
+  min-height: 300px;
   height: auto;
 }
-  
-  
-  .chart-header {
-    text-align: left;
-    margin-bottom: 16px;
-    padding: 0 24px 8px; 
-  }
-  
-  .chart-header h3 {
-    font-size: 1.8rem;
-    color: #333;
-    margin: 0;
-  }
-  
-  .allocation-body {
-    flex: 1;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 0 24px;
-  }
-  
-  .chart-side {
-    /* remove the 100% height, let the child decide */
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .chart-side igx-pie-chart {
-    width: 100%;
-  
-    /* give the chart a real height (or a min-height) */
-    height: 300px;       /* ← explicit */
-    /* or */
-    /* min-height: 200px; */
-  }
-  
-  .legend-side {
-    flex: 0 0 40%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
+
+
+.chart-header {
+  text-align: left;
+  margin-bottom: 16px;
+  padding: 0 24px 8px;
+}
+
+.chart-header h3 {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+}
+
+.allocation-body {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.chart-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-side igx-pie-chart {
+  width: 100%;
+  height: 300px;
+}
+
+.legend-side {
+  flex: 0 0 40%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

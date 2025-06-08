@@ -6,8 +6,8 @@
 
     <div *ngIf="collaborators.length > 0; else noUsers">
       <div class="users-list">
-        <div class="user-item" *ngFor="let user of collaborators" 
-             [matMenuTriggerFor]="menu" 
+        <div class="user-item" *ngFor="let user of collaborators"
+             [matMenuTriggerFor]="menu"
              [matMenuTriggerData]="{user: user}"
              [class.clickable]="isOwner">
           <mat-icon class="user-icon">person</mat-icon>
@@ -28,20 +28,20 @@
 <mat-menu #menu="matMenu">
   <ng-template matMenuContent let-user="user">
     <ng-container *ngIf="user.permission === PermissionEnum.VIEW">
-      <button mat-menu-item 
+      <button mat-menu-item
               (click)="onUpdatePermission(user.userId, PermissionEnum.EDIT)"
               [class.selected]="user.permission === PermissionEnum.EDIT">
-      <mat-icon>edit</mat-icon>
-      <span>Change Permission to Can Edit</span>
-    </button>
+        <mat-icon>edit</mat-icon>
+        <span>Change Permission to Can Edit</span>
+      </button>
     </ng-container>
     <ng-container *ngIf="user.permission === PermissionEnum.EDIT">
-    <button mat-menu-item 
-            (click)="onUpdatePermission(user.userId, PermissionEnum.VIEW)"
-            [class.selected]="user.permission === PermissionEnum.VIEW">
-      <mat-icon>visibility</mat-icon>
-      <span>Change Permission to View Only</span>
-    </button>
+      <button mat-menu-item
+              (click)="onUpdatePermission(user.userId, PermissionEnum.VIEW)"
+              [class.selected]="user.permission === PermissionEnum.VIEW">
+        <mat-icon>visibility</mat-icon>
+        <span>Change Permission to View Only</span>
+      </button>
     </ng-container>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="onRemoveCollaborator(user.userId)" class="remove-option">

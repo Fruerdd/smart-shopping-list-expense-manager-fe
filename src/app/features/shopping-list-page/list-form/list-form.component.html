@@ -17,8 +17,8 @@
     <div class="form-row">
       <div class="form-group">
         <label for="listType">List Type</label>
-        <select id="listType" formControlName="listType">
-          <option *ngFor="let type of listTypes" [value]="type">{{type}}</option>
+        <select id="listType" class="listType" formControlName="listType">
+          <option *ngFor="let type of listTypes" [value]="type">{{ type }}</option>
         </select>
       </div>
       <div class="form-group">

@@ -1,42 +1,36 @@
-// src/app/services/users.service.ts
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {environment} from 'src/environments/environment';
 
-
-/** 
- * Mirror your server‐side DTO exactly, PLUS an index signature 
- * so that `u[h]` in your CSV preview template compiles. 
- */
 export interface UserDTO {
   [key: string]: any;
 
-  id?:       string;
-  name:          string;
-  avatar?:       string;
-  email:         string;
-  password?:     string;
-  phoneNumber?:  string;
+  id?: string;
+  name: string;
+  avatar?: string;
+  email: string;
+  password?: string;
+  phoneNumber?: string;
   referralCode?: string;
-  promoCode?:    string;
-  bonusPoints?:  number;
-  deviceInfo?:   string;
-  location?:     string;
-  userType: 'USER' | 'ADMIN'; 
-  isActive:      boolean;
-  reviewScore?:  number;
-  reviewContext?:string;
+  promoCode?: string;
+  bonusPoints?: number;
+  deviceInfo?: string;
+  location?: string;
+  userType: 'USER' | 'ADMIN';
+  isActive: boolean;
+  reviewScore?: number;
+  reviewContext?: string;
 }
 
 export interface TestimonialDTO {
-  name:             string;
-  reviewScore:      number;
-  reviewContext:    string;
-  avatar?:          string | null;
+  name: string;
+  reviewScore: number;
+  reviewContext: string;
+  avatar?: string | null;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class UsersService {
   private baseMain = environment.apiUrl;
 
@@ -44,8 +38,8 @@ export class UsersService {
   private readonly base1 = `${this.baseMain}/api/customers`;
 
 
-
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   /** GET all users */
   getUsers(): Observable<UserDTO[]> {

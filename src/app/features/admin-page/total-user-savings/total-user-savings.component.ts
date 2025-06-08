@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IgxCategoryChartComponent, IgxCategoryChartModule } from 'igniteui-angular-charts';
-import { SavingsService, SavingsDataItem } from '@app/services/savings.service';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {IgxCategoryChartComponent, IgxCategoryChartModule} from 'igniteui-angular-charts';
+import {SavingsDataItem, SavingsService} from '@app/services/savings.service';
 
 @Component({
   selector: 'app-total-user-savings',
@@ -12,14 +12,15 @@ import { SavingsService, SavingsDataItem } from '@app/services/savings.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TotalUserSavingsComponent implements OnInit, AfterViewInit {
-  @ViewChild('chart', { static: true }) chart!: IgxCategoryChartComponent;
+  @ViewChild('chart', {static: true}) chart!: IgxCategoryChartComponent;
 
   public savingsData: SavingsDataItem[] = [];
 
-  constructor(private savingsService: SavingsService, private cdr: ChangeDetectorRef) {}
+  constructor(private savingsService: SavingsService, private cdr: ChangeDetectorRef) {
+  }
 
   ngOnInit(): void {
-      this.savingsService.getSavingsData().subscribe(data => {
+    this.savingsService.getSavingsData().subscribe(data => {
       this.savingsData = data;
       this.cdr.markForCheck();
     });

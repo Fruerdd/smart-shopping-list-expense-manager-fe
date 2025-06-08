@@ -1,11 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { ShoppingListDTO } from '@app/models/shopping-list.dto';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { CollaboratorDTO, PermissionEnum } from '@app/models/collaborator.dto';
-import { AuthService } from '@app/services/auth.service';
-import { UserProfileService } from '@app/services/user-profile.service';
-import { CommonModule } from '@angular/common';
-import { ImageUrlService } from '@app/services/image-url.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ShoppingListDTO} from '@app/models/shopping-list.dto';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
+import {CollaboratorDTO} from '@app/models/collaborator.dto';
+import {AuthService} from '@app/services/auth.service';
+import {UserProfileService} from '@app/services/user-profile.service';
+import {CommonModule} from '@angular/common';
+import {ImageUrlService} from '@app/services/image-url.service';
 
 @Component({
   selector: 'app-shopping-list-card',
@@ -16,7 +16,11 @@ import { ImageUrlService } from '@app/services/image-url.service';
 })
 export class ShoppingListCardComponent implements OnInit {
   @Input() shoppingList!: ShoppingListDTO;
-  @Output() viewSharedUsers = new EventEmitter<{collaborators: CollaboratorDTO[], listId: string, isOwner: boolean}>();
+  @Output() viewSharedUsers = new EventEmitter<{
+    collaborators: CollaboratorDTO[],
+    listId: string,
+    isOwner: boolean
+  }>();
   @Output() viewList = new EventEmitter<ShoppingListDTO>();
   @Output() markListAsDone = new EventEmitter<string>();
 
@@ -38,7 +42,6 @@ export class ShoppingListCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Fetch owner avatar separately if not available in shopping list
     if (!this.shoppingList.ownerAvatar && this.shoppingList.ownerId) {
       this.loadOwnerAvatar();
     } else {
@@ -53,7 +56,7 @@ export class ShoppingListCardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading owner avatar:', error);
-        this.ownerAvatarUrl = null; // Will fallback to default avatar
+        this.ownerAvatarUrl = null;
       }
     });
   }
@@ -69,17 +72,6 @@ export class ShoppingListCardComponent implements OnInit {
   setDefaultImage(event: Event) {
     const target = event.target as HTMLImageElement;
     target.src = '/assets/images/avatar.png';
-  }
-
-  hasEditPermission(): boolean {
-    // Owner always has edit permission
-    if (this.shoppingList.ownerId === this.userId) {
-      return true;
-    }
-
-    // Check collaborator permissions
-    const userCollaborator = this.shoppingList.collaborators.find(c => c.userId === this.userId);
-    return userCollaborator?.permission === PermissionEnum.EDIT;
   }
 
   onViewSharedUsers(listId: string, isOwner: boolean): void {
@@ -109,7 +101,7 @@ export class ShoppingListCardComponent implements OnInit {
       'assets/images/list-img-generic4.png',
       'assets/images/list-img-generic5.png'
     ];
-    
+
     const randomIndex = Math.floor(Math.random() * listImages.length);
     return listImages[randomIndex];
   }

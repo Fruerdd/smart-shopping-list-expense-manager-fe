@@ -1,23 +1,14 @@
-import {
-  Component,
-  HostListener,
-  Inject,
-  OnInit,
-  PLATFORM_ID
-} from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { forkJoin, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import {Component, HostListener, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {CommonModule, isPlatformBrowser, NgOptimizedImage} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {forkJoin, of} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 
-import {
-  UsersService,
-  TestimonialDTO
-} from '@app/services/users.service';
-import { UserProfileService } from '@app/services/user-profile.service';
-import { AuthService }       from '@app/services/auth.service';
-import { ImageUrlService } from 'src/app/services/image-url.service';
+import {TestimonialDTO, UsersService} from '@app/services/users.service';
+import {UserProfileService} from '@app/services/user-profile.service';
+import {AuthService} from '@app/services/auth.service';
+import {ImageUrlService} from 'src/app/services/image-url.service';
 
 
 interface TestimonialView {
@@ -38,8 +29,7 @@ export class HomeComponent implements OnInit {
   testimonials: TestimonialView[] = [];
   startIndex   = 0;
   itemsToShow  = 3;
-  hoverMap: { [i: number]: boolean } = {};
-  private isBrowser: boolean;
+  private readonly isBrowser: boolean;
 
   constructor(
     private usersSvc: UsersService,
@@ -81,7 +71,7 @@ export class HomeComponent implements OnInit {
         catchError(() => of(this.toView(dto, dto.avatar)))
       )
     );
-  
+
     forkJoin(calls).subscribe({
       next: views => {
         // ① filter out anything under score 4
@@ -101,7 +91,7 @@ export class HomeComponent implements OnInit {
   }
 
   private toView(dto: TestimonialDTO, avatarPath?: string|null): TestimonialView {
-    const raw   = typeof dto.reviewScore === 'number' && !isNaN(dto.reviewScore)
+    const raw   = !isNaN(dto.reviewScore)
       ? dto.reviewScore : 0;
     const score = Math.max(0, Math.min(5, raw));
     const avatarUrl = this.getFullImageUrl(avatarPath) || '/assets/images/avatar.png';

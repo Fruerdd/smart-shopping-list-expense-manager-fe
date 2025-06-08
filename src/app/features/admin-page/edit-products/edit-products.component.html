@@ -1,4 +1,3 @@
-<!-- src/app/features/admin-page/edit-products/edit-products.component.html -->
 <div class="container mt-4">
   <h2>Edit Products</h2>
 
@@ -21,59 +20,59 @@
   <!-- 2) Editable table -->
   <table *ngIf="products.length" class="table table-striped mt-3">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Description</th>
-        <th class="text-center">Active</th>
-        <th>Price</th>
-        <th>Barcode</th>
-      </tr>
+    <tr>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Description</th>
+      <th class="text-center">Active</th>
+      <th>Price</th>
+      <th>Barcode</th>
+    </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let p of products; let i = index">
-        <td>{{ p.productName }}</td>
-        <td>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            [(ngModel)]="p.category"
-            name="category{{i}}"
-          />
-        </td>
-        <td>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            [(ngModel)]="p.description"
-            name="description{{i}}"
-          />
-        </td>
-        <td class="text-center">
-          <input
-            type="checkbox"
-            class="form-check-input"
-            [(ngModel)]="p.isActive"
-            name="active{{i}}"
-          />
-        </td>
-        <td style="max-width: 100px;">
-          <input
-            type="number"
-            class="form-control form-control-sm"
-            [(ngModel)]="p.price"
-            name="price{{i}}"
-          />
-        </td>
-        <td style="max-width: 120px;">
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            [(ngModel)]="p.barcode"
-            name="barcode{{i}}"
-          />
-        </td>
-      </tr>
+    <tr *ngFor="let p of products; let i = index">
+      <td>{{ p.productName }}</td>
+      <td>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="p.category"
+          name="category{{i}}"
+        />
+      </td>
+      <td>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="p.description"
+          name="description{{i}}"
+        />
+      </td>
+      <td class="text-center">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          [(ngModel)]="p.isActive"
+          name="active{{i}}"
+        />
+      </td>
+      <td style="max-width: 100px;">
+        <input
+          type="number"
+          class="form-control form-control-sm"
+          [(ngModel)]="p.price"
+          name="price{{i}}"
+        />
+      </td>
+      <td style="max-width: 120px;">
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="p.barcode"
+          name="barcode{{i}}"
+        />
+      </td>
+    </tr>
     </tbody>
   </table>
 

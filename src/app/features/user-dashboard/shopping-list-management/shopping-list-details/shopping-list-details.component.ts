@@ -1,12 +1,11 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import { ShoppingListDTO } from '@app/models/shopping-list.dto';
+import {ShoppingListDTO} from '@app/models/shopping-list.dto';
 import {FormsModule} from '@angular/forms';
-import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
-import { PermissionEnum } from '@app/models/collaborator.dto';
-import { AuthService } from '@app/services/auth.service';
-import { MatIconModule } from '@angular/material/icon';
-import { MatIcon } from '@angular/material/icon';
+import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
+import {PermissionEnum} from '@app/models/collaborator.dto';
+import {AuthService} from '@app/services/auth.service';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-shopping-list-details',
@@ -19,7 +18,12 @@ export class ShoppingListDetailsComponent {
   @Input() list!: ShoppingListDTO;
   @Output() editList = new EventEmitter<ShoppingListDTO>();
   @Output() deleteList = new EventEmitter<string>();
-  @Output() updateItem = new EventEmitter<{listId: string, itemId: string, item: ShoppingListItemDTO, onError: () => void}>();
+  @Output() updateItem = new EventEmitter<{
+    listId: string,
+    itemId: string,
+    item: ShoppingListItemDTO,
+    onError: () => void
+  }>();
 
   private readonly userId: string;
 
@@ -42,9 +46,10 @@ export class ShoppingListDetailsComponent {
   }
 
   toggleItemChecked(item: ShoppingListItemDTO): void {
-    const previousState = item.isChecked;
-
-    // Create minimal update payload
+    const previousState = item.isChecked || false;
+    
+    item.isChecked = !previousState;
+    
     const updatedItem: ShoppingListItemDTO = {
       id: item.id,
       productId: item.productId,

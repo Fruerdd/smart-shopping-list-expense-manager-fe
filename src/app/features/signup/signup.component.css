@@ -1,119 +1,296 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-  }
-  
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #0B3B5B;
+  padding: 20px;
+  flex-direction: row-reverse;
+}
+
+.phone-placeholder {
+  width: 320px;
+  height: 430px;
+  max-height: 100%;
+  border-radius: 30px;
+  margin-left: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+}
+
+.phone-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.login-card {
+  background-color: #fcacc4;
+  border-radius: 20px;
+  width: 320px;
+  max-height: 100%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  padding: 30px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  overflow-y: auto;
+}
+
+.login-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.login-header h2 {
+  color: #0B3B5B;
+  font-size: 22px;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.theme-toggle {
+  font-size: 20px;
+  color: #0B3B5B;
+  cursor: pointer;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+button {
+  padding: 10px;
+  background-color: #0B3B5B;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #0a3050;
+}
+
+button:disabled {
+  background-color: rgba(11, 59, 91, 0.4);
+  cursor: not-allowed;
+}
+
+.or-divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #0B3B5B;
+  font-size: 14px;
+}
+
+.signup-text {
+  text-align: center;
+  color: #0B3B5B;
+  font-size: 14px;
+}
+
+.signup-text a {
+  color: #0B3B5B;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  padding-left: 5px;
+}
+
+@media (max-width: 992px) {
   .login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #0B3B5B;
-    padding: 20px;
+    padding: 15px;
   }
   
   .phone-placeholder {
     width: 300px;
-    height: 450px;
-    border-radius: 30px;
-    margin-right: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f0f0f0;
-  }
-  
-  .phone-placeholder img {
-    width: 100%;
     height: 100%;
-    object-fit: cover;
+    max-height: 400px;
+    margin-left: 30px;
   }
   
   .login-card {
-    background-color: #fcacc4;
-    border-radius: 20px;
-    width: 320px; /* povećano za prostor teksta */
-    max-height: 100%;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    padding: 30px 20px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: stretch;
-    overflow-y: auto;
-  }
-  
-  .login-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    width: 300px;
+    max-height: 400px;
+    padding: 25px 20px;
   }
   
   .login-header h2 {
-    color: #0B3B5B;
-    font-size: 22px;
-    margin: 0;
-    max-width: 85%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
   }
   
-  .theme-toggle {
-    font-size: 20px;
-    color: #0B3B5B;
-    cursor: pointer;
+  .phone-placeholder {
+    width: 100%;
+    max-width: 350px;
+    height: 300px;
+    margin-left: 0;
+    margin-bottom: 20px;
+    order: -1;
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 350px;
+    max-height: none;
+    min-height: 450px;
+    padding: 25px;
+    order: 1;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-page {
+    padding: 15px;
+  }
+  
+  .phone-placeholder {
+    display: none;
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 320px;
+    max-height: none;
+    min-height: 500px;
+    padding: 25px 20px;
+  }
+  
+  .login-header h2 {
+    font-size: 18px;
+  }
+  
+  input {
+    padding: 12px;
+    font-size: 16px;
+  }
+  
+  button {
+    padding: 12px;
+    font-size: 16px;
+  }
+  
+  .or-divider {
+    font-size: 14px;
+    margin: 15px 0;
+  }
+  
+  .signup-text {
+    font-size: 14px;
   }
   
   form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-page {
+    padding: 10px;
+  }
+  
+  .login-card {
+    max-width: 300px;
+    padding: 20px 15px;
+    min-height: 450px;
+  }
+  
+  .login-header {
+    margin-bottom: 15px;
+  }
+  
+  .login-header h2 {
+    font-size: 16px;
+  }
+  
+  form {
+    gap: 6px;
   }
   
   input {
     padding: 10px;
-    border-radius: 5px;
-    border: none;
-    outline: none;
+    font-size: 16px;
   }
   
   button {
     padding: 10px;
-    background-color: #0B3B5B;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+    font-size: 16px;
   }
   
   .or-divider {
-    text-align: center;
-    margin: 20px 0;
-    color: #0B3B5B;
+    margin: 12px 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .login-card {
+    max-width: 280px;
+    padding: 15px 10px;
+    min-height: 400px;
   }
   
-  .signup-text {
-    text-align: center;
-    color: #0B3B5B;
+  .login-header h2 {
+    font-size: 14px;
   }
   
-  .signup-text a {
-    color: #0B3B5B;
-    font-weight: bold;
-    text-decoration: none;
+  input, button {
+    font-size: 16px;
+    padding: 10px;
   }
   
+  .or-divider, .signup-text {
+    font-size: 12px;
+  }
+  
+  form {
+    gap: 5px;
+  }
+}

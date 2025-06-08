@@ -1,8 +1,7 @@
-<!-- CSV importer -->
 <div class="mb-4">
   <h4>Import Users via CSV</h4>
   <input type="file" accept=".csv" class="form-control"
-         (change)="onCsvFileChange($event)" />
+         (change)="onCsvFileChange($event)"/>
   <button *ngIf="isCsvPreviewVisible"
           class="btn btn-success mt-2"
           (click)="uploadCsv()">
@@ -16,12 +15,14 @@
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>
-        <tr><th *ngFor="let h of csvHeaders">{{ h }}</th></tr>
+      <tr>
+        <th *ngFor="let h of csvHeaders">{{ h }}</th>
+      </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let u of csvUsers">
-          <td *ngFor="let h of csvHeaders">{{ u[h] }}</td>
-        </tr>
+      <tr *ngFor="let u of csvUsers">
+        <td *ngFor="let h of csvHeaders">{{ u[h] }}</td>
+      </tr>
       </tbody>
     </table>
   </div>
@@ -40,48 +41,48 @@
         <div class="row mb-2">
           <div class="col-md-6">
             <label>Name</label>
-            <input type="text" formControlName="name" class="form-control" />
+            <input type="text" formControlName="name" class="form-control"/>
           </div>
           <div class="col-md-6">
             <label>Email</label>
-            <input type="email" formControlName="email" class="form-control" />
+            <input type="email" formControlName="email" class="form-control"/>
           </div>
         </div>
 
         <div class="row mb-2">
           <div class="col-md-6">
             <label>Password</label>
-            <input type="password" formControlName="password" class="form-control" />
+            <input type="password" formControlName="password" class="form-control"/>
           </div>
           <div class="col-md-6">
             <label>Phone Number</label>
-            <input formControlName="phoneNumber" class="form-control" />
+            <input formControlName="phoneNumber" class="form-control"/>
           </div>
         </div>
 
         <div class="row mb-2">
           <div class="col-md-4">
             <label>Referral Code</label>
-            <input formControlName="referralCode" class="form-control" />
+            <input formControlName="referralCode" class="form-control"/>
           </div>
           <div class="col-md-4">
             <label>Promo Code</label>
-            <input formControlName="promoCode" class="form-control" />
+            <input formControlName="promoCode" class="form-control"/>
           </div>
           <div class="col-md-4">
             <label>Bonus Points</label>
-            <input type="number" formControlName="bonusPoints" class="form-control" />
+            <input type="number" formControlName="bonusPoints" class="form-control"/>
           </div>
         </div>
 
         <div class="row mb-2">
           <div class="col-md-4">
             <label>Device Info</label>
-            <input formControlName="deviceInfo" class="form-control" />
+            <input formControlName="deviceInfo" class="form-control"/>
           </div>
           <div class="col-md-4">
             <label>Location</label>
-            <input formControlName="location" class="form-control" />
+            <input formControlName="location" class="form-control"/>
           </div>
           <div class="col-md-4">
             <label>User Type</label>
@@ -93,18 +94,18 @@
         </div>
 
         <div class="form-check mb-2">
-          <input type="checkbox" class="form-check-input" formControlName="isActive" id="active{{i}}" />
+          <input type="checkbox" class="form-check-input" formControlName="isActive" id="active{{i}}"/>
           <label class="form-check-label" for="active{{i}}">Active</label>
         </div>
 
         <div class="row mb-2">
           <div class="col-md-6">
             <label>Review Score</label>
-            <input type="number" min="0" max="5" formControlName="reviewScore" class="form-control" />
+            <input type="number" min="0" max="5" formControlName="reviewScore" class="form-control"/>
           </div>
           <div class="col-md-6">
             <label>Review Context</label>
-            <input formControlName="reviewContext" class="form-control" />
+            <input formControlName="reviewContext" class="form-control"/>
           </div>
         </div>
 

@@ -1,25 +1,24 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   HostListener,
   Inject,
-  PLATFORM_ID,
-  AfterViewInit,
+  OnDestroy,
   OnInit,
-  ElementRef,
-  ViewChild,
-  OnDestroy
+  PLATFORM_ID,
+  ViewChild
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { FormsModule } from '@angular/forms';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { AuthService } from '@app/services/auth.service';
-import { UserProfileService } from '@app/services/user-profile.service';
-import { NotificationsComponent } from '@app/features/notifications/notifications.component';
-import { Subscription, interval } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
+import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
+import {filter, switchMap} from 'rxjs/operators';
+import {FormsModule} from '@angular/forms';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
+import {AuthService} from '@app/services/auth.service';
+import {UserProfileService} from '@app/services/user-profile.service';
+import {NotificationsComponent} from '@app/features/notifications/notifications.component';
+import {interval, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -27,12 +26,12 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./header.component.scss'],
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterLink, 
-    RouterLinkActive, 
-    FormsModule, 
-    MatIconButton, 
-    MatIcon, 
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    FormsModule,
+    MatIconButton,
+    MatIcon,
     MatIconModule,
     NotificationsComponent
   ]
@@ -83,7 +82,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
 
     if (isPlatformBrowser(this.platformId) && this.isLoggedIn) {
       this.parseUserInfo();
-      
+
       if (!this.loggedInUserId) {
         this.getCurrentUserIdFromApi();
       } else {
@@ -168,7 +167,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
     const profileMatch = url.match(/^\/user-profile\/([^\/]+)/);
     if (profileMatch) {
       this.currentProfileUserId = profileMatch[1];
-      
+
       this.isMyProfilePage = this.currentProfileUserId === this.loggedInUserId;
       this.isOtherUserProfilePage = this.currentProfileUserId !== this.loggedInUserId && this.isValidUUID(this.currentProfileUserId);
     } else {
@@ -259,8 +258,16 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   scrollToTopAndActivateHome(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.activatePage('home');
+    this.activePage = 'home';
+    this.router.navigate(['/home']).then((success) => {
+      if (success) {
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+      }
+    }).catch(() => {
+      this.router.navigate(['/']);
+    });
   }
 
   scrollToTop(): void {
@@ -303,7 +310,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private loadNotificationCount() {
     if (!this.loggedInUserId) return;
-    
+
     this.userProfileService.getUnreadNotificationCount(this.loggedInUserId).subscribe({
       next: (count) => {
         this.unreadNotificationCount = count;
@@ -316,7 +323,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private startNotificationPolling() {
     if (!this.loggedInUserId) return;
-    
+
     this.notificationSubscription = interval(30000)
       .pipe(
         switchMap(() => this.userProfileService.getUnreadNotificationCount(this.loggedInUserId!))
