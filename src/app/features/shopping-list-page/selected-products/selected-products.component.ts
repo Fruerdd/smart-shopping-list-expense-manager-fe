@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
-import { MatIconModule } from '@angular/material/icon';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-selected-products',
@@ -16,20 +16,18 @@ export class SelectedProductsComponent implements OnChanges {
   @Input() preferredStore: string | null = null;
   @Input() listFormValid = false;
 
-  @Output() quantityChange = new EventEmitter<{id: string, quantity: number}>();
+  @Output() quantityChange = new EventEmitter<{ id: string, quantity: number }>();
   @Output() removeProduct = new EventEmitter<ShoppingListItemDTO>();
   @Output() saveList = new EventEmitter<void>();
   @Output() cancelEdit = new EventEmitter<void>();
   @Output() changeStore = new EventEmitter<void>();
-  @Output() updateProductStore = new EventEmitter<{productId: string, newStore: string}>();
-
-  private previousStore: string | null = null;
+  @Output() updateProductStore = new EventEmitter<{ productId: string, newStore: string }>();
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['preferredStore'] && !changes['preferredStore'].firstChange) {
       const currentStore = changes['preferredStore'].currentValue;
       const previousStore = changes['preferredStore'].previousValue;
-      
+
       if (currentStore !== previousStore && currentStore) {
         this.switchSelectedItemsToNewStore(currentStore);
       }
@@ -68,10 +66,6 @@ export class SelectedProductsComponent implements OnChanges {
 
   onCancelEdit(): void {
     this.cancelEdit.emit();
-  }
-
-  onChangeStore(): void {
-    this.changeStore.emit();
   }
 
   getTotalPrice(): number {

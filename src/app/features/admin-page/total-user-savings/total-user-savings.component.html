@@ -1,18 +1,17 @@
 <div class="total-savings-container">
-    <h3>Total User's Savings</h3>
-    <div class="chart-body">
-      <igx-category-chart
-        #chart
-        chartType="Column"
-        [dataSource]="savingsData"
-        labelMemberPath="month"
-        valueMemberPath="savings"
-        yAxisTitle="Savings (BAM)"
-        [width]="'100%'"
-        [height]="'100%'"
-        isHorizontalZoomEnabled="false"
-        isVerticalZoomEnabled="false">
-      </igx-category-chart>
-    </div>
+  <h3>Total User's Savings</h3>
+  <div class="chart-body">
+    <igx-category-chart
+      #chart
+      chartType="Column"
+      [dataSource]="savingsData"
+      labelMemberPath="month"
+      valueMemberPath="savings"
+      yAxisTitle="Savings (BAM)"
+      [width]="'100%'"
+      [height]="'100%'"
+      isHorizontalZoomEnabled="false"
+      isVerticalZoomEnabled="false">
+    </igx-category-chart>
   </div>
-  
+</div>

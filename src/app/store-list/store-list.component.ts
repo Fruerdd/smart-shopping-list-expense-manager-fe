@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {environment} from 'src/environments/environment';
 
 @Component({
   selector: 'app-store-list',
@@ -14,7 +14,8 @@ import { environment } from 'src/environments/environment';
 export class StoreListComponent implements OnInit {
   stores: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   ngOnInit(): void {
     this.http.get<any[]>(`${environment.apiUrl}/api/stores`)

@@ -6,10 +6,10 @@
     width="150"
     height="150"
     class="profile-preview"
-  /><br />
+  /><br/>
 
   <button type="button" (click)="triggerFileInput()" class="change-picture-btn" [disabled]="isUploading">
-    {{isUploading ? 'Uploading...' : 'Change Profile Picture'}}
+    {{ isUploading ? 'Uploading...' : 'Change Profile Picture' }}
   </button>
 
   <input
@@ -20,12 +20,12 @@
     (change)="onFileSelected($event)"
     [disabled]="isUploading"
   />
-  
+
   <div *ngIf="selectedFile" class="file-info">
-    <p>Selected: {{selectedFile.name}}</p>
+    <p>Selected: {{ selectedFile.name }}</p>
     <button type="button" (click)="clearSelectedFile()" class="clear-btn" [disabled]="isUploading">Clear</button>
   </div>
-  
+
   <div *ngIf="isUploading" class="upload-progress">
     <p>Uploading image...</p>
   </div>
@@ -35,40 +35,40 @@
   <!-- Editable Fields -->
   <label>
     Name:
-    <input type="text" [(ngModel)]="user.name" name="name" required />
-  </label><br />
+    <input type="text" [(ngModel)]="user.name" name="name" required/>
+  </label><br/>
 
   <label>
     Email:
-    <input type="email" [(ngModel)]="user.email" name="email" required />
-  </label><br />
+    <input type="email" [(ngModel)]="user.email" name="email" required/>
+  </label><br/>
 
   <label>
     Phone:
-    <input type="text" [(ngModel)]="user.phone" name="phone" />
-  </label><br />
+    <input type="text" [(ngModel)]="user.phone" name="phone"/>
+  </label><br/>
 
   <label>
     Address:
-    <input type="text" [(ngModel)]="user.address" name="address" />
-  </label><br />
+    <input type="text" [(ngModel)]="user.address" name="address"/>
+  </label><br/>
 
   <!-- Read-Only Fields (Display Only) -->
   <fieldset disabled>
     <label>
       Referral/Coupon Code:
-      <input type="text" [value]="user.couponCode || 'N/A'" />
-    </label><br />
+      <input type="text" [value]="user.couponCode || 'N/A'"/>
+    </label><br/>
 
     <label>
       Loyalty Points:
-      <input type="number" [value]="user.bonus_points || user.loyaltyPoints || 0" />
-    </label><br />
+      <input type="number" [value]="user.bonus_points || user.loyaltyPoints || 0"/>
+    </label><br/>
 
     <label>
       Credits Available:
-      <input type="number" [value]="user.creditsAvailable || 0" />
-    </label><br />
+      <input type="number" [value]="user.creditsAvailable || 0"/>
+    </label><br/>
   </fieldset>
 
   <button type="submit">Save Changes</button>

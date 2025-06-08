@@ -1,19 +1,8 @@
-// category-spending-chart.component.ts
-import {
-  AfterViewInit,
-  Component,
-  OnInit,
-  ViewChild,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  IgxCategoryChartComponent,
-  IgxCategoryChartModule
-} from 'igniteui-angular-charts';
-import { AnalyticsService } from '@app/services/analytics.service';
-import { ICategorySpend } from "@app/models/user.analytics.model"
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {IgxCategoryChartComponent, IgxCategoryChartModule} from 'igniteui-angular-charts';
+import {AnalyticsService} from '@app/services/analytics.service';
+import {ICategorySpend} from "@app/models/user.analytics.model"
 
 
 @Component({
@@ -25,7 +14,7 @@ import { ICategorySpend } from "@app/models/user.analytics.model"
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CategorySpendingChartComponent implements OnInit, AfterViewInit {
-  @ViewChild('chart', { static: true })
+  @ViewChild('chart', {static: true})
   public chart!: IgxCategoryChartComponent;
 
   public data: ICategorySpend[] = [];
@@ -33,7 +22,8 @@ export class CategorySpendingChartComponent implements OnInit, AfterViewInit {
   constructor(
     private analytics: AnalyticsService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.analytics.getCategorySpending().subscribe(items => {

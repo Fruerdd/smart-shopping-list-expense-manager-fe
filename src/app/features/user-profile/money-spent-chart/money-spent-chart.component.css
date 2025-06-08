@@ -1,40 +1,40 @@
 .chart-card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  
-  .chart-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-  }
-  
-  .year-toggle {
-    display: flex;
-    gap: 16px;
-  }
-  
-  .year-label {
-    font-size: 14px;
-    color: #999;
-    cursor: pointer;
-  }
-  
-  .year-label.active {
-    color: #4db6ac;
-    font-weight: 500;
-  }
-  
-  .chart-container {
-    width: 100%;
-  }
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chart-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.year-toggle {
+  display: flex;
+  gap: 16px;
+}
+
+.year-label {
+  font-size: 14px;
+  color: #999;
+  cursor: pointer;
+}
+
+.year-label.active {
+  color: #4db6ac;
+  font-weight: 500;
+}
+
+.chart-container {
+  width: 100%;
+}

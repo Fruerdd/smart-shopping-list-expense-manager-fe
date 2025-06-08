@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IgxCategoryChartComponent, IgxCategoryChartModule } from 'igniteui-angular-charts';
-import { PopularShopsService, PopularShopDataItem } from '@app/services/popular-shops.service';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {IgxCategoryChartComponent, IgxCategoryChartModule} from 'igniteui-angular-charts';
+import {PopularShopDataItem, PopularShopsService} from '@app/services/popular-shops.service';
 
 @Component({
   selector: 'app-popular-shops',
@@ -12,7 +12,7 @@ import { PopularShopsService, PopularShopDataItem } from '@app/services/popular-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PopularShopsComponent implements OnInit, AfterViewInit {
-  @ViewChild("chart", { static: true })
+  @ViewChild("chart", {static: true})
   private chart!: IgxCategoryChartComponent;
 
   public popularShopsData: PopularShopDataItem[] = [];
@@ -20,7 +20,8 @@ export class PopularShopsComponent implements OnInit, AfterViewInit {
   constructor(
     private popularShopsService: PopularShopsService,
     private _detector: ChangeDetectorRef
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.popularShopsService.getPopularShopsData().subscribe(data => {

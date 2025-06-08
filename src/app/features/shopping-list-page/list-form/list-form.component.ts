@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ListTypeEnum } from '@app/models/shopping-list.dto';
-import { UserProfileService } from '@app/services/user-profile.service';
-import { UserDTO } from '@app/models/user.dto';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ListTypeEnum} from '@app/models/shopping-list.dto';
+import {UserProfileService} from '@app/services/user-profile.service';
+import {UserDTO} from '@app/models/user.dto';
 
 export interface ShareOption {
   userId: string;
@@ -24,7 +24,7 @@ export interface ListFormValues {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule]
 })
-export class ListFormComponent implements OnInit {
+export class ListFormComponent implements OnInit, OnChanges {
   @Input() isEditMode = false;
   @Input() initialValues: ListFormValues = {
     name: '',
@@ -47,7 +47,7 @@ export class ListFormComponent implements OnInit {
     this.userId = userInfo ? JSON.parse(userInfo).id : '';
   }
 
-  private userId: string;
+  private readonly userId: string;
 
   ngOnInit(): void {
     this.initializeForm();
@@ -91,8 +91,8 @@ export class ListFormComponent implements OnInit {
           userId: friend.id,
           userName: friend.name
         }));
-        
-        // If in edit mode and we have initial share values, ensure they exist in options
+
+        // If in edit mode, and we have initial share values, ensure they exist in options
         if (this.isEditMode && this.initialValues.shareWith?.length > 0) {
           const existingFriendIds = new Set(this.shareOptions.map(f => f.userId));
           const missingCollaborators = this.initialValues.shareWith
@@ -114,7 +114,7 @@ export class ListFormComponent implements OnInit {
             });
           }
         }
-        
+
         this.isLoading = false;
       },
       error: (error) => {
@@ -134,7 +134,7 @@ export class ListFormComponent implements OnInit {
       currentSelections.splice(index, 1);
     }
 
-    this.listForm.patchValue({ shareWith: currentSelections });
+    this.listForm.patchValue({shareWith: currentSelections});
   }
 
   isShareOptionSelected(userId: string): boolean {

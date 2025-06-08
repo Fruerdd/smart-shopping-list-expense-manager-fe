@@ -1,11 +1,9 @@
-import { Component } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { HeaderComponent } from 'src/app/features/header/header.component';
-import { FooterComponent } from 'src/app/features/footer/footer.component';
-import { filter } from 'rxjs/operators';
-import { environment }      from '../environments/environment';
+import {Component} from '@angular/core';
+import {NavigationEnd, Router, RouterModule} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {HeaderComponent} from 'src/app/features/header/header.component';
+import {FooterComponent} from 'src/app/features/footer/footer.component';
+import {filter} from 'rxjs/operators';
 
 
 @Component({

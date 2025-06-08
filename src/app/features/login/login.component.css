@@ -14,6 +14,7 @@ body {
   align-items: center;
   height: 100vh;
   background-color: #0B3B5B;
+  padding: 20px;
 }
 
 .phone-placeholder {
@@ -79,6 +80,7 @@ input {
   border-radius: 5px;
   border: none;
   outline: none;
+  font-size: 14px;
 }
 
 button {
@@ -88,10 +90,16 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #0a3050;
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: rgba(11, 59, 91, 0.4);
   cursor: not-allowed;
 }
 
@@ -99,15 +107,174 @@ button:disabled {
   text-align: center;
   margin: 20px 0;
   color: #0B3B5B;
+  font-size: 14px;
 }
 
 .signup-text {
   text-align: center;
   color: #0B3B5B;
+  font-size: 14px;
 }
 
 .signup-text a {
   color: #0B3B5B;
   font-weight: bold;
   text-decoration: none;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  padding-left: 5px;
+}
+
+/* Tablet styles */
+@media (max-width: 992px) {
+  .login-page {
+    padding: 15px;
+  }
+  
+  .phone-placeholder {
+    width: 250px;
+    height: 400px;
+    margin-right: 30px;
+  }
+  
+  .login-card {
+    width: 280px;
+    height: 400px;
+    padding: 25px;
+  }
+  
+  .login-header h2 {
+    font-size: 22px;
+  }
+}
+
+/* Mobile landscape */
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .phone-placeholder {
+    width: 200px;
+    height: 300px;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    min-height: 400px;
+    padding: 25px;
+  }
+}
+
+/* Mobile portrait */
+@media (max-width: 576px) {
+  .login-page {
+    padding: 15px;
+  }
+  
+  .phone-placeholder {
+    display: none;
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    min-height: 450px;
+    padding: 25px 20px;
+  }
+  
+  .login-header h2 {
+    font-size: 20px;
+  }
+  
+  input {
+    padding: 12px;
+    font-size: 16px;
+  }
+  
+  button {
+    padding: 12px;
+    font-size: 16px;
+  }
+  
+  .or-divider {
+    font-size: 14px;
+    margin: 15px 0;
+  }
+  
+  .signup-text {
+    font-size: 14px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .login-page {
+    padding: 10px;
+  }
+  
+  .login-card {
+    max-width: 300px;
+    padding: 20px 15px;
+    min-height: 400px;
+  }
+  
+  .login-header {
+    margin-bottom: 20px;
+  }
+  
+  .login-header h2 {
+    font-size: 18px;
+  }
+  
+  form {
+    gap: 8px;
+  }
+  
+  input {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  button {
+    padding: 10px;
+    font-size: 16px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .login-card {
+    max-width: 280px;
+    padding: 15px 10px;
+  }
+  
+  .login-header h2 {
+    font-size: 16px;
+  }
+  
+  input, button {
+    font-size: 16px;
+    padding: 10px;
+  }
+  
+  .or-divider, .signup-text {
+    font-size: 12px;
+  }
 }

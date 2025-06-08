@@ -1,4 +1,3 @@
-// src/app/shared/footer/footer.component.ts
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,6 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']  // ← was styleUrl, needs the plural
+  styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {}

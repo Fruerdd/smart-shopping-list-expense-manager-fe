@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { OverviewCardsService, OverviewDataItem } from '@app/services/overview-cards.service';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {OverviewCardsService, OverviewDataItem} from '@app/services/overview-cards.service';
 
 @Component({
   selector: 'app-overview-cards',
@@ -13,7 +13,8 @@ export class OverviewCardsComponent implements OnInit {
   overviewData: OverviewDataItem[] = [];
   selectedPeriod: 'today' | 'lastWeek' = 'today';
 
-  constructor(private overviewCardsService: OverviewCardsService) {}
+  constructor(private overviewCardsService: OverviewCardsService) {
+  }
 
   ngOnInit(): void {
     this.loadData();
@@ -27,8 +28,7 @@ export class OverviewCardsComponent implements OnInit {
 
   onPeriodChangeHandler(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
-    const period = selectElement.value as 'today' | 'lastWeek';
-    this.selectedPeriod = period;
+    this.selectedPeriod = selectElement.value as 'today' | 'lastWeek';
     this.loadData();
   }
 }

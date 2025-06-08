@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { CategoryDTO } from '@app/models/category.dto';
-import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {MatIconModule} from '@angular/material/icon';
+import {CategoryDTO} from '@app/models/category.dto';
+import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
 
 @Component({
   selector: 'app-product-list',
@@ -75,7 +75,11 @@ export class ProductListComponent {
     return 'Price not available';
   }
 
-  getBestPriceInfo(product: ShoppingListItemDTO): { bestStore: string, bestPrice: string, selectedStorePrice?: string } | null {
+  getBestPriceInfo(product: ShoppingListItemDTO): {
+    bestStore: string,
+    bestPrice: string,
+    selectedStorePrice?: string
+  } | null {
     const bestPriceInfo = {
       bestStore: (product as any).originalBestStore || product.storeName || 'Unknown',
       bestPrice: (product as any).originalBestPrice ? `${(product as any).originalBestPrice} KM` : 'N/A',

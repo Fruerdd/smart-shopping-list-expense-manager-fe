@@ -133,3 +133,41 @@ h2 {
   text-align: center;
   color: #0B3B5B;
 }
+
+@media (max-width: 768px) {
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .item-card {
+    width: 100%;
+    padding: 12px 15px;
+    box-sizing: border-box;
+  }
+  
+  .item-icon {
+    font-size: 20px;
+    margin-right: 12px;
+  }
+  
+  .item-name {
+    font-size: 14px;
+  }
+  
+  .circle-icon {
+    font-size: 20px;
+  }
+  
+  .add-text {
+    font-size: 14px;
+  }
+  
+  .search-form {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

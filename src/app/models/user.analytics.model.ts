@@ -1,5 +1,3 @@
-// src/app/models/user.analytics.model.ts
-
 /**
  * Represents total money spent per month, comparing this year vs last year.
  */

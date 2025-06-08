@@ -1,23 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule }      from '@angular/common';
-import { FormsModule }       from '@angular/forms';
-import { RouterModule }      from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
 
-import { UsersService, UserDTO } from '@app/services/users.service';
+import {UserDTO, UsersService} from '@app/services/users.service';
 
 @Component({
   selector: 'app-edit-users',
   standalone: true,
-  imports: [ CommonModule, FormsModule, RouterModule ],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './edit-users.component.html',
   styleUrls: ['./edit-users.component.css']
 })
 export class EditUsersComponent implements OnInit {
   users: UserDTO[] = [];
   filter = '';
-  userTypes: Array<'USER'|'ADMIN'> = ['USER','ADMIN'];
+  userTypes: Array<'USER' | 'ADMIN'> = ['USER', 'ADMIN'];
 
-  constructor(private usersSvc: UsersService) {}
+  constructor(private usersSvc: UsersService) {
+  }
 
   ngOnInit() {
     this.usersSvc.getUsers().subscribe(list => {

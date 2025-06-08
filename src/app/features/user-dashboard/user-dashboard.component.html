@@ -1,7 +1,7 @@
 <div class="dashboard-container">
-  <div *ngIf="!router.url.includes('shopping-list')" >
+  <div class="dashboard-content" *ngIf="!router.url.includes('shopping-list')">
     <app-shopping-list-management (editList)="navigateToShoppingList($event)"
-                                (createAList)="navigateToShoppingList()">
+                                  (createAList)="navigateToShoppingList()">
     </app-shopping-list-management>
     <app-favorite-products></app-favorite-products>
     <app-favorite-stores></app-favorite-stores>

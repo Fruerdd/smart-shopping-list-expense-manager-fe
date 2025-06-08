@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { AllCustomersService, Customer } from '@app/services/all-customers.service';
+import {CommonModule} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {RouterModule} from '@angular/router';
+import {AllCustomersService, Customer} from '@app/services/all-customers.service';
 
 @Component({
   selector: 'app-all-customers',
@@ -17,7 +17,8 @@ export class AllCustomersComponent implements OnInit {
   currentPage = 1;
   readonly pageSize = 10;
 
-  constructor(private allCustomersService: AllCustomersService) {}
+  constructor(private allCustomersService: AllCustomersService) {
+  }
 
   ngOnInit(): void {
     this.allCustomersService.getCustomers().subscribe(data => {
@@ -39,7 +40,7 @@ export class AllCustomersComponent implements OnInit {
 
   /** array [1,2,3…totalPages] for template iteration */
   get pages(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    return Array.from({length: this.totalPages}, (_, i) => i + 1);
   }
 
   /** navigate to a given page */

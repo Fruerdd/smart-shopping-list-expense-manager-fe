@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { StoreDTO } from '@app/models/store.dto';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatIconModule} from '@angular/material/icon';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {StoreDTO} from '@app/models/store.dto';
 
 @Component({
   selector: 'app-store-selection-modal',
@@ -22,7 +22,8 @@ export class StoreSelectionModalComponent {
   @Output() storeSelected = new EventEmitter<StoreDTO>();
   @Output() clearStore = new EventEmitter<void>();
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer) {
+  }
 
   onClose(): void {
     this.closeModal.emit();
@@ -46,9 +47,5 @@ export class StoreSelectionModalComponent {
 
   onContentClick(event: Event): void {
     event.stopPropagation();
-  }
-
-  isStoreSelected(store: StoreDTO): boolean {
-    return store.name === this.currentStore;
   }
 }

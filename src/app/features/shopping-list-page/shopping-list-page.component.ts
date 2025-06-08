@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
@@ -7,17 +7,23 @@ import {FavoriteProductsService} from '@app/services/favorite-products.service';
 import {LoyaltyPointsService} from '@app/services/loyalty-points.service';
 import {ProductService} from '@app/services/product.service';
 import {PriceComparisonService} from '@app/services/price-comparison.service';
-import {filter, finalize, switchMap, tap, debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, finalize, switchMap, tap} from 'rxjs/operators';
 import {forkJoin, map, Observable, of, Subject} from 'rxjs';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
 import {SidebarComponent} from '@app/features/shopping-list-page/sidebar/sidebar.component';
 import {ListFormComponent, ListFormValues} from '@app/features/shopping-list-page/list-form/list-form.component';
-import {SelectedProductsComponent} from '@app/features/shopping-list-page/selected-products/selected-products.component';
+import {
+  SelectedProductsComponent
+} from '@app/features/shopping-list-page/selected-products/selected-products.component';
 import {ProductListComponent} from '@app/features/shopping-list-page/product-list/product-list.component';
-import {PriceComparisonModalComponent} from '@app/features/shopping-list-page/price-comparison-modal/price-comparison-modal.component';
-import {StoreSelectionModalComponent} from '@app/features/shopping-list-page/store-selection-modal/store-selection-modal.component';
+import {
+  PriceComparisonModalComponent
+} from '@app/features/shopping-list-page/price-comparison-modal/price-comparison-modal.component';
+import {
+  StoreSelectionModalComponent
+} from '@app/features/shopping-list-page/store-selection-modal/store-selection-modal.component';
 import {CategoryDTO} from '@app/models/category.dto';
-import {ShoppingListDTO, ListTypeEnum} from '@app/models/shopping-list.dto';
+import {ListTypeEnum, ShoppingListDTO} from '@app/models/shopping-list.dto';
 import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
 import {StoreItemDTO} from '@app/models/store-item.dto';
 import {StoreDTO} from '@app/models/store.dto';
@@ -63,18 +69,18 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
   selectedComparisonProduct: ShoppingListItemDTO | null = null;
   isLoadingComparisons: boolean = false;
   @ViewChild(ListFormComponent) listFormComponent!: ListFormComponent;
-  private formValues: ListFormValues | null = null;
   protected initialFormValues: ListFormValues = {
     name: '',
     description: '',
     listType: ListTypeEnum.OTHER,
     shareWith: []
   };
-  private userId: string;
+  private readonly userId: string;
   private searchSubject = new Subject<string>();
   private readonly DEBOUNCE_TIME = 300; // milliseconds
   private currentStore: StoreDTO | null = null;
   favoriteProducts: ShoppingListItemDTO[] = [];
+  showScrollToTop: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -164,10 +170,10 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
             products: []
           });
         }
-        
+
         this.categories = [...specialCategories, ...categories];
         this.originalCategories = JSON.parse(JSON.stringify(this.categories));
-        
+
         this.loadSpecialCategories();
       }),
       switchMap(() => {
@@ -195,11 +201,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     ).subscribe(term => {
       this.performSearch(term);
     });
-  }
-
-  searchProducts(term?: string): void {
-    const searchTerm = term || this.searchTerm;
-    this.searchSubject.next(searchTerm);
   }
 
   private performSearch(searchTerm: string): void {
@@ -260,7 +261,8 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFormValuesChange(values: ListFormValues): void {    this.formValues = values;  }
+  onFormValuesChange(): void {
+  }
 
   getAllProducts(): void {
     this.shoppingListService.getAllProducts().subscribe({
@@ -394,7 +396,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       // Product is not selected, add it
       this.shoppingListService.getItemPriceComparisons(product.productId).subscribe({
         next: (prices) => {
-          // Find store with lowest price
+          // Find store with the lowest price
           const lowestPriceStore = prices.reduce((lowest, current) => {
             if (!lowest || (current.price && (!lowest.price || current.price < lowest.price))) {
               return current;
@@ -429,7 +431,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
             // If no price info available, just add the product
             this.selectedProducts = [
               ...this.selectedProducts,
-              { ...product, quantity: 1 }
+              {...product, quantity: 1}
             ];
           }
         }
@@ -440,12 +442,12 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateItemQuantity(event: {id: string, quantity: number}): void {
+  updateItemQuantity(event: { id: string, quantity: number }): void {
     const index = this.selectedProducts.findIndex(p => p.id === event.id);
     if (index !== -1 && event.quantity > 0) {
       this.selectedProducts = [
         ...this.selectedProducts.slice(0, index),
-        { ...this.selectedProducts[index], quantity: event.quantity },
+        {...this.selectedProducts[index], quantity: event.quantity},
         ...this.selectedProducts.slice(index + 1)
       ];
     }
@@ -546,18 +548,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['/dashboard']);
   }
 
-  compareStoreItems(productId: string): void {
-    this.isLoadingComparisons = true;
-    this.showComparisonModal = true;
-
-    this.selectedComparisonProduct = this.findProductById(productId);
-
-    this.shoppingListService.getItemPriceComparisons(productId).subscribe(storeItems => {
-      this.storeComparisons = storeItems;
-      this.isLoadingComparisons = false;
-    });
-  }
-
   findProductById(productId: string): ShoppingListItemDTO | null {
     // First check in selected products
     const selectedProduct = this.selectedProducts.find(p => p.productId === productId);
@@ -577,14 +567,13 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
   }
 
   selectStore(store: StoreItemDTO): void {
-    const previousStore = this.preferredStore;
     this.preferredStore = store.storeName;
     this.currentStore = {
       id: store.storeId,
       name: store.storeName,
       icon: store.storeIcon
     };
-    
+
     // If we have a selected comparison product, add it to selected products
     if (this.selectedComparisonProduct) {
       const isAlreadySelected = this.selectedProducts.some(p => p.productId === this.selectedComparisonProduct!.productId);
@@ -613,17 +602,21 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     this.updateProductPricesForStore(store.storeName);
   }
 
-  applyPreferredStoreToList(): void {
-    if (!this.preferredStore) return;
-    this.updateProductPricesForStore(this.preferredStore);
-  }
-
   removeProduct(product: ShoppingListItemDTO): void {
     this.selectedProducts = this.selectedProducts.filter(p => p.productId !== product.productId);
   }
 
   ngOnDestroy(): void {
     this.searchSubject.complete();
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    this.showScrollToTop = window.pageYOffset > 300;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   onSearchInput(term: string): void {
@@ -638,7 +631,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
 
     this.isLoadingComparisons = true;
     const product = this.findProductById(productId);
-    
+
     if (product) {
       this.selectedComparisonProduct = product;
       this.shoppingListService.getItemPriceComparisons(product.productId).subscribe({
@@ -665,9 +658,9 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    
+
     // Update selected products
-    const selectedProductUpdates = this.selectedProducts.length > 0 ? 
+    const selectedProductUpdates = this.selectedProducts.length > 0 ?
       this.selectedProducts.map(product =>
         this.shoppingListService.getItemPriceComparisons(product.productId).pipe(
           map(prices => {
@@ -709,7 +702,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     });
 
     const allUpdates = [...selectedProductUpdates, ...categoryProductUpdates];
-    
+
     if (allUpdates.length === 0) {
       this.isLoading = false;
       return;
@@ -723,11 +716,11 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         if (selectedProductUpdates.length > 0) {
           this.selectedProducts = [...updatedProducts.slice(0, selectedProductUpdates.length)];
         }
-        
+
         // Update category products
         const categoryUpdates = updatedProducts.slice(selectedProductUpdates.length);
         const categoryUpdateMap = new Map<string, ShoppingListItemDTO[]>();
-        
+
         categoryUpdates.forEach((product: any) => {
           const categoryId = product.categoryId;
           if (!categoryUpdateMap.has(categoryId)) {
@@ -735,7 +728,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
           }
           categoryUpdateMap.get(categoryId)!.push(product);
         });
-        
+
         this.categories.forEach(category => {
           const updatedCategoryProducts = categoryUpdateMap.get(category.id);
           if (updatedCategoryProducts) {
@@ -775,7 +768,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onUpdateProductStore(event: {productId: string, newStore: string}): void {
+  onUpdateProductStore(event: { productId: string, newStore: string }): void {
     this.updateProductPricesForStore(event.newStore);
   }
 
@@ -795,7 +788,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
   }
 
   private getFavoriteProducts(): ShoppingListItemDTO[] {
-    return this.filteredProducts.filter(product => 
+    return this.filteredProducts.filter(product =>
       this.favoriteProducts.some(fav => fav.productId === product.productId)
     );
   }
@@ -809,10 +802,10 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         this.shoppingListService.getAllProducts().subscribe(allProducts => {
           const matchedProducts = topProducts.map(topProduct => {
             // Find matching product in available products by name
-            const matchingProduct = allProducts.find(p => 
+            const matchingProduct = allProducts.find(p =>
               p.productName.toLowerCase().trim() === topProduct.productName.toLowerCase().trim()
             );
-            
+
             if (matchingProduct) {
               return {
                 id: matchingProduct.productId,
@@ -838,7 +831,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
               };
             }
           });
-          
+
           const uniqueProducts = this.deduplicateProductsByPrice(matchedProducts);
           peoplesChoiceCategory.products = uniqueProducts.slice(0, 10);
         });
@@ -849,18 +842,18 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     this.priceComparisonService.getAllItems(this.userId).subscribe(allProducts => {
       const bestPriceCategory = this.categories.find(cat => cat.id === 'best-price');
       if (bestPriceCategory) {
-        
+
         if (allProducts && allProducts.length > 0) {
           // Get price information for each product
-          const priceRequests = allProducts.map(product => 
+          const priceRequests = allProducts.map(product =>
             this.priceComparisonService.getItemPrices(this.userId, product.id).pipe(
               map(prices => {
                 if (prices && prices.length > 0) {
                   // Find the cheapest price across all stores
-                  const cheapestPrice = prices.reduce((min, current) => 
+                  const cheapestPrice = prices.reduce((min, current) =>
                     (!min || (current.price && current.price < min.price)) ? current : min
                   );
-                  
+
                   return {
                     id: product.id,
                     productId: product.id,
@@ -881,19 +874,17 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
 
           forkJoin(priceRequests).subscribe(productsWithPrices => {
             // Filter out null results and products without valid prices
-            const validProducts = productsWithPrices.filter(product => 
+            const validProducts = productsWithPrices.filter(product =>
               product && product.price && product.price > 0
             ) as ShoppingListItemDTO[];
-            
+
             // Deduplicate by product name and keep cheapest
             const uniqueProducts = this.deduplicateProductsByPrice(validProducts);
-            
+
             // Sort by price and take top 10
-            const cheapestProducts = uniqueProducts
+            bestPriceCategory.products = uniqueProducts
               .sort((a, b) => (a.price || 0) - (b.price || 0))
               .slice(0, 10);
-            
-            bestPriceCategory.products = cheapestProducts;
           });
         } else {
           bestPriceCategory.products = [];
@@ -906,23 +897,23 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
 
   private deduplicateProductsByPrice(products: ShoppingListItemDTO[]): ShoppingListItemDTO[] {
     const productMap = new Map<string, ShoppingListItemDTO>();
-    
+
     products.forEach(product => {
       const key = product.productName.toLowerCase().trim();
       const existingProduct = productMap.get(key);
-      
+
       if (!existingProduct) {
         productMap.set(key, product);
       } else {
         const currentPrice = product.price || 0;
         const existingPrice = existingProduct.price || 0;
-        
+
         if (currentPrice > 0 && (existingPrice === 0 || currentPrice < existingPrice)) {
           productMap.set(key, product);
         }
       }
     });
-    
+
     return Array.from(productMap.values());
   }
 

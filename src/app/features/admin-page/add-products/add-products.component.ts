@@ -1,31 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormArray,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule
-} from '@angular/forms';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 
-import {
-  StoreService,
-  StoreDTO,
-  StoreDetailsDTO,
-  StorePriceDTO
-} from '../../../services/store.service';
-import {
-  ProductService,
-  AddProductPayload
-} from '../../../services/product.service';
+import {StoreDetailsDTO, StoreDTO, StorePriceDTO, StoreService} from '@app/services/store.service';
+import {AddProductPayload, ProductService} from '@app/services/product.service';
 
 @Component({
   selector: 'app-add-products',
   standalone: true,
 
-  // ← Add these so *ngIf, *ngFor, pipes, ngModel, formGroup, etc. all work
   imports: [
     CommonModule,
     FormsModule,
@@ -50,12 +34,13 @@ export class AddProductsComponent implements OnInit {
     private router: Router,
     private storeSvc: StoreService,
     private productSvc: ProductService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     // 1) build form before subscribing
     this.productsForm = this.fb.group({
-      products: this.fb.array([ this.createProductGroup() ])
+      products: this.fb.array([this.createProductGroup()])
     });
 
     // 2) load store list
@@ -83,25 +68,25 @@ export class AddProductsComponent implements OnInit {
 
   private createProductGroup(): FormGroup {
     return this.fb.group({
-      storeId:     [this.storeId, Validators.required],
+      storeId: [this.storeId, Validators.required],
       productName: ['', Validators.required],
-      category:    [''],
+      category: [''],
       description: [''],
-      price:       [0, [Validators.required, Validators.min(0)]],
-      barcode:     [''],
-      isActive:    [true]
+      price: [0, [Validators.required, Validators.min(0)]],
+      barcode: [''],
+      isActive: [true]
     });
   }
 
   private patchStoreIdToForm(storeId: string) {
     this.productsArray.controls.forEach(ctrl =>
-      ctrl.patchValue({ storeId })
+      ctrl.patchValue({storeId})
     );
   }
 
   addProductRow(): void {
     const group = this.createProductGroup();
-    if (this.storeId) group.patchValue({ storeId: this.storeId });
+    if (this.storeId) group.patchValue({storeId: this.storeId});
     this.productsArray.push(group);
   }
 
@@ -141,13 +126,13 @@ export class AddProductsComponent implements OnInit {
         const obj: any = {};
         headers.forEach((h, i) => obj[h] = cols[i] || '');
         return {
-          storeId:     this.storeId!,
+          storeId: this.storeId!,
           productName: obj['productName'],
-          category:    obj['category'],
+          category: obj['category'],
           description: obj['description'],
-          price:       parseFloat(obj['price']) || 0,
-          barcode:     obj['barcode'],
-          isActive:    obj['isActive']?.toLowerCase() === 'true'
+          price: parseFloat(obj['price']) || 0,
+          barcode: obj['barcode'],
+          isActive: obj['isActive']?.toLowerCase() === 'true'
         } as AddProductPayload;
       });
     };

@@ -1,21 +1,16 @@
-// expenses-by-store-chart.component.ts
 import {
   AfterViewInit,
-  Component,
-  OnInit,
-  ViewChild,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  CUSTOM_ELEMENTS_SCHEMA
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  OnInit,
+  ViewChild
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  IgxPieChartComponent,
-  IgxPieChartModule,
-  IgxItemLegendModule
-} from 'igniteui-angular-charts';
-import { AnalyticsService } from '@app/services/analytics.service';
-import { IStoreExpense } from "@app/models/user.analytics.model"
+import {CommonModule} from '@angular/common';
+import {IgxItemLegendModule, IgxPieChartComponent, IgxPieChartModule} from 'igniteui-angular-charts';
+import {AnalyticsService} from '@app/services/analytics.service';
+import {IStoreExpense} from "@app/models/user.analytics.model"
 
 
 @Component({
@@ -28,7 +23,7 @@ import { IStoreExpense } from "@app/models/user.analytics.model"
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpensesByStoreChartComponent implements OnInit, AfterViewInit {
-  @ViewChild('chart', { static: true })
+  @ViewChild('chart', {static: true})
   public chart!: IgxPieChartComponent;
 
   public data: IStoreExpense[] = [];
@@ -36,7 +31,8 @@ export class ExpensesByStoreChartComponent implements OnInit, AfterViewInit {
   constructor(
     private analytics: AnalyticsService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.analytics.getStoreExpenses().subscribe(items => {

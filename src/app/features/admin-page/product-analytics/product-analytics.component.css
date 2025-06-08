@@ -1,139 +1,139 @@
 .product-analytics-wrapper {
-    width: 100%;
-    padding: 1rem 2rem;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-  }
-  
-  .analytics-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .date-range {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #666;
-  }
-  
-  .action-buttons {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .add-product-btn {
-    background-color: #6c63ff;
-    color: #fff;
-    border: none;
-    padding: 0.6rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-  }
-  
-  .add-product-btn:hover {
-    background-color: #5a55d1;
-  }
-  
-  .charts-row {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .chart-card {
-    flex: 1;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .card-header {
-    margin-bottom: 0.5rem;
-  }
-  
-  .chart-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .chart-stats {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  .chart-stats h3 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 600;
-  }
-  
-  .new-added {
-    font-size: 0.9rem;
-    color: #4f86f7;
-  }
-  
-  .chart-container {
-    flex: 1;
-    min-height: 300px;
-    border: 1px;
-  }
-  
-  /* Table Section */
-  .table-section {
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  
-  .table-section h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-    color: #333;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-  }
-  
-  thead tr {
-    background-color: #f3f3f3;
-  }
-  
-  thead th {
-    padding: 0.75rem;
-    font-weight: 600;
-  }
-  
-  tbody tr {
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  tbody td {
-    padding: 0.75rem;
-    vertical-align: middle;
-  }
-  
-  tbody tr:last-child {
-    border-bottom: none;
-  }
+  width: 100%;
+  padding: 1rem 2rem;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
-  igx-category-chart,
-i   gx-data-chart {
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-product-btn {
+  background-color: #6c63ff;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.add-product-btn:hover {
+  background-color: #5a55d1;
+}
+
+.charts-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.chart-card {
+  flex: 1;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  margin-bottom: 0.5rem;
+}
+
+.chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.chart-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.chart-stats h3 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.new-added {
+  font-size: 0.9rem;
+  color: #4f86f7;
+}
+
+.chart-container {
+  flex: 1;
+  min-height: 300px;
+  border: 1px;
+}
+
+/* Table Section */
+.table-section {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+thead tr {
+  background-color: #f3f3f3;
+}
+
+thead th {
+  padding: 0.75rem;
+  font-weight: 600;
+}
+
+tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+tbody td {
+  padding: 0.75rem;
+  vertical-align: middle;
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+igx-category-chart,
+i gx-data-chart {
   background-color: #fafafa;
   border: 2px;
 }

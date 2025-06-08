@@ -19,7 +19,7 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   animation: slideInFromRight 0.3s ease-out;
-  
+
   @media (max-width: 768px) {
     top: 70px;
     left: 10px;
@@ -123,7 +123,7 @@
   padding: 16px 20px;
   border-bottom: 1px solid #f3f4f6;
   transition: background-color 0.2s ease;
-  
+
   &:hover {
     background-color: #f9fafb;
   }
@@ -141,7 +141,7 @@
 
 .notification-icon {
   margin-right: 12px;
-  
+
   i {
     width: 40px;
     height: 40px;
@@ -161,7 +161,7 @@
     &.fa-user-plus {
       background-color: #e8f2ff;
       color: #083a5e;
-      
+
       &.unread-icon {
         background-color: #083a5e;
         color: white;
@@ -171,7 +171,7 @@
     &.fa-list {
       background-color: #e8f2ff;
       color: #083a5e;
-      
+
       &.unread-icon {
         background-color: #083a5e;
         color: white;
@@ -181,7 +181,7 @@
     &.fa-gift {
       background-color: #fef3c7;
       color: #d97706;
-      
+
       &.unread-icon {
         background-color: #d97706;
         color: white;
@@ -191,7 +191,7 @@
     &.fa-info-circle {
       background-color: #e8f2ff;
       color: #083a5e;
-      
+
       &.unread-icon {
         background-color: #083a5e;
         color: white;
@@ -202,7 +202,7 @@
 
 .notification-content {
   flex: 1;
-  
+
   .notification-header {
     display: flex;
     justify-content: space-between;
@@ -347,4 +347,4 @@
 
 .notifications-content::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
-} 
+}

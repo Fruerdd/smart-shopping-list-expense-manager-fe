@@ -9,8 +9,8 @@
          (click)="toggleCategory(category)"
          [class.selected]="selectedCategoryId === category.id">
       <div class="category-content">
-        <mat-icon *ngIf="category.icon" fontSet="material-symbols-outlined">{{category.icon}}</mat-icon>
-        <span class="category-name">{{category.name}}</span>
+        <mat-icon *ngIf="category.icon" fontSet="material-symbols-outlined">{{ category.icon }}</mat-icon>
+        <span class="category-name">{{ category.name }}</span>
       </div>
       <span class="expand-icon">
         <mat-icon>{{ selectedCategoryId === category.id ? 'expand_less' : 'expand_more' }}</mat-icon>

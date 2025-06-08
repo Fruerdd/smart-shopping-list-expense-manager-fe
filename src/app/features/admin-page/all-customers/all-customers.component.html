@@ -6,26 +6,26 @@
       <button class="add-user-btn" routerLink="/admin-page/add-users">
         + Add Users
       </button>
-    </div>      
+    </div>
   </div>
 
   <table class="customers-table">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Phone Number</th>
-        <th>Email</th>
-        <th>City</th>
-        <th>Status</th>
-      </tr>
+    <tr>
+      <th>Name</th>
+      <th>Phone Number</th>
+      <th>Email</th>
+      <th>City</th>
+      <th>Status</th>
+    </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let customer of pagedCustomers">
-        <td>{{ customer.name }}</td>
-        <td>{{ customer.phoneNumber }}</td>
-        <td>{{ customer.email }}</td>
-        <td>{{ customer.city }}</td>
-        <td>
+    <tr *ngFor="let customer of pagedCustomers">
+      <td>{{ customer.name }}</td>
+      <td>{{ customer.phoneNumber }}</td>
+      <td>{{ customer.email }}</td>
+      <td>{{ customer.city }}</td>
+      <td>
           <span
             [ngClass]="{
               'active-status': customer.status === 'Active',
@@ -34,8 +34,8 @@
           >
             {{ customer.status }}
           </span>
-        </td>
-      </tr>
+      </td>
+    </tr>
     </tbody>
   </table>
 
