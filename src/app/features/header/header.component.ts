@@ -234,7 +234,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
 
   checkViewport(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.isMobileView = window.innerWidth <= 900;
+      this.isMobileView = window.innerWidth <= 1200;
     }
   }
 
