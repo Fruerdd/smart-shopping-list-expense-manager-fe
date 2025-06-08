@@ -185,6 +185,15 @@ header {
   padding-top: 10px;
 }
 
+@media screen and (min-width: 128px) and (max-width: 1000px) {
+    .desktop_menu {
+      display: none;
+    }
+    .text-end {
+      display: flex !important;
+      justify-content: flex-end;
+      align-items: center;
+    }
 .music-icon-li mat-icon:hover {
   color: #0B3B5B;
   transition: 0.2s ease-in-out;
