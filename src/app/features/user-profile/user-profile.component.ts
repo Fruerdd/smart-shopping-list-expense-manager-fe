@@ -1,20 +1,19 @@
-import {Component, Inject, OnInit, OnDestroy, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {UserProfileService} from '@app/services/user-profile.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QRCodeComponent} from 'angularx-qrcode';
 import {AuthService} from '@app/services/auth.service';
-import { UserDTO } from '@app/models/user.dto';
-import { ReviewDTO } from '@app/models/review.dto';
-import { forkJoin, debounceTime, distinctUntilChanged, switchMap, of, Subscription } from 'rxjs';
-import { Subject } from 'rxjs';
-import { MoneySpentChartComponent } from './money-spent-chart/money-spent-chart.component';
-import { ExpensesByStoreChartComponent } from './expenses-by-store-chart/expenses-by-store-chart.component';
-import { PriceAverageChartComponent } from './price-average-chart/price-average-chart.component';
-import { AverageSavedChartComponent } from './average-saved-chart/average-saved-chart.component';
-import { CategorySpendingChartComponent } from './category-spending-chart/category-spending-chart.component';
-import { ImageUrlService } from '@app/services/image-url.service';
+import {UserDTO} from '@app/models/user.dto';
+import {ReviewDTO} from '@app/models/review.dto';
+import {debounceTime, distinctUntilChanged, forkJoin, of, Subject, Subscription, switchMap} from 'rxjs';
+import {MoneySpentChartComponent} from './money-spent-chart/money-spent-chart.component';
+import {ExpensesByStoreChartComponent} from './expenses-by-store-chart/expenses-by-store-chart.component';
+import {PriceAverageChartComponent} from './price-average-chart/price-average-chart.component';
+import {AverageSavedChartComponent} from './average-saved-chart/average-saved-chart.component';
+import {CategorySpendingChartComponent} from './category-spending-chart/category-spending-chart.component';
+import {ImageUrlService} from '@app/services/image-url.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -38,7 +37,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   userReview: ReviewDTO | null = null;
   loyaltyPoints: number = 0;
   currentUserId: string | null = null;
-  activeTab: string = 'profile';
   loading = false;
   showFriendsModal = false;
   isEditingReview = false;
@@ -105,10 +103,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   // Get tier color for styling
   getTierColor(tier: string): string {
     switch (tier) {
-      case 'GOLD': return '#FFD700';
-      case 'SILVER': return '#C0C0C0';
-      case 'BRONZE': return '#CD7F32';
-      default: return '#CD7F32';
+      case 'GOLD':
+        return '#FFD700';
+      case 'SILVER':
+        return '#C0C0C0';
+      case 'BRONZE':
+        return '#CD7F32';
+      default:
+        return '#CD7F32';
     }
   }
 
@@ -186,7 +188,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     if (!referralCode.trim()) {
       return;
     }
-    
+
     if (!this.user?.id) {
       alert('User not found');
       return;
@@ -195,20 +197,20 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     const cleanedCode = referralCode.trim().toUpperCase();
 
     this.userProfileService.applyReferralCode(this.user.id, cleanedCode).subscribe({
-      next: (response) => {
+      next: () => {
         this.loadUserData(this.user!.id);
       },
       error: (error) => {
         console.error('Error applying referral code:', error);
-        
+
         let errorMessage = error.message || 'Failed to apply referral code. Please try again.';
-        
-        if (errorMessage.includes('already used a referral code') || 
-            errorMessage.includes('already been referred') ||
-            errorMessage.includes('already have a referral')) {
+
+        if (errorMessage.includes('already used a referral code') ||
+          errorMessage.includes('already been referred') ||
+          errorMessage.includes('already have a referral')) {
           errorMessage = 'You have already been referred by another user. Each user can only be referred once.';
         }
-        
+
         alert(errorMessage);
       }
     });
@@ -224,7 +226,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   startEditingReview(): void {
     if (this.userReview) {
-      this.editedReview = { ...this.userReview };
+      this.editedReview = {...this.userReview};
       this.isEditingReview = true;
     }
   }
@@ -258,15 +260,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  setActiveTab(tab: string): void {
-    this.activeTab = tab;
-  }
-
   private loadUserData(userId: string): void {
     this.loading = true;
-    
+
     this.isOwnProfile = this.currentUserId === userId;
-    
+
     forkJoin({
       profile: this.userProfileService.getUserProfileById(userId),
       friends: this.userProfileService.getUserFriends(userId),
@@ -278,13 +276,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.friends = data.friends;
         this.loyaltyPoints = data.loyaltyPoints;
         this.userReview = data.reviews;
-        
+
         if (!this.isOwnProfile && this.currentUserId) {
           this.isFriend = this.friends.some(friend => friend.id === this.currentUserId);
         } else {
           this.isFriend = false;
         }
-        
+
         this.loading = false;
       },
       error: (error) => {
@@ -312,7 +310,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.userProfileService.getCurrentUserProfile().subscribe({
       next: (data) => {
         this.currentUserId = data.id;
-        
+
         const currentRoute = this.route.snapshot.params['id'];
         if (currentRoute !== data.id) {
           this.router.navigate(['/user-profile', this.currentUserId]);
@@ -333,7 +331,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.userProfileService.getCurrentUserProfile().subscribe({
       next: (data) => {
         this.currentUserId = data.id;
-        
+
         this.loadUserData(targetUserId);
       },
       error: (error) => {
@@ -400,19 +398,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error extracting user ID from token:', error);
       this.currentUserId = null;
-    }
-  }
-
-  private checkIfUserIsAdmin(): boolean {
-    try {
-      const token = this.authService.getToken();
-      if (token) {
-        const tokenPayload = JSON.parse(atob(token.split('.')[1]));
-        return tokenPayload.userType === 'ADMIN' || tokenPayload.role === 'ADMIN';
-      }
-      return false;
-    } catch {
-      return false;
     }
   }
 

@@ -1,38 +1,20 @@
-// src/app/features/admin-page/product-analytics/product-analytics.component.ts
+import {AfterViewInit, Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
+import {RouterModule} from '@angular/router';
 
 import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  Inject,
-  PLATFORM_ID
-} from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
-
-import {
-  // spline chart
+  IgxCalloutLayerModule,
   IgxCategoryChartModule,
-
-  // core & interactivity for the DataChart
+  IgxCategoryXAxisModule,
+  IgxColumnSeriesModule,
+  IgxDataChartCategoryModule,
   IgxDataChartCoreModule,
-  IgxDataChartCategoryModule,         // ← register category axes
   IgxDataChartInteractivityModule,
   IgxDataToolTipLayerModule,
-  IgxCalloutLayerModule,
-
-  // axes & series for column chart
-  IgxCategoryXAxisModule,
-  IgxNumericYAxisModule,
-  IgxColumnSeriesModule
+  IgxNumericYAxisModule
 } from 'igniteui-angular-charts';
 
-import {
-  ProductService,
-  ITopProduct,
-  IDailySearch,
-  IMonthlyProductAdd
-} from '@app/services/product.service';
+import {IDailySearch, IMonthlyProductAdd, ITopProduct, ProductService} from '@app/services/product.service';
 
 @Component({
   selector: 'app-product-analytics',
@@ -60,14 +42,14 @@ import {
   styleUrls: ['./product-analytics.component.css']
 })
 export class ProductAnalyticsComponent implements OnInit, AfterViewInit {
-  public isBrowser            = false;
-  public topProducts:     ITopProduct[]        = [];
-  public dailySearches:   IDailySearch[]       = [];
-  public weeklySearches:  IDailySearch[]       = [];
-  public monthlyAdds:     IMonthlyProductAdd[] = [];
+  public isBrowser = false;
+  public topProducts: ITopProduct[] = [];
+  public dailySearches: IDailySearch[] = [];
+  public weeklySearches: IDailySearch[] = [];
+  public monthlyAdds: IMonthlyProductAdd[] = [];
 
   public totalProductSearched = 0;
-  public newAdded             = 0;
+  public newAdded = 0;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,

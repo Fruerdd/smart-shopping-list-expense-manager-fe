@@ -1,5 +1,5 @@
 export interface FavoriteStoreDTO {
-    id: string;
-    storeId: string;
-    storeName: string;
-  }
+  id: string;
+  storeId: string;
+  storeName: string;
+}

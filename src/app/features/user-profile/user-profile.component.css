@@ -1,8 +1,8 @@
-/* Main Container */
 .profile-container {
   max-width: 100%;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  overflow-x: hidden;
 }
 
 /* Blue Header Section */
@@ -46,6 +46,7 @@
   margin: 8px 0 0 0;
   color: #b3d9ff;
   font-size: 16px;
+  text-align: left;
 }
 
 .location i {
@@ -73,6 +74,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  overflow-x: hidden;
 }
 
 /* Grid Layout */
@@ -88,7 +90,7 @@
   background: white;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #f0f0f0;
 }
 
@@ -357,14 +359,13 @@
 .tooltip-content {
   position: absolute;
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 0;
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  width: 280px;
+  width: 300px;
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
@@ -415,28 +416,95 @@
   margin-top: 15px;
 }
 
-/* Charts Grid */
-.charts-grid {
+.qr-code qrcode {
+  width: 140px !important;
+  height: 140px !important;
+}
+
+/* Analytics Grid */
+.analytics-grid {
+  margin-top: 2rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+  overflow-x: hidden;
+}
+
+.analytics-grid h2 {
+  margin-bottom: 1rem;
+}
+
+/* 2-column responsive grid with specific ordering for desktop */
+.card-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  padding: 1rem 0;
-  margin-top: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: auto;
+  grid-gap: 1rem;
+  overflow-x: hidden;
 }
 
-.grid-span-2 {
-  grid-column: span 2;
+/* Desktop layout */
+@media (min-width: 769px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* First row: Money spent over time - full width */
+  .money-spent-card {
+    grid-column: 1 / -1;
+    order: 1;
+  }
+  
+  /* Second row: Three graphs side by side */
+  .category-spending-card {
+    order: 2;
+  }
+  
+  .price-average-card {
+    order: 3;
+  }
+  
+  .expenses-by-store-card {
+    order: 4;
+  }
+  
+  /* Third row: Average saved - full width */
+  .average-saved-card {
+    grid-column: 1 / -1;
+    order: 5;
+  }
 }
 
-.grid-item {
-  background-color: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  height: 500px;
+/* Utility class: spans full width */
+.grid-span-full {
+  grid-column: 1 / -1;
+}
+
+/* Make each chart fill its card */
+.chart-wrapper {
+  flex: 1;
+  min-height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* make every IgniteUI chart fill that wrapper */
+.chart-wrapper igx-category-chart,
+.chart-wrapper igx-pie-chart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card-grid .card {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Loading State */
@@ -447,30 +515,326 @@
 }
 
 /* Responsive Design */
+
+/* Large tablets and small laptops (992px and below) */
+@media (max-width: 992px) {
+  .banner-inner {
+    padding: 25px 15px;
+    gap: 15px;
+  }
+  
+  .profile-image {
+    width: 110px;
+    height: 110px;
+  }
+
+  .profile-welcome h1 {
+    font-size: 24px;
+  }
+  
+  .profile-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+  }
+  
+  .analytics-grid .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+/* Tablets (768px and below) */
 @media (max-width: 768px) {
   .banner-inner {
     flex-direction: column;
     text-align: center;
     gap: 20px;
+    padding: 20px 15px;
+  }
+  
+  .profile-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .profile-welcome h1 {
+    font-size: 22px;
+  }
+  
+  .location {
+    font-size: 14px;
   }
 
   .profile-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
 
-  .charts-grid {
-    grid-template-columns: 1fr;
+  .analytics-grid .card-grid {
+    grid-template-columns: 1fr !important;
   }
 
-  .grid-span-2 {
-    grid-column: span 1;
+  .analytics-grid .grid-span-2 {
+    grid-column: span 1 !important;
   }
 
   .tooltip-content {
-    width: 250px;
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
+    width: 280px;
+    right: 0;
+    left: auto;
+  }
+  
+  .friends-modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .modal-header {
+    padding: 15px;
+  }
+
+  .modal-content {
+    padding: 15px;
+  }
+
+  .friend-card {
+    padding: 12px;
+  }
+
+  .friend-avatar-large {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .search-container {
+    position: relative;
+  }
+
+  .tier-display {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+    min-width: auto;
+    padding: 12px 16px;
+  }
+
+  .friend-button {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+  
+  .search-section {
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+
+  .search-section .search-container {
+    padding: 20px;
+  }
+
+  .search-section .search-input {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .search-section .search-user-avatar {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Large mobile devices (576px and below) */
+@media (max-width: 576px) {
+  .profile-container {
+    font-size: 14px;
+    overflow-x: hidden;
+  }
+  
+  .banner-inner {
+    padding: 18px 12px;
+    gap: 15px;
+  }
+  
+  .profile-image {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .profile-welcome h1 {
+    font-size: 20px;
+    word-wrap: break-word;
+  }
+  
+  .location {
+    font-size: 13px;
+  }
+  
+  .edit-button {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+  
+  .card {
+    padding: 15px;
+    overflow-x: hidden;
+  }
+  
+  .card h3 {
+    font-size: 15px;
+    margin-bottom: 15px;
+    word-wrap: break-word;
+  }
+  
+  .coupon-box {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .copy-btn, .submit-btn {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+  
+  .search-section .search-input {
+    font-size: 14px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+  }
+  
+  .analytics-grid .card-grid {
+    grid-template-columns: 1fr !important;
+    overflow-x: hidden;
+  }
+}
+
+/* Small mobile devices (480px and below) */
+@media (max-width: 480px) {
+  .banner-inner {
+    padding: 15px 10px;
+  }
+  
+  .profile-image {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .profile-welcome h1 {
+    font-size: 18px;
+    word-wrap: break-word;
+  }
+  
+  .edit-button {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+  
+  .card {
+    padding: 12px;
+    overflow-x: hidden;
+  }
+  
+  .card h3 {
+    font-size: 14px;
+    word-wrap: break-word;
+  }
+  
+  .profile-grid {
+    gap: 12px;
+  }
+  
+  .friend-avatar {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .friend-name {
+    font-size: 13px;
+    word-wrap: break-word;
+  }
+  
+  .tooltip-content {
+    width: 220px;
+    word-wrap: break-word;
+  }
+  
+  .friends-modal {
+    width: 98%;
+  }
+  
+  .analytics-grid .card-grid {
+    grid-template-columns: 1fr !important;
+    overflow-x: hidden;
+  }
+}
+
+/* Extra small mobile devices (360px and below) */
+@media (max-width: 360px) {
+  .banner-inner {
+    padding: 12px 8px;
+  }
+  
+  .profile-image {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .profile-welcome h1 {
+    font-size: 16px;
+    word-wrap: break-word;
+  }
+  
+  .location {
+    font-size: 12px;
+    word-wrap: break-word;
+  }
+  
+  .edit-button {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  
+  .card {
+    padding: 10px;
+    overflow-x: hidden;
+  }
+  
+  .card h3 {
+    font-size: 13px;
+    margin-bottom: 12px;
+    word-wrap: break-word;
+  }
+  
+  .profile-grid {
+    gap: 10px;
+  }
+  
+  .friend-avatar {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .friend-name {
+    font-size: 12px;
+    word-wrap: break-word;
+  }
+  
+  .tooltip-content {
+    width: 200px;
+    word-wrap: break-word;
+  }
+  
+  .tier-label {
+    font-size: 12px;
+  }
+  
+  .points-number {
+    font-size: 16px;
+  }
+  
+  .analytics-grid .card-grid {
+    grid-template-columns: 1fr !important;
+    overflow-x: hidden;
   }
 }
 
@@ -816,10 +1180,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px;
+  padding: 15px 20px;
   background: #fff;
   border-radius: 8px;
   border: 1px solid #083a5e;
+  min-width: 200px;
+  justify-content: center;
 }
 
 .tier-name {
@@ -830,10 +1196,9 @@
 .tier-display .tier-label {
   color: #083a5e;
   font-size: 14px;
-  margin-left: 4px;
+  margin-left: 6px;
 }
 
-/* Make friend names and avatars clickable */
 .friend-name:hover {
   text-decoration: underline;
   color: #083a5e;
@@ -844,7 +1209,6 @@
   transition: transform 0.2s ease;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .search-container {
     position: relative;
@@ -874,7 +1238,7 @@
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #f0f0f0;
 }
 
@@ -938,7 +1302,7 @@
   max-height: 400px;
   overflow-y: auto;
   margin-top: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: static;
   border: 1px solid #ddd;
 }
@@ -1022,71 +1386,14 @@
   }
 }
 
-
-.analytics-grid {
-  margin-top: 2rem;
-  max-width: 1200px;    /* same as .profile-content-wrapper */
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 20px;      /* match your horizontal page padding */
-}
-.analytics-grid h2 {
-  margin-bottom: 1rem;
-}
-
-/* 5‐column responsive grid */
-/* 2-column responsive grid that flows like your screenshot */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-auto-rows: auto;
-  grid-gap: 1rem;
-}
-
-/* Utility class: spans 2 columns on desktop */
-.grid-span-2 {
-  grid-column: span 2;
-}
-
-/* Make each chart fill its card */
-.chart-wrapper {
-  flex: 1;           /* takes up all available vertical space */
-  min-height: 300px; /* your desired minimum */
-  position: relative;/* for absolute‐positioned chart inside */
-}
-
-/* make every IgniteUI chart fill that wrapper */
-.chart-wrapper igx-category-chart,
-.chart-wrapper igx-pie-chart {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.card-grid .card {
-  display: flex;
-  flex-direction: column;
-}
-
-@media (min-width: 992px) {
-  .charts-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-}
-
-/* at the very end of user-profile.component.css */
-
 @media (max-width: 768px) {
-  /* 1. Target only your analytics grid’s card-grid */
+  /* 1. Target only your analytics grid's card-grid */
   .analytics-grid .card-grid {
     /* always one column */
     grid-template-columns: 1fr !important;
   }
 
-  /* 2. Prevent any “span-2” from spanning two columns */
+  /* 2. Prevent any "span-2" from spanning two columns */
   .analytics-grid .grid-span-2 {
     grid-column: span 1 !important;
   }

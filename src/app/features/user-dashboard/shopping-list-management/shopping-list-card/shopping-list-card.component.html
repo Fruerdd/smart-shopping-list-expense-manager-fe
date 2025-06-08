@@ -1,9 +1,9 @@
 <div class="shopping-list-card">
   <div class="owner-info">
-    <img [src]="getOwnerAvatarUrl()" 
-         alt="Owner avatar" 
-         class="avatar" 
-         width="50" 
+    <img [src]="getOwnerAvatarUrl()"
+         alt="Owner avatar"
+         class="avatar"
+         width="50"
          height="50"
          (error)="setDefaultImage($event)">
     <div class="owner-details">
@@ -33,7 +33,9 @@
 
     <div class="button-group">
       <button class="view-button" (click)="onViewList()">View List</button>
-      <button class="mark-done-button" *ngIf="shoppingList.ownerId === userId" (click)="onMarkAsDone($event)">Mark as Done</button>
+      <button class="mark-done-button" *ngIf="shoppingList.ownerId === userId" (click)="onMarkAsDone($event)">Mark as
+        Done
+      </button>
     </div>
   </div>
 </div>

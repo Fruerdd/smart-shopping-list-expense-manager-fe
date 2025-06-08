@@ -1,10 +1,10 @@
-import { Routes } from '@angular/router';
-import { ServerRoute, RenderMode } from '@angular/ssr';
-import { AddEditStoreComponent } from './features/admin-page/add-edit-store/add-edit-store.component';
-import { AdminGuard } from './guards/admin.guard';
+import {Routes} from '@angular/router';
+import {RenderMode, ServerRoute} from '@angular/ssr';
+import {AddEditStoreComponent} from './features/admin-page/add-edit-store/add-edit-store.component';
+import {AdminGuard} from './guards/admin.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  {path: '', redirectTo: '/home', pathMatch: 'full'},
   {
     path: 'home',
     loadComponent: () => import('./features/home/home.component')
@@ -31,41 +31,41 @@ export const routes: Routes = [
     path: 'admin-page',
     loadComponent: () => import('./features/admin-page/admin-page.component')
       .then(m => m.AdminPageComponent),
-      canActivate: [AdminGuard],
-      children: [
-        {
-          path: 'add-users',
-          loadComponent: () => import('./features/admin-page/add-users/add-users.component')
+    canActivate: [AdminGuard],
+    children: [
+      {
+        path: 'add-users',
+        loadComponent: () => import('./features/admin-page/add-users/add-users.component')
           .then(m => m.AddUsersComponent)
-        },
-        { path: 'add-edit-store', component: AddEditStoreComponent },
-        {
-          path: 'edit-users',
-          loadComponent: () => import('./features/admin-page/edit-users/edit-users.component')
+      },
+      {path: 'add-edit-store', component: AddEditStoreComponent},
+      {
+        path: 'edit-users',
+        loadComponent: () => import('./features/admin-page/edit-users/edit-users.component')
           .then(m => m.EditUsersComponent)
-        },
-        {
-          path: 'add-products',
-          loadComponent: () => import('./features/admin-page/add-products/add-products.component')
-          .then( m=> m.AddProductsComponent)
-        },
-        {
-          path: 'add-products/:storeId',
-          loadComponent: () => import('./features/admin-page/add-products/add-products.component').then(m => m.AddProductsComponent)
-        },
-        {
-          path: 'edit-products',
-          loadComponent: () =>
-            import('./features/admin-page/edit-products/edit-products.component')
-              .then(m => m.EditProductsComponent)
-        },
-        {
-          path: 'edit-products/:storeId',
-          loadComponent: () =>
-            import('./features/admin-page/edit-products/edit-products.component')
-              .then(m => m.EditProductsComponent)
-        },
-      ]
+      },
+      {
+        path: 'add-products',
+        loadComponent: () => import('./features/admin-page/add-products/add-products.component')
+          .then(m => m.AddProductsComponent)
+      },
+      {
+        path: 'add-products/:storeId',
+        loadComponent: () => import('./features/admin-page/add-products/add-products.component').then(m => m.AddProductsComponent)
+      },
+      {
+        path: 'edit-products',
+        loadComponent: () =>
+          import('./features/admin-page/edit-products/edit-products.component')
+            .then(m => m.EditProductsComponent)
+      },
+      {
+        path: 'edit-products/:storeId',
+        loadComponent: () =>
+          import('./features/admin-page/edit-products/edit-products.component')
+            .then(m => m.EditProductsComponent)
+      },
+    ]
   },
   {
     path: 'login',
@@ -88,12 +88,12 @@ export const routes: Routes = [
       .then(m => m.UserProfileComponent)
   },
   {
-  path: 'user-profiles/edit/:id',
-  loadComponent: () =>
-    import('./features/user-edit/user-edit.component').then(m => m.UserEditComponent)
-},
+    path: 'user-profiles/edit/:id',
+    loadComponent: () =>
+      import('./features/user-edit/user-edit.component').then(m => m.UserEditComponent)
+  },
 
-  { path: '**', redirectTo: '/home' }
+  {path: '**', redirectTo: '/home'}
 ];
 
 export const serverRoutes: ServerRoute[] = routes
@@ -102,7 +102,7 @@ export const serverRoutes: ServerRoute[] = routes
     // For example, if you want the "admin-page" to be rendered on the client
     // and the rest on the server, adjust accordingly.
     if (route.path === 'admin-page') {
-      return { ...route, renderMode: RenderMode.Client };
+      return {...route, renderMode: RenderMode.Client};
     }
-    return { ...route, renderMode: RenderMode.Server };
+    return {...route, renderMode: RenderMode.Server};
   });

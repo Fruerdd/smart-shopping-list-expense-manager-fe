@@ -1,16 +1,15 @@
-/* price-average-chart.component.css */
-
-/* Reuse the same wrapper pattern: */
 .chart-wrapper {
-    flex: 1;            /* fill remaining vertical space in its card */
-    min-height: 300px;  /* adjust as needed */
-    position: relative;
-  }
-  
-  .chart-wrapper igx-category-chart {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%;
-    height: 100%;
-  }
-  
+  flex: 1;
+  min-height: 300px;
+  position: relative;
+}
+
+.chart-wrapper igx-category-chart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}

@@ -1,21 +1,11 @@
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  Inject,
-  PLATFORM_ID
-} from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
+import {RouterModule} from '@angular/router';
 
-import {
-  IgxCategoryChartModule,
-  IgxLegendModule
-} from 'igniteui-angular-charts';
+import {IgxCategoryChartModule, IgxLegendModule} from 'igniteui-angular-charts';
 
-import { AnalyticsService } from '@app/services/analytics.service';
-import { IMoneySpent } from "@app/models/user.analytics.model"
+import {AnalyticsService} from '@app/services/analytics.service';
+import {IMoneySpent} from "@app/models/user.analytics.model"
 
 
 @Component({

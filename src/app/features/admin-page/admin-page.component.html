@@ -1,7 +1,5 @@
-<!-- this renders your AddUsers/AddProducts component when on a child route -->
 <router-outlet></router-outlet>
 
-<!-- only show the “main dashboard” when no child is active -->
 <ng-container *ngIf="!childRouteActive">
   <app-overview-cards></app-overview-cards>
   <div class="charts-section">

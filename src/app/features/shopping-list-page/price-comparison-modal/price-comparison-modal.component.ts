@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
-import { StoreItemDTO } from '@app/models/store-item.dto';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatIconModule} from '@angular/material/icon';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
+import {StoreItemDTO} from '@app/models/store-item.dto';
 
 @Component({
   selector: 'app-price-comparison-modal',
@@ -23,7 +23,8 @@ export class PriceComparisonModalComponent {
   @Output() closeModal = new EventEmitter<void>();
   @Output() storeSelected = new EventEmitter<StoreItemDTO>();
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer) {
+  }
 
   onClose(): void {
     this.closeModal.emit();

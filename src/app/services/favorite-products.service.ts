@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { ProductDTO } from '@app/models/product.dto';
-import { FavoriteProductDTO } from '@app/models/favorite-product.dto';
-import { environment } from '../../environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
+import {ProductDTO} from '@app/models/product.dto';
+import {FavoriteProductDTO} from '@app/models/favorite-product.dto';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +12,23 @@ import { environment } from '../../environments/environment';
 export class FavoriteProductsService {
   private readonly apiUrl = `${environment.apiUrl}/api/users`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
-    
+
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
     } else {
       try {
-        const errorBody = typeof error.error === 'string' ? 
-          (error.error.startsWith('{') ? JSON.parse(error.error) : { message: error.error }) 
+        const errorBody = typeof error.error === 'string' ?
+          (error.error.startsWith('{') ? JSON.parse(error.error) : {message: error.error})
           : error.error;
         errorMessage = errorBody.message || error.message || 'Unknown error occurred';
       } catch (e) {
-        errorMessage = typeof error.error === 'string' ? 
-          error.error : 
+        errorMessage = typeof error.error === 'string' ?
+          error.error :
           `Server error (${error.status}): ${error.message}`;
       }
     }
@@ -44,7 +45,7 @@ export class FavoriteProductsService {
 
   searchProducts(userId: string, query: string): Observable<ProductDTO[]> {
     return this.http.get<ProductDTO[]>(`${this.apiUrl}/${userId}/products/search`, {
-      params: { query }
+      params: {query}
     }).pipe(catchError(this.handleError));
   }
 

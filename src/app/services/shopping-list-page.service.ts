@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ShoppingListDTO } from '@app/models/shopping-list.dto';
-import { CategoryDTO } from '@app/models/category.dto';
-import { ShoppingListItemDTO } from '@app/models/shopping-list-item.dto';
-import { StoreItemDTO } from '@app/models/store-item.dto';
-import { StoreDTO } from '@app/models/store.dto';
-import { CollaboratorDTO } from '@app/models/collaborator.dto';
-import { environment } from '../../environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {ShoppingListDTO} from '@app/models/shopping-list.dto';
+import {CategoryDTO} from '@app/models/category.dto';
+import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
+import {StoreItemDTO} from '@app/models/store-item.dto';
+import {StoreDTO} from '@app/models/store.dto';
+import {CollaboratorDTO} from '@app/models/collaborator.dto';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,8 @@ import { environment } from '../../environments/environment';
 export class ShoppingListPageService {
   private readonly apiUrl = `${environment.apiUrl}/api/shopping-lists`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getCategories(): Observable<CategoryDTO[]> {
     return this.http.get<CategoryDTO[]>(`${this.apiUrl}/categories`);
@@ -55,7 +56,7 @@ export class ShoppingListPageService {
 
   searchProducts(term: string): Observable<ShoppingListItemDTO[]> {
     return this.http.get<ShoppingListItemDTO[]>(`${this.apiUrl}/products/search`, {
-      params: { term }
+      params: {term}
     });
   }
 

@@ -1,11 +1,10 @@
 <div class="chart-wrapper">
-    <igx-category-chart
-      [dataSource]="(savings$ | async) || []"
-      chartType="column"
-      width="100%"
-      height="100%"
-      xAxisTitle="Month"
-      yAxisTitle="Amount Saved">
-    </igx-category-chart>
-  </div>
-  
+  <igx-category-chart
+    [dataSource]="(savings$ | async) || []"
+    chartType="column"
+    width="100%"
+    height="100%"
+    xAxisTitle="Month"
+    yAxisTitle="Amount Saved">
+  </igx-category-chart>
+</div>

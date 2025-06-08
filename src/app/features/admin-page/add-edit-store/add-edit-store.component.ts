@@ -1,21 +1,9 @@
-// src/app/features/admin-page/add-edit-store/add-edit-store.component.ts
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators
-} from '@angular/forms';
-import { FormsModule } from '@angular/forms';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
+import {Component, inject, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 
-import {
-  StoreService,
-  StoreDTO,
-  StoreUpsertPayload,
-  StoreDetailsDTO
-} from '@app/services/store.service';
+import {StoreDetailsDTO, StoreDTO, StoreService, StoreUpsertPayload} from '@app/services/store.service';
 
 @Component({
   selector: 'app-add-edit-store',
@@ -30,9 +18,9 @@ import {
   styleUrls: ['./add-edit-store.component.css']
 })
 export class AddEditStoreComponent implements OnInit {
-  private fb     = inject(FormBuilder);
-  private svc    = inject(StoreService);
-  private route  = inject(ActivatedRoute);
+  private fb = inject(FormBuilder);
+  private svc = inject(StoreService);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   // — Add / Create form
@@ -40,18 +28,18 @@ export class AddEditStoreComponent implements OnInit {
   storeId: string | null = null;
 
   // — Edit existing
-  stores:      StoreDTO[] = [];
+  stores: StoreDTO[] = [];
   selectedStoreId = '';
-  editForm!:   FormGroup;
+  editForm!: FormGroup;
 
   ngOnInit(): void {
     // 1) Initialize “Add Store” form
     this.storeId = this.route.snapshot.paramMap.get('id');
     this.storeForm = this.fb.group({
-      name:     ['', Validators.required],
-      icon:     [''],
+      name: ['', Validators.required],
+      icon: [''],
       location: [''],
-      contact:  [''],
+      contact: [''],
       isActive: [true]
     });
 
@@ -59,10 +47,10 @@ export class AddEditStoreComponent implements OnInit {
       this.svc.getStore(this.storeId)
         .subscribe((d: StoreDetailsDTO) => {
           this.storeForm.patchValue({
-            name:     d.name,
-            icon:     d.icon,
+            name: d.name,
+            icon: d.icon,
             location: d.location,
-            contact:  d.contact,
+            contact: d.contact,
             isActive: true
           });
         });
@@ -73,10 +61,10 @@ export class AddEditStoreComponent implements OnInit {
 
     // 3) Initialize “Edit Store” form
     this.editForm = this.fb.group({
-      name:     ['', Validators.required],
-      icon:     [''],
+      name: ['', Validators.required],
+      icon: [''],
       location: [''],
-      contact:  [''],
+      contact: [''],
       isActive: [true]
     });
   }
@@ -105,10 +93,10 @@ export class AddEditStoreComponent implements OnInit {
     this.svc.getStore(storeId)
       .subscribe((d: StoreDetailsDTO) => {
         this.editForm.patchValue({
-          name:     d.name,
-          icon:     d.icon,
+          name: d.name,
+          icon: d.icon,
           location: d.location,
-          contact:  d.contact,
+          contact: d.contact,
           isActive: true
         });
       });

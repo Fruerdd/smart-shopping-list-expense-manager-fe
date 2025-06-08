@@ -9,7 +9,7 @@ h2 {
   justify-content: flex-start;
 }
 
-.create-list-card{
+.create-list-card {
   width: 275px;
   height: 350px;
   border: 1px solid #0B3B5B;
@@ -42,4 +42,12 @@ p {
   color: #0B3B5B;
   font-weight: bold;
   font-size: 20px;
+}
+
+@media (max-width: 768px) {
+  .shopping-list-container {
+    justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
 }

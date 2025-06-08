@@ -1,7 +1,6 @@
-/* src/app/shared/footer/footer.component.scss */
 .header-footer {
   background-color: #0B3B5B;
-  max-height: 200px;       /* never grow taller than 200px */
-  overflow-y: auto;        /* scroll if content overflows */
-  box-sizing: border-box;  /* include padding in that 200px cap */
+  max-height: 200px;
+  overflow-y: auto;
+  box-sizing: border-box;
 }

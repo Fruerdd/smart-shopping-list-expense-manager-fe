@@ -2,4 +2,71 @@
   max-width: 1200px;
   margin: auto;
   padding: 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
 }
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Tablet styles */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
+    max-width: 100%;
+  }
+  
+  .dashboard-content {
+    gap: 15px;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 10px;
+    margin: 0;
+  }
+  
+  .dashboard-content {
+    gap: 12px;
+  }
+}
+
+/* Ensure all child components are responsive */
+.dashboard-content > * {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-content > app-price-comparison {
+  height: 260px;
+  overflow: visible;
+}
+
+/* Small mobile devices */
+@media (max-width: 320px) {
+  .dashboard-container {
+    padding: 8px;
+  }
+  
+  .dashboard-content {
+    gap: 10px;
+  }
+}
+
+/* Ensure touch-friendly interactions on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .dashboard-content > * {
+    touch-action: manipulation;
+  }
+}
+
+

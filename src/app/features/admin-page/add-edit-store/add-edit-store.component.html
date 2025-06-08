@@ -1,174 +1,170 @@
-<!-- src/app/features/admin-page/add-edit-store/add-edit-store.component.html -->
 <div class="mb-4">
-    <h4>{{ storeId ? 'Edit Store' : 'Add Store' }}</h4>
+  <h4>{{ storeId ? 'Edit Store' : 'Add Store' }}</h4>
+</div>
+
+<form [formGroup]="storeForm" (ngSubmit)="onSubmit()">
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="name" class="form-label">Store Name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            class="form-control"
+            placeholder="Enter store name"/>
+        </div>
+        <div class="col-md-6">
+          <label for="icon" class="form-label">Icon URL</label>
+          <input
+            id="icon"
+            type="text"
+            formControlName="icon"
+            class="form-control"
+            placeholder="https://…"/>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="location" class="form-label">Location</label>
+          <input
+            id="location"
+            type="text"
+            formControlName="location"
+            class="form-control"
+            placeholder="Address or area"/>
+        </div>
+        <div class="col-md-6">
+          <label for="contact" class="form-label">Contact</label>
+          <input
+            id="contact"
+            type="text"
+            formControlName="contact"
+            class="form-control"
+            placeholder="Phone or email"/>
+        </div>
+      </div>
+
+      <div class="form-check mb-3" *ngIf="storeForm.contains('isActive')">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="active"
+          formControlName="isActive"/>
+        <label class="form-check-label" for="active">
+          Active
+        </label>
+      </div>
+
+    </div>
+    <div class="card-footer text-end">
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="storeForm.invalid">
+        {{ storeId ? 'Update Store' : 'Create Store' }}
+      </button>
+    </div>
   </div>
-  
-  <!-- ★ Add / Create Store Form -->
-  <form [formGroup]="storeForm" (ngSubmit)="onSubmit()">
+</form>
+
+<hr/>
+
+<div class="container mt-4">
+  <h4>Edit Existing Store</h4>
+
+  <!-- 1) Store selector -->
+  <div class="mb-3 col-md-4">
+    <label for="storeSelect" class="form-label">Store</label>
+    <select
+      id="storeSelect"
+      class="form-select"
+      [(ngModel)]="selectedStoreId"
+      (ngModelChange)="onStoreSelect($event)"
+      name="storeSelect"
+    >
+      <option value="">-- Select a store --</option>
+      <option *ngFor="let s of stores" [value]="s.storeId">
+        {{ s.name }}
+      </option>
+    </select>
+  </div>
+
+  <!-- 2) Edit Form -->
+  <form
+    *ngIf="selectedStoreId"
+    [formGroup]="editForm"
+    (ngSubmit)="onEditSubmit()"
+  >
     <div class="card mb-4 shadow-sm">
       <div class="card-body">
-  
+
         <div class="row mb-3">
           <div class="col-md-6">
-            <label for="name" class="form-label">Store Name</label>
+            <label for="editName" class="form-label">Store Name</label>
             <input
-              id="name"
+              id="editName"
               type="text"
               formControlName="name"
-              class="form-control"
-              placeholder="Enter store name" />
+              class="form-control"/>
           </div>
           <div class="col-md-6">
-            <label for="icon" class="form-label">Icon URL</label>
+            <label for="editIcon" class="form-label">Icon URL</label>
             <input
-              id="icon"
+              id="editIcon"
               type="text"
               formControlName="icon"
-              class="form-control"
-              placeholder="https://…" />
+              class="form-control"/>
           </div>
         </div>
-  
+
         <div class="row mb-3">
           <div class="col-md-6">
-            <label for="location" class="form-label">Location</label>
+            <label for="editLocation" class="form-label">Location</label>
             <input
-              id="location"
+              id="editLocation"
               type="text"
               formControlName="location"
-              class="form-control"
-              placeholder="Address or area" />
+              class="form-control"/>
           </div>
           <div class="col-md-6">
-            <label for="contact" class="form-label">Contact</label>
+            <label for="editContact" class="form-label">Contact</label>
             <input
-              id="contact"
+              id="editContact"
               type="text"
               formControlName="contact"
-              class="form-control"
-              placeholder="Phone or email" />
+              class="form-control"/>
           </div>
         </div>
-  
-        <div class="form-check mb-3" *ngIf="storeForm.contains('isActive')">
+
+        <div class="form-check mb-3">
           <input
             class="form-check-input"
             type="checkbox"
-            id="active"
-            formControlName="isActive" />
-          <label class="form-check-label" for="active">
+            id="editActive"
+            formControlName="isActive"/>
+          <label class="form-check-label" for="editActive">
             Active
           </label>
         </div>
-  
+
       </div>
       <div class="card-footer text-end">
         <button
           type="submit"
-          class="btn btn-success"
-          [disabled]="storeForm.invalid">
-          {{ storeId ? 'Update Store' : 'Create Store' }}
+          class="btn btn-primary"
+          [disabled]="editForm.invalid">
+          Update Store
         </button>
       </div>
     </div>
   </form>
-  
-  <hr/>
-  
-  <!-- ★ Edit Existing Store Section -->
-  <div class="container mt-4">
-    <h4>Edit Existing Store</h4>
-  
-    <!-- 1) Store selector -->
-    <div class="mb-3 col-md-4">
-      <label for="storeSelect" class="form-label">Store</label>
-      <select
-        id="storeSelect"
-        class="form-select"
-        [(ngModel)]="selectedStoreId"
-        (ngModelChange)="onStoreSelect($event)"
-        name="storeSelect"
-      >
-        <option value="">-- Select a store --</option>
-        <option *ngFor="let s of stores" [value]="s.storeId">
-          {{ s.name }}
-        </option>
-      </select>
-    </div>
-  
-    <!-- 2) Edit Form -->
-    <form
-      *ngIf="selectedStoreId"
-      [formGroup]="editForm"
-      (ngSubmit)="onEditSubmit()"
-    >
-      <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-  
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="editName" class="form-label">Store Name</label>
-              <input
-                id="editName"
-                type="text"
-                formControlName="name"
-                class="form-control" />
-            </div>
-            <div class="col-md-6">
-              <label for="editIcon" class="form-label">Icon URL</label>
-              <input
-                id="editIcon"
-                type="text"
-                formControlName="icon"
-                class="form-control" />
-            </div>
-          </div>
-  
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="editLocation" class="form-label">Location</label>
-              <input
-                id="editLocation"
-                type="text"
-                formControlName="location"
-                class="form-control" />
-            </div>
-            <div class="col-md-6">
-              <label for="editContact" class="form-label">Contact</label>
-              <input
-                id="editContact"
-                type="text"
-                formControlName="contact"
-                class="form-control" />
-            </div>
-          </div>
-  
-          <div class="form-check mb-3">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="editActive"
-              formControlName="isActive" />
-            <label class="form-check-label" for="editActive">
-              Active
-            </label>
-          </div>
-  
-        </div>
-        <div class="card-footer text-end">
-          <button
-            type="submit"
-            class="btn btn-primary"
-            [disabled]="editForm.invalid">
-            Update Store
-          </button>
-        </div>
-      </div>
-    </form>
-  
-    <!-- 3) Fallback when no stores exist -->
-    <div *ngIf="!stores.length" class="alert alert-info">
-      No stores to edit yet.
-    </div>
+
+  <!-- 3) Fallback when no stores exist -->
+  <div *ngIf="!stores.length" class="alert alert-info">
+    No stores to edit yet.
   </div>
-  
+</div>

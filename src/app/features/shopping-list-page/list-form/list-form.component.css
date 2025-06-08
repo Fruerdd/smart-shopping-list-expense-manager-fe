@@ -3,6 +3,9 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
 }
 
 .form-row {
@@ -15,6 +18,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .description-group {
@@ -25,6 +29,7 @@ label {
   font-size: 12px;
   color: #0B3B5B;
   margin-bottom: 5px;
+  font-weight: 500;
 }
 
 input, select, textarea {
@@ -33,12 +38,39 @@ input, select, textarea {
   border-radius: 4px;
   font-size: 14px;
   color: #0B3B5B;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+select {
+  background-color: white;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #FCACC4;
+  box-shadow: 0 0 0 2px rgba(252, 172, 196, 0.2);
 }
 
 textarea {
   resize: vertical;
   min-height: 60px;
   color: #0B3B5B;
+  font-family: inherit;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #FCACC4;
+  box-shadow: 0 0 0 2px rgba(252, 172, 196, 0.2);
 }
 
 .error-message {
@@ -59,27 +91,310 @@ textarea {
   padding: 10px;
   scroll-behavior: smooth;
   scrollbar-color: transparent #0B3B5B;
+  min-height: 50px;
 }
 
 .share-option {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 70px;
+  min-width: 70px;
   padding: 6px 12px;
   background: rgba(11, 59, 91, 0.1);
   border-radius: 15px;
   cursor: pointer;
   transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.share-option:hover {
+  background: rgba(11, 59, 91, 0.2);
 }
 
 .share-option.selected {
   background: #FCACC4;
   color: white;
+  border-color: #FCACC4;
 }
 
 .share-name {
   font-size: 12px;
   color: #0B3B5B;
+  word-wrap: break-word;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.share-option.selected .share-name {
+  color: white;
+}
+
+/* Large tablets (992px and below) */
+@media (max-width: 992px) {
+  .form-container {
+    padding: 15px;
+  }
+  
+  .form-row {
+    gap: 15px;
+    margin-bottom: 12px;
+  }
+  
+  input, select, textarea {
+    padding: 8px;
+    font-size: 13px;
+  }
+  
+  .share-options-container {
+    max-height: 80px;
+    padding: 8px;
+    min-height: 45px;
+  }
+  
+  .share-option {
+    min-width: 65px;
+    padding: 5px 10px;
+  }
+  
+  .share-name {
+    font-size: 11px;
+  }
+}
+
+/* Tablets (768px and below) */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .description-group {
+    flex: 1;
+  }
+  
+  label {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  
+  input, select, textarea {
+    padding: 8px;
+    font-size: 13px;
+  }
+  
+  select {
+    background-size: 10px;
+    background-position: right 6px center;
+  }
+  
+  textarea {
+    min-height: 50px;
+  }
+  
+  .share-options-container {
+    max-height: 70px;
+    padding: 6px;
+    gap: 6px;
+    min-height: 40px;
+  }
+  
+  .share-option {
+    min-width: 60px;
+    padding: 4px 8px;
+    border-radius: 12px;
+  }
+  
+  .share-name {
+    font-size: 11px;
+  }
+}
+
+/* Large mobile (576px and below) */
+@media (max-width: 576px) {
+  .form-container {
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .form-row {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .listType {
+    width: 100%;
+  }
+
+  .listType option {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  label {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+  
+  input, select, textarea {
+    padding: 6px;
+    font-size: 12px;
+  }
+  
+  select {
+    background-size: 8px;
+    background-position: right 5px center;
+  }
+  
+  textarea {
+    min-height: 45px;
+  }
+  
+  .share-options-container {
+    max-height: 60px;
+    padding: 5px;
+    gap: 5px;
+    min-height: 35px;
+  }
+  
+  .share-option {
+    min-width: 55px;
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+  
+  .share-name {
+    font-size: 10px;
+  }
+  
+  .error-message {
+    font-size: 11px;
+  }
+}
+
+/* Small mobile (480px and below) */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+  
+  .form-row {
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .listType {
+    width: 100%;
+  }
+
+  .listType option {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  label {
+    font-size: 9px;
+    margin-bottom: 3px;
+  }
+  
+  input, select, textarea {
+    padding: 5px;
+    font-size: 11px;
+  }
+  
+  select {
+    background-size: 7px;
+    background-position: right 4px center;
+  }
+  
+  textarea {
+    min-height: 40px;
+  }
+  
+  .share-options-container {
+    max-height: 50px;
+    padding: 4px;
+    gap: 4px;
+    min-height: 30px;
+  }
+  
+  .share-option {
+    min-width: 50px;
+    padding: 2px 4px;
+    border-radius: 10px;
+  }
+  
+  .share-name {
+    font-size: 9px;
+  }
+  
+  .error-message {
+    font-size: 10px;
+    margin-top: 3px;
+  }
+}
+
+/* Extra small mobile (360px and below) */
+@media (max-width: 360px) {
+  .form-container {
+    padding: 6px;
+    margin-bottom: 4px;
+  }
+  
+  .form-row {
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  
+  label {
+    font-size: 8px;
+    margin-bottom: 2px;
+  }
+  
+  input, select, textarea {
+    padding: 4px;
+    font-size: 10px;
+  }
+  
+  select {
+    background-size: 6px;
+    background-position: right 3px center;
+  }
+  
+  textarea {
+    min-height: 35px;
+  }
+  
+  .share-options-container {
+    max-height: 45px;
+    padding: 3px;
+    gap: 3px;
+    min-height: 25px;
+  }
+  
+  .share-option {
+    min-width: 45px;
+    padding: 2px 3px;
+    border-radius: 8px;
+  }
+  
+  .share-name {
+    font-size: 8px;
+  }
+  
+  .error-message {
+    font-size: 9px;
+    margin-top: 2px;
+  }
 }
 

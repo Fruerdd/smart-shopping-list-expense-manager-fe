@@ -1,72 +1,73 @@
- <div class="search-box">
-    <p class="item-count">{{ filteredProducts.length }} Products</p>
-    <div class="search-input">
-      <input type="text" [(ngModel)]="searchTerm" (input)="onSearchInput()" placeholder="Search Products">
-      <mat-icon class="search-icon">search</mat-icon>
-    </div>
+<div class="search-box">
+  <p class="item-count">{{ filteredProducts.length }} Products</p>
+  <div class="search-input">
+    <input type="text" [(ngModel)]="searchTerm" (input)="onSearchInput()" placeholder="Search Products">
+    <mat-icon class="search-icon">search</mat-icon>
   </div>
+</div>
 
-  <!-- Categories and Products -->
-  <div class="categories-container">
-    <!-- Categories -->
-    <div class="category" *ngFor="let category of categories">
-      <div class="category-header" (click)="toggleCategory(category)">
-        <h3 class="category-title">
-          <ng-container [ngSwitch]="category.id">
-            <mat-icon *ngSwitchCase="'favorite'" class="category-icon">favorite</mat-icon>
-            <mat-icon *ngSwitchCase="'best-price'" class="category-icon">attach_money</mat-icon>
-            <mat-icon *ngSwitchCase="'peoples-choice'" class="category-icon">group</mat-icon>
-            <mat-icon *ngSwitchDefault class="category-icon">category</mat-icon>
-          </ng-container>
-          {{ category.name }}
-        </h3>
-        <mat-icon class="expand-icon">{{ isCategoryExpanded(category) ? 'expand_less' : 'expand_more' }}</mat-icon>
-      </div>
-      <!--Products-->
-      <div class="products-container" *ngIf="isCategoryExpanded(category)">
-        <div class="product-row">
-          <div class="product-item" *ngFor="let product of category.products"
-               [class.selected]="isProductSelected(product.productId)"
-               (click)="selectProduct(product)">
-            <div class="product-image">
-              <img [src]="'assets/images/item-img-generic.png'" [alt]="product.productName" height="100" width="130" style="background-color: #334867;">
-              <div class="selection-indicator" *ngIf="isProductSelected(product.productId)">
-                <span class="quantity">{{ getProductQuantity(product.productId) }}</span>
-              </div>
+<!-- Categories and Products -->
+<div class="categories-container">
+  <!-- Categories -->
+  <div class="category" *ngFor="let category of categories">
+    <div class="category-header" (click)="toggleCategory(category)">
+      <h3 class="category-title">
+        <ng-container [ngSwitch]="category.id">
+          <mat-icon *ngSwitchCase="'favorite'" class="category-icon">favorite</mat-icon>
+          <mat-icon *ngSwitchCase="'best-price'" class="category-icon">attach_money</mat-icon>
+          <mat-icon *ngSwitchCase="'peoples-choice'" class="category-icon">group</mat-icon>
+          <mat-icon *ngSwitchDefault class="category-icon">category</mat-icon>
+        </ng-container>
+        {{ category.name }}
+      </h3>
+      <mat-icon class="expand-icon">{{ isCategoryExpanded(category) ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </div>
+    <!--Products-->
+    <div class="products-container" *ngIf="isCategoryExpanded(category)">
+      <div class="product-row">
+        <div class="product-item" *ngFor="let product of category.products"
+             [class.selected]="isProductSelected(product.productId)"
+             (click)="selectProduct(product)">
+          <div class="product-image">
+            <img [src]="'assets/images/item-img-generic.png'" [alt]="product.productName" height="100" width="130"
+                 style="background-color: #334867;">
+            <div class="selection-indicator" *ngIf="isProductSelected(product.productId)">
+              <span class="quantity">{{ getProductQuantity(product.productId) }}</span>
             </div>
-            <div class="product-details">
-              <p class="product-name">{{ product.productName }}</p>
-              
-              <!-- Price/Store Information Container -->
-              <div class="price-store-container">
-                <!-- Best Price Category Special Display -->
-                <ng-container *ngIf="category.id === 'best-price'; else regularDisplay">
-                  <div *ngIf="getBestPriceInfo(product) as bestInfo" class="best-price-info">
-                    <p class="best-price-label">
-                      Best at {{ bestInfo.bestStore }}: {{ bestInfo.bestPrice }}
-                    </p>
-                    <p *ngIf="bestInfo.selectedStorePrice" class="selected-store-price">
-                      Your store: {{ bestInfo.selectedStorePrice }}
-                    </p>
-                  </div>
-                </ng-container>
-                
-                <!-- Regular Display for All Other Categories -->
-                <ng-template #regularDisplay>
-                  <div class="price-info-area">
-                    <p class="product-store" class="product-store-regular">{{ getDisplayStoreName(product) }}</p>
-                    <p class="product-price" class="product-price-regular">{{ getDisplayPrice(product) }}</p>
-                  </div>
-                </ng-template>
-              </div>
-              
-              <button class="compare-btn" (click)="compareStoreItems(product.productId, $event)">
-                Compare prices
-              </button>
+          </div>
+          <div class="product-details">
+            <p class="product-name">{{ product.productName }}</p>
+
+            <!-- Price/Store Information Container -->
+            <div class="price-store-container">
+              <!-- Best Price Category Special Display -->
+              <ng-container *ngIf="category.id === 'best-price'; else regularDisplay">
+                <div *ngIf="getBestPriceInfo(product) as bestInfo" class="best-price-info">
+                  <p class="best-price-label">
+                    Best at {{ bestInfo.bestStore }}: {{ bestInfo.bestPrice }}
+                  </p>
+                  <p *ngIf="bestInfo.selectedStorePrice" class="selected-store-price">
+                    Your store: {{ bestInfo.selectedStorePrice }}
+                  </p>
+                </div>
+              </ng-container>
+
+              <!-- Regular Display for All Other Categories -->
+              <ng-template #regularDisplay>
+                <div class="price-info-area">
+                  <p class="product-store-regular">{{ getDisplayStoreName(product) }}</p>
+                  <p class="product-price-regular">{{ getDisplayPrice(product) }}</p>
+                </div>
+              </ng-template>
             </div>
+
+            <button class="compare-btn" (click)="compareStoreItems(product.productId, $event)">
+              Compare prices
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 

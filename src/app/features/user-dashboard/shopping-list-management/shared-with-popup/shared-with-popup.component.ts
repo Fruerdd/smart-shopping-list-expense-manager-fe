@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CollaboratorDTO, PermissionEnum } from '@app/models/collaborator.dto';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CollaboratorDTO, PermissionEnum} from '@app/models/collaborator.dto';
+import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDividerModule} from '@angular/material/divider';
 
 @Component({
   selector: 'app-shared-with-popup',
@@ -18,7 +18,7 @@ export class SharedWithPopupComponent {
   @Input() isOwner: boolean = false;
   @Output() close = new EventEmitter<void>();
   @Output() removeCollaborator = new EventEmitter<string>();
-  @Output() updatePermission = new EventEmitter<{collaboratorId: string, permission: PermissionEnum}>();
+  @Output() updatePermission = new EventEmitter<{ collaboratorId: string, permission: PermissionEnum }>();
 
   protected readonly PermissionEnum = PermissionEnum;
 
@@ -31,6 +31,6 @@ export class SharedWithPopupComponent {
   }
 
   onUpdatePermission(collaboratorId: string, permission: PermissionEnum): void {
-    this.updatePermission.emit({ collaboratorId, permission });
+    this.updatePermission.emit({collaboratorId, permission});
   }
 }

@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, map, tap, switchMap, forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { ShoppingListDTO, ListTypeEnum } from '../models/shopping-list.dto';
-import { ShoppingListItemDTO } from '../models/shopping-list-item.dto';
-import { CollaboratorDTO } from '../models/collaborator.dto';
-import { StorePriceDTO } from '../models/store-price.dto';
-import { StoreDTO } from '../models/store.dto';
-import { ProductDTO } from '../models/product.dto';
-import { environment } from '../../environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {forkJoin, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
+import {ShoppingListDTO} from '../models/shopping-list.dto';
+import {ShoppingListItemDTO} from '../models/shopping-list-item.dto';
+import {CollaboratorDTO} from '../models/collaborator.dto';
+import {StorePriceDTO} from '../models/store-price.dto';
+import {StoreDTO} from '../models/store.dto';
+import {ProductDTO} from '../models/product.dto';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +16,12 @@ import { environment } from '../../environments/environment';
 export class ShoppingListService {
   private readonly apiUrl = `${environment.apiUrl}/api/users`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = error.error.message;
@@ -28,8 +29,8 @@ export class ShoppingListService {
       // Server-side error
       try {
         // Try to parse error as JSON if it's a string
-        const errorBody = typeof error.error === 'string' ? 
-          (error.error.startsWith('{') ? JSON.parse(error.error) : { message: error.error }) 
+        const errorBody = typeof error.error === 'string' ?
+          (error.error.startsWith('{') ? JSON.parse(error.error) : {message: error.error})
           : error.error;
 
         if (error.status === 404) {
@@ -41,8 +42,8 @@ export class ShoppingListService {
         }
       } catch (e) {
         // If parsing fails, use the raw error message
-        errorMessage = typeof error.error === 'string' ? 
-          error.error : 
+        errorMessage = typeof error.error === 'string' ?
+          error.error :
           `Server error (${error.status}): ${error.message}`;
       }
     }
@@ -60,8 +61,9 @@ export class ShoppingListService {
 
   // Shopping List Operations
   getShoppingLists(userId: string): Observable<ShoppingListDTO[]> {
-    return this.http.get<ShoppingListDTO[]>(`${this.apiUrl}/${userId}/shopping-lists`).pipe(
-      map(lists => lists.filter(list => list.active === true)),
+    return this.http.get<any[]>(`${this.apiUrl}/${userId}/shopping-lists`).pipe(
+      map(lists => lists.map(list => this.mapShoppingListResponse(list))),
+      map(lists => lists.filter(list => list.active)),
       switchMap(lists => {
         if (lists.length === 0) {
           return of([]);
@@ -76,10 +78,21 @@ export class ShoppingListService {
   }
 
   getShoppingListById(userId: string, listId: string): Observable<ShoppingListDTO> {
-    return this.http.get<ShoppingListDTO>(`${this.apiUrl}/${userId}/shopping-lists/${listId}`).pipe(
+    return this.http.get<any>(`${this.apiUrl}/${userId}/shopping-lists/${listId}`).pipe(
+      map(list => this.mapShoppingListResponse(list)),
       switchMap(list => this.refreshListPrices(list)),
       catchError(this.handleError)
     );
+  }
+
+  private mapShoppingListResponse(rawList: any): ShoppingListDTO {
+    return {
+      ...rawList,
+      items: rawList.items?.map((item: any) => ({
+        ...item,
+        isChecked: item.checked !== undefined ? item.checked : false
+      })) || []
+    };
   }
 
   private refreshListPrices(list: ShoppingListDTO): Observable<ShoppingListDTO> {
@@ -87,7 +100,7 @@ export class ShoppingListService {
       return of(list);
     }
 
-    const priceRequests = list.items.map(item => 
+    const priceRequests = list.items.map(item =>
       this.getProductPrices(list.ownerId, item.productId).pipe(
         map(prices => {
           if (prices && prices.length > 0) {
@@ -95,10 +108,14 @@ export class ShoppingListService {
             const storePrice = prices.find(p => p.storeName === item.storeName) || prices[0];
             return {
               ...item,
-              price: storePrice.price
+              price: storePrice.price,
+              isChecked: item.isChecked !== undefined ? item.isChecked : false
             };
           }
-          return item;
+          return {
+            ...item,
+            isChecked: item.isChecked !== undefined ? item.isChecked : false
+          };
         })
       )
     );
@@ -131,20 +148,11 @@ export class ShoppingListService {
 
   // Shopping List Item Operations
   updateShoppingListItem(userId: string, listId: string, itemId: string, item: ShoppingListItemDTO): Observable<ShoppingListItemDTO> {
-    console.log('Updating shopping list item:', {
-      userId,
-      listId,
-      itemId,
-      item
-    });
 
-    // Create a minimal update payload that exactly matches the backend DTO structure
     const updatePayload: Partial<ShoppingListItemDTO> = {
       id: itemId,
       isChecked: item.isChecked
     };
-
-    console.log('Sending update payload:', updatePayload);
 
     const headers = new HttpHeaders()
       .set('Content-Type', 'application/json')
@@ -153,14 +161,13 @@ export class ShoppingListService {
     return this.http.put<ShoppingListItemDTO>(
       `${this.apiUrl}/${userId}/shopping-lists/${listId}/items/${itemId}`,
       updatePayload,
-      { headers }
+      {headers}
     ).pipe(
       tap(response => {
         if (!response) {
           console.warn('Empty response received from server');
           return;
         }
-        console.log('Update item response:', response);
       }),
       catchError(error => {
         console.error('Error updating item:', error);
@@ -196,7 +203,7 @@ export class ShoppingListService {
   // Product Operations
   searchProducts(userId: string, query: string): Observable<ProductDTO[]> {
     return this.http.get<ProductDTO[]>(`${this.apiUrl}/${userId}/products/search`, {
-      params: { query }
+      params: {query}
     });
   }
 
@@ -213,7 +220,7 @@ export class ShoppingListService {
   // Store Operations
   searchStores(userId: string, query: string): Observable<StoreDTO[]> {
     return this.http.get<StoreDTO[]>(`${this.apiUrl}/${userId}/stores/search`, {
-      params: { query }
+      params: {query}
     });
   }
 

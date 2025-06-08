@@ -129,13 +129,11 @@ header {
   text-overflow: ellipsis;
 }
 
-.desktop_menu {
-  margin-top: 24px;
-}
 
 .desktop_menu ul {
   padding: 0;
   margin: 0;
+  margin-right: 65px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -157,7 +155,7 @@ header {
 .desktop_menu ul li:hover {
   font-size: 18px;
   font-weight: bold;
-  padding: 0 8px;
+  padding: 0 5px;
   cursor: pointer;
   color: #0B3B5B;
   transition: 0.2s ease-in-out;
@@ -187,131 +185,134 @@ header {
   padding-top: 10px;
 }
 
+.music-icon-li mat-icon:hover {
+  color: #0B3B5B;
+  transition: 0.2s ease-in-out;
+}
+
 @media screen and (min-width: 128px) and (max-width: 900px) {
-    .desktop_menu {
-      display: none;
-    }
-    .text-end {
-      display: flex !important;
-      justify-content: flex-end;
-      align-items: center;
-    }
+  .desktop_menu {
+    display: none;
+  }
   
+  .col {
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+  }
 
-    .desktop_menu ul{
-      display: block;
-    }
+  .desktop_menu ul {
+    display: block;
+  }
 
-    .desktop_menu ul li {
-      display: block;
-      text-align: left;
-      margin: 0;
-      padding: 10px 0 10px 26px;
-      border-bottom: 1px solid white;
-    }
-    .menu-icon {
-      display: inline-flex !important;
-      color: white;
-      font-size: 40px;
-      padding: 10px !important;
-      padding-top: 10px;
-    }
-    .mobile_menu {
-      right: 0;
-      transition: 0.4s ease-in-out;
-    }
-    .desktop_menu ul li.active {
-      border-radius: 0;
-    }
-    .desktop_menu.mobile_menu {
-      display: block;
-      position: fixed;
-      right: 0;
-      top: 0;
-      width: 280px;
-      height: 100%;
-      background-color: #0B3B5B;
-      transition: right 0.3s;
-    }
-    .desktop_menu.mobile_menu ul li {
-      display: block;
-      text-align: left;
-      margin: 0;
-      padding: 10px 0 10px 26px;
-      border-bottom: 1px solid white;
-    }
+  .desktop_menu ul li {
+    display: block;
+    text-align: left;
+    margin: 0;
+    padding: 10px 0 10px 26px;
+    border-bottom: 1px solid white;
+  }
+  .menu-icon {
+    display: inline-flex !important;
+    color: white;
+    font-size: 40px;
+    padding: 10px !important;
+  }
+  .mobile_menu {
+    right: 0;
+    transition: 0.4s ease-in-out;
+  }
+  .desktop_menu ul li.active {
+    border-radius: 0;
+  }
+  .desktop_menu.mobile_menu {
+    display: block;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 280px;
+    height: 100%;
+    background-color: #0B3B5B;
+    transition: right 0.3s;
+  }
+  .desktop_menu.mobile_menu ul li {
+    display: block;
+    text-align: left;
+    margin: 0;
+    padding: 10px 0 10px 26px;
+    border-bottom: 1px solid white;
+  }
 
-    .mobile-music-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 5px 0;
-    }
+  .mobile-music-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+  }
 
-    
 
-    .mobile-music-controls button[mat-icon-button] {
-      color: #FCACC4;
-      margin-right: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  .mobile-music-controls button[mat-icon-button] {
+    color: #FCACC4;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .mobile-music-controls mat-icon {
-      font-size: 24px;
-      height: 24px;
-      width: 24px;
-      line-height: 24px;
-    }
+  .mobile-music-controls mat-icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+  }
 
-    .mobile-music-controls input[type="range"] {
-      width: 100px;
-      -webkit-appearance: none;
-      appearance: none;
-      background: #ddd;
-      border-radius: 5px;
-      height: 5px;
-      vertical-align: middle;
-    }
+  .mobile-music-controls input[type="range"] {
+    width: 100px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ddd;
+    border-radius: 5px;
+    height: 5px;
+    vertical-align: middle;
+  }
 
-    .mobile-music-controls input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 15px;
-      height: 15px;
-      background: #FCACC4; /* Pink thumb */
-      border-radius: 50%;
-      cursor: pointer;
-      margin-top: -5px;
-    }
+  .mobile-music-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #FCACC4; /* Pink thumb */
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -5px;
+  }
 
-    .mobile-music-controls input[type="range"]::-moz-range-thumb {
-      width: 15px;
-      height: 15px;
-      background: #FCACC4;
-      border-radius: 50%;
-      cursor: pointer;
-      border: none;
-   }
+  .mobile-music-controls input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #FCACC4;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
 
-    .mobile-music-controls input[type="range"]::-webkit-slider-thumb:active,
-    .mobile-music-controls input[type="range"]::-moz-range-thumb:active {
-      background: #0B3B5B;
-    }
+  .mobile-music-controls input[type="range"]::-webkit-slider-thumb:active,
+  .mobile-music-controls input[type="range"]::-moz-range-thumb:active {
+    background: #0B3B5B;
+  }
 
-    .mobile-music-controls input[type="range"]::-webkit-slider-runnable-track {
-      background: linear-gradient(to right, #0B3B5B, #FCACC4);
-      height: 5px;
-      border-radius: 5px;
-    }
+  .mobile-music-controls input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #0B3B5B, #FCACC4);
+    height: 5px;
+    border-radius: 5px;
+  }
 
-    .mobile-music-controls input[type="range"]::-moz-range-track {
-      background: linear-gradient(to right, #0B3B5B, #FCACC4);
-      height: 5px;
-      border-radius: 5px;
-      border: none;
-    }
+  .mobile-music-controls input[type="range"]::-moz-range-track {
+    background: linear-gradient(to right, #0B3B5B, #FCACC4);
+    height: 5px;
+    border-radius: 5px;
+    border: none;
+  }
 }
 
 @media screen and (max-width: 768px) {

@@ -1,5 +1,5 @@
 export interface FavoriteProductDTO {
-    id: string;
-    productId: string;
-    productName: string;
-  }
+  id: string;
+  productId: string;
+  productName: string;
+}

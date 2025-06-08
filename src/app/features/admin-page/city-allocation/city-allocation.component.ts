@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { IgxPieChartModule, IgxPieChartComponent, IgxItemLegendModule } from "igniteui-angular-charts";
-import { ChartDataService, IChartData } from "@app/services/chart-data.service";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {CommonModule} from "@angular/common";
+import {IgxItemLegendModule, IgxPieChartComponent, IgxPieChartModule} from "igniteui-angular-charts";
+import {ChartDataService, IChartData} from "@app/services/chart-data.service";
 
 @Component({
   selector: "app-city-allocation",
@@ -16,10 +16,11 @@ import { ChartDataService, IChartData } from "@app/services/chart-data.service";
 export class CityAllocationComponent implements OnInit, AfterViewInit {
   public data: any;
 
-  @ViewChild("chart", { static: true })
+  @ViewChild("chart", {static: true})
   public chart!: IgxPieChartComponent;
 
-  constructor(private chartDataService: ChartDataService) {}
+  constructor(private chartDataService: ChartDataService) {
+  }
 
   ngOnInit(): void {
     this.chartDataService.getCityAllocationData().subscribe((chartData: IChartData) => {

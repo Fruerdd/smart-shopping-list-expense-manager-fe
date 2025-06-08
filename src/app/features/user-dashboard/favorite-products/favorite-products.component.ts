@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FavoriteProductsService } from '@app/services/favorite-products.service';
-import { LoyaltyPointsService } from '@app/services/loyalty-points.service';
-import { FormsModule } from '@angular/forms';
-import { Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { ProductDTO } from '@app/models/product.dto';
-import { FavoriteProductDTO } from '@app/models/favorite-product.dto';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconModule } from '@angular/material/icon';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FavoriteProductsService} from '@app/services/favorite-products.service';
+import {LoyaltyPointsService} from '@app/services/loyalty-points.service';
+import {FormsModule} from '@angular/forms';
+import {Observable, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
+import {ProductDTO} from '@app/models/product.dto';
+import {FavoriteProductDTO} from '@app/models/favorite-product.dto';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-favorite-products',

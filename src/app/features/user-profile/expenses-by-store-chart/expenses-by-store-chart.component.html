@@ -1,17 +1,15 @@
-<!-- expenses-by-store-chart.component.html -->
 <div class="chart-wrapper">
-    <igx-pie-chart
-      #chart
-      [dataSource]="data"
-      [legend]="legend"
-      labelMemberPath="store"
-      valueMemberPath="pct"
-      legendLabelMemberPath="store"
-      labelsPosition="OutsideEnd"
-      (sliceClick)="onSliceClick($event)">
-    </igx-pie-chart>
-  
-    <!-- Simple legend binding -->
-    <igx-item-legend #legend></igx-item-legend>
-  </div>
-  
+  <igx-pie-chart
+    #chart
+    [dataSource]="data"
+    [legend]="legend"
+    labelMemberPath="store"
+    valueMemberPath="pct"
+    legendLabelMemberPath="store"
+    labelsPosition="OutsideEnd"
+    (sliceClick)="onSliceClick($event)">
+  </igx-pie-chart>
+
+  <!-- Simple legend binding -->
+  <igx-item-legend #legend></igx-item-legend>
+</div>
