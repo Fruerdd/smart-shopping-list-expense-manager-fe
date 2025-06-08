@@ -1,127 +1,71 @@
-/*--------------------------------------*/
-/* Variables for colors and dimensions */
-/*--------------------------------------*/
-:root {
-  --primary-color: #0B3B5B;
-  --accent-color: #FCACC4;
-  --thumb-default-size: 10px;
-  --thumb-mobile-size: 15px;
-  --track-height: 10px;
-  --track-mobile-height: 5px;
-  --thumb-bg-default: white;
-  --thumb-bg-active: var(--primary-color);
-  --track-gradient: linear-gradient(to right, var(--accent-color), var(--primary-color));
-}
-
-/*----------------------*/
-/* Header & Logo Styles */
-/*----------------------*/
 header {
   padding: 10px;
-  background: var(--primary-color);
+  background: #0B3B5B;
+  z-index: 999;
   position: sticky;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 999;
 }
 
-.logo-container {
-  display: flex !important;
-  align-items: center !important;
-  flex-wrap: nowrap !important;
-  z-index: 100;
+.music-controls {
+  button[mat-icon-button] {
+    color: #0B3B5B;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:active,
+  .music-controls input[type="range"]::-moz-range-thumb:active {
+    background: #0B3B5B;
+    color: #0B3B5B;
+  }
+
+  input[type="range"]::-moz-range-track {
+    background: linear-gradient(to right, #FCACC4, #0B3B5B);
+    height: 10px;
+    border-radius: 10px;
+    border: none;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #FCACC4, #0B3B5B);
+    height: 10px;
+    border-radius: 10px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ddd;
+    border-radius: 10px;
+    height: 10px;
+  }
+
 }
 
-.logo-image {
-  display: flex;
-  align-items: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-
-.company-name {
-  margin-left: 10px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/*-----------------------------*/
-/* Desktop Menu & Button Styles */
-/*-----------------------------*/
-.desktop_menu ul {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0 65px 0 0;
-  padding: 0;
-}
-.desktop_menu ul li {
-  list-style: none;
-  font-size: 18px;
-  font-weight: 500;
-  color: white;
-  padding: 0 8px;
-  margin-left: 15px;
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-}
-.desktop_menu ul li:hover {
-  font-weight: bold;
-  padding: 0 5px;
-  color: var(--primary-color);
-  background: white;
-  border-radius: 50px;
-}
-.desktop_menu ul li.active {
-  color: var(--primary-color);
-  background: white;
-  border: 2px solid white;
-  border-radius: 30px;
-  transition: all 0.3s ease-in-out;
-}
-
-/* Common button padding & cursor */
-.log-out-button,
-#sign-up-button,
-#log-in-button {
-  cursor: pointer;
-  padding: 0 8px;
-  border-radius: 30px;
-  color: var(--primary-color);
-  background: white;
-  transition: 0.2s ease-in-out;
-}
-.log-out-button {
-  background: red;
-  color: white;
-  border-radius: 50px;
-}
-.log-out-button:hover {
-  background: darkred !important;
-}
-#log-in-button {
-  background: var(--accent-color);
-}
-#log-in-button:hover {
-  /* inherit transition */
-}
-
-/*----------------------*/
-/* Music Popup & Icon   */
-/*----------------------*/
 .music-popup {
   position: absolute;
   top: 80px;
   right: 55px;
-  background: var(--accent-color);
+  background-color: #FCACC4;
   padding: 15px;
   border-radius: 5px;
   display: flex;
@@ -131,133 +75,262 @@ header {
 }
 
 .music-icon-li mat-icon {
-  font-size: 24px;
   vertical-align: middle;
+  font-size: 24px;
+  color: white;
+}
+
+.logo-image {
+  display: flex;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+}
+
+.logo-container {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  z-index: 100;
+}
+
+.log-out-button {
+  background-color: red;
   color: white;
   cursor: pointer;
+  padding: 0 8px;
+  border-radius: 50px;
 }
-.music-icon-li mat-icon:hover {
-  color: var(--primary-color);
+
+#sign-up-button {
+  background-color: white;
+  color: #0B3B5B;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 30px;
+}
+
+#log-in-button {
+  background-color: #FCACC4;
+  color: #0B3B5B;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 30px;
+}
+
+.company-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-left: 10px;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.desktop_menu ul {
+  padding: 0;
+  margin: 0;
+  margin-right: 65px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.desktop_menu ul li {
+  list-style-type: none;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+  margin-left: 15px;
+  font-weight: 500;
+  padding: 0 8px;
+  cursor: pointer;
   transition: 0.2s ease-in-out;
 }
 
-/*-------------------*/
-/* Range Input Styles */
-/*-------------------*/
-.music-controls input[type="range"],
-.mobile-music-controls input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  background: #ddd;
-  border-radius: 10px;
-  height: var(--track-height);
+.desktop_menu ul li:hover {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 0 5px;
   cursor: pointer;
+  color: #0B3B5B;
+  transition: 0.2s ease-in-out;
+  background-color: white;
+  border-radius: 50px;
 }
 
-.music-controls input[type="range"] {
-  height: var(--track-height);
+.log-out-button:hover {
+  background-color: darkred !important;
+  color: white !important;
+  transition: 0.2s ease-in-out;
 }
 
-.music-controls input[type="range"]::-webkit-slider-thumb,
-.music-controls input[type="range"]::-moz-range-thumb {
-  width: var(--thumb-default-size);
-  height: var(--thumb-default-size);
-  background: var(--thumb-bg-default);
-  border-radius: 50%;
+.desktop_menu ul li.active {
+  border: 2px solid white;
+  border-radius: 30px;
+  color: #0B3B5B;
+  background-color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+.menu-icon {
+  display: block;
+  color: white;
+  font-size: 30px;
   cursor: pointer;
+  padding-top: 10px;
 }
 
-.music-controls input[type="range"]::-webkit-slider-thumb:active,
-.music-controls input[type="range"]::-moz-range-thumb:active {
-  background: var(--thumb-bg-active);
+@media screen and (min-width: 128px) and (max-width: 900px) {
+    .desktop_menu {
+      display: none;
+    }
+    .text-end {
+      display: flex !important;
+      justify-content: flex-end;
+      align-items: center;
+    }
+.music-icon-li mat-icon:hover {
+  color: #0B3B5B;
+  transition: 0.2s ease-in-out;
 }
 
-.music-controls input[type="range"]::-webkit-slider-runnable-track,
-.music-controls input[type="range"]::-moz-range-track {
-  background: var(--track-gradient);
-  height: var(--track-height);
-  border-radius: 10px;
-  border: none;
-}
-
-/*---------------------------*/
-/* Responsive & Mobile Styles */
-/*---------------------------*/
-@media screen and (max-width: 1000px) {
+@media screen and (min-width: 128px) and (max-width: 900px) {
   .desktop_menu {
     display: none;
   }
-  .mobile_menu .desktop_menu {
+  
+  .col {
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .desktop_menu ul {
+    display: block;
+  }
+
+  .desktop_menu ul li {
+    display: block;
+    text-align: left;
+    margin: 0;
+    padding: 10px 0 10px 26px;
+    border-bottom: 1px solid white;
+  }
+  .menu-icon {
+    display: inline-flex !important;
+    color: white;
+    font-size: 40px;
+    padding: 10px !important;
+  }
+  .mobile_menu {
+    right: 0;
+    transition: 0.4s ease-in-out;
+  }
+  .desktop_menu ul li.active {
+    border-radius: 0;
+  }
+  .desktop_menu.mobile_menu {
     display: block;
     position: fixed;
-    top: 0; right: 0;
-    width: 280px; height: 100%;
-    background: var(--primary-color);
-    margin-top: 10px;
-    transition: right 0.3s ease-in-out;
-  }
-  .desktop_menu.mobile_menu ul {
-    display: block;
-    padding: 0;
+    right: 0;
+    top: 0;
+    width: 280px;
+    height: 100%;
+    background-color: #0B3B5B;
+    transition: right 0.3s;
   }
   .desktop_menu.mobile_menu ul li {
     display: block;
-    padding: 10px 26px;
-    border-bottom: 1px solid white;
+    text-align: left;
     margin: 0;
-  }
-  .desktop_menu.mobile_menu ul li.active {
-    border-radius: 0;
+    padding: 10px 0 10px 26px;
+    border-bottom: 1px solid white;
   }
 
-  /* Mobile music controls */
   .mobile-music-controls {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 5px 0;
   }
+
+
   .mobile-music-controls button[mat-icon-button] {
-    color: var(--accent-color);
+    color: #FCACC4;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+
+  .mobile-music-controls mat-icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+  }
+
   .mobile-music-controls input[type="range"] {
     width: 100px;
-    height: var(--track-mobile-height);
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ddd;
     border-radius: 5px;
+    height: 5px;
+    vertical-align: middle;
   }
+
   .mobile-music-controls input[type="range"]::-webkit-slider-thumb {
-    width: var(--thumb-mobile-size);
-    height: var(--thumb-mobile-size);
-    background: var(--accent-color);
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #FCACC4; /* Pink thumb */
     border-radius: 50%;
+    cursor: pointer;
+    margin-top: -5px;
   }
+
   .mobile-music-controls input[type="range"]::-moz-range-thumb {
-    width: var(--thumb-mobile-size);
-    height: var(--thumb-mobile-size);
-    background: var(--accent-color);
+    width: 15px;
+    height: 15px;
+    background: #FCACC4;
     border-radius: 50%;
+    cursor: pointer;
     border: none;
   }
+
   .mobile-music-controls input[type="range"]::-webkit-slider-thumb:active,
   .mobile-music-controls input[type="range"]::-moz-range-thumb:active {
-    background: var(--primary-color);
+    background: #0B3B5B;
   }
-  .mobile-music-controls input[type="range"]::-webkit-slider-runnable-track,
+
+  .mobile-music-controls input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #0B3B5B, #FCACC4);
+    height: 5px;
+    border-radius: 5px;
+  }
+
   .mobile-music-controls input[type="range"]::-moz-range-track {
-    background: linear-gradient(to right, var(--primary-color), var(--accent-color));
-    height: var(--track-mobile-height);
+    background: linear-gradient(to right, #0B3B5B, #FCACC4);
+    height: 5px;
     border-radius: 5px;
     border: none;
   }
 }
 
-/* Company name adjustments at smaller breakpoints */
 @media screen and (max-width: 768px) {
   .company-name {
     font-size: 1.2rem;
     max-width: 150px;
   }
 }
+
 @media screen and (max-width: 576px) {
   .company-name {
     font-size: 1rem;
@@ -265,24 +338,24 @@ header {
   }
 }
 
-/*---------------------------*/
-/* Notification Badge Styles */
-/*---------------------------*/
+/* Notification Menu Styling */
 .notifications-menu-item {
   position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
+
+  i {
+    font-size: 18px;
+  }
 }
-.notifications-menu-item i {
-  font-size: 18px;
-}
+
 .notification-badge {
   position: absolute;
-  top: -8px; left: 12px;
-  background: #dc2626;
+  top: -8px;
+  left: 12px;
+  background-color: #dc2626;
   color: white;
-  border: 2px solid var(--primary-color);
   border-radius: 50%;
   padding: 2px 6px;
   font-size: 10px;
@@ -292,5 +365,11 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid #0B3B5B;
   z-index: 10;
+}
+
+.mobile_menu .desktop_menu {
+  margin-top: 10px;
+}
 }
