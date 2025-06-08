@@ -178,11 +178,20 @@ header {
 }
 
 .menu-icon {
-  display: block;
+  display: none;
   color: white;
   font-size: 30px;
   cursor: pointer;
   padding-top: 10px;
+}
+
+@media (max-width: 1200px) {
+  .menu-icon {
+    display: block;
+  }
+  .desktop_menu {
+    display: none !important;
+  }
 }
 
 @media screen and (min-width: 128px) and (max-width: 900px) {
