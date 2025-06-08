@@ -186,14 +186,33 @@ header {
 }
 
 @media (max-width: 1200px) {
-  .menu-icon {
-    display: block;
-    margin-left: auto;       /* ← push it to the right */
-  }
-  .desktop_menu {
+  /* 1) Hide the desktop nav unless we’re in “mobile_menu” mode */
+  .desktop_menu:not(.mobile_menu) {
     display: none !important;
   }
+
+  /* 2) When you click the icon, Angular adds .mobile_menu → show it */
+  .desktop_menu.mobile_menu {
+    display: flex !important;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100%;
+    background-color: #0B3B5B;
+    padding-top: 60px;     /* push content below your header bar */
+    transition: right 0.3s ease-in-out;
+  }
+
+  /* (optional) push the hamburger icon flush right */
+  .col {
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+  }
 }
+
 
 @media screen and (min-width: 128px) and (max-width: 1200px) {
     .desktop_menu {
