@@ -188,13 +188,14 @@ header {
 @media (max-width: 1200px) {
   .menu-icon {
     display: block;
+    margin-left: auto;       /* ← push it to the right */
   }
   .desktop_menu {
     display: none !important;
   }
 }
 
-@media screen and (min-width: 128px) and (max-width: 900px) {
+@media screen and (min-width: 128px) and (max-width: 1200px) {
     .desktop_menu {
       display: none;
     }
@@ -208,7 +209,7 @@ header {
   transition: 0.2s ease-in-out;
 }
 
-@media screen and (min-width: 128px) and (max-width: 900px) {
+@media screen and (min-width: 128px) and (max-width: 1200px) {
   .desktop_menu {
     display: none;
   }
