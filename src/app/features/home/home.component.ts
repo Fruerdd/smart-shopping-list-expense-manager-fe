@@ -31,6 +31,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   itemsToShow  = 3;
   private readonly isBrowser: boolean;
   private observer!: IntersectionObserver;
+  private autoAdvanceTimer?: number;
+  private isAutoAdvancing = true;
+  private touchStartX = 0;
+  private touchEndX = 0;
+  isTransitioning = false;
 
   @ViewChildren('animateOnScroll') animateElements!: QueryList<ElementRef>;
 
@@ -48,7 +53,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.onResize();
     this.usersSvc.getTestimonials().subscribe({
-      next: dtos => this.loadWithAvatars(dtos),
+      next: dtos => {
+        this.loadWithAvatars(dtos);
+        // Start auto-advance after testimonials are loaded
+        if (this.isBrowser) {
+          setTimeout(() => this.startAutoAdvance(), 3000); // Start after 3 seconds
+        }
+      },
       error: err => {
         console.error('Failed to load testimonials:', err);
         this.testimonials = [];
@@ -85,6 +96,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.observer) {
       this.observer.disconnect();
     }
+    this.stopAutoAdvance();
   }
 
   @HostListener('window:resize')
@@ -140,6 +152,47 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate([ this.auth.isLoggedIn() ? '/dashboard' : '/signup' ]);
   }
 
+  // Navigation methods for "How it Works" list items
+  onCreateAccount() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/user-profile']);
+    } else {
+      this.router.navigate(['/signup']);
+    }
+  }
+
+  onBuildShoppingList() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  onCompareAndSave() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  onTrackExpenses() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/user-profile']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  onEarnRewards() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/user-profile']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
   /** ── PAGINATION LOGIC ── **/
 
   // total pages = ceil(totalTestimonials / itemsToShow)
@@ -175,5 +228,113 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setDefaultAvatar(evt: Event) {
     (evt.target as HTMLImageElement).src = '/assets/images/avatar.png';
+  }
+
+  // Auto-advance functionality
+  private startAutoAdvance() {
+    if (!this.isBrowser || this.testimonials.length <= this.itemsToShow) {
+      return;
+    }
+    
+    this.autoAdvanceTimer = window.setInterval(() => {
+      if (this.isAutoAdvancing && !this.isTransitioning) {
+        this.nextPage();
+      }
+    }, 4000); // Advance every 4 seconds
+  }
+
+  private stopAutoAdvance() {
+    if (this.autoAdvanceTimer) {
+      clearInterval(this.autoAdvanceTimer);
+      this.autoAdvanceTimer = undefined;
+    }
+  }
+
+  private pauseAutoAdvance() {
+    this.isAutoAdvancing = false;
+  }
+
+  private resumeAutoAdvance() {
+    this.isAutoAdvancing = true;
+  }
+
+  // Touch/drag functionality
+  onTouchStart(event: TouchEvent) {
+    if (!this.isBrowser || window.innerWidth > 768) return;
+    
+    this.touchStartX = event.touches[0].clientX;
+    this.pauseAutoAdvance();
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    if (!this.isBrowser || window.innerWidth > 768) return;
+    
+    this.touchEndX = event.changedTouches[0].clientX;
+    this.handleSwipe();
+    
+    // Resume auto-advance after 2 seconds
+    setTimeout(() => this.resumeAutoAdvance(), 2000);
+  }
+
+  private handleSwipe() {
+    const swipeThreshold = 50;
+    const swipeDistance = this.touchStartX - this.touchEndX;
+
+    if (Math.abs(swipeDistance) > swipeThreshold) {
+      if (swipeDistance > 0) {
+        // Swipe left - next page
+        this.nextPage();
+      } else {
+        // Swipe right - previous page
+        this.previousPage();
+      }
+    }
+  }
+
+  // Enhanced pagination methods
+  nextPage() {
+    if (this.isTransitioning) return;
+    
+    const nextIndex = this.startIndex + this.itemsToShow;
+    if (nextIndex >= this.testimonials.length) {
+      // Loop back to beginning
+      this.goToPageWithAnimation(0);
+    } else {
+      this.goToPageWithAnimation(Math.floor(nextIndex / this.itemsToShow));
+    }
+  }
+
+  previousPage() {
+    if (this.isTransitioning) return;
+    
+    const prevIndex = this.startIndex - this.itemsToShow;
+    if (prevIndex < 0) {
+      // Loop to last page
+      const lastPageIndex = Math.floor((this.testimonials.length - 1) / this.itemsToShow);
+      this.goToPageWithAnimation(lastPageIndex);
+    } else {
+      this.goToPageWithAnimation(Math.floor(prevIndex / this.itemsToShow));
+    }
+  }
+
+  private goToPageWithAnimation(pageIndex: number) {
+    if (this.isTransitioning) return;
+    
+    this.isTransitioning = true;
+    this.startIndex = pageIndex * this.itemsToShow;
+    
+    // Reset transition flag after animation completes
+    setTimeout(() => {
+      this.isTransitioning = false;
+    }, 600); // Match transition duration
+  }
+
+  // Mouse hover pause functionality
+  onTestimonialMouseEnter() {
+    this.pauseAutoAdvance();
+  }
+
+  onTestimonialMouseLeave() {
+    this.resumeAutoAdvance();
   }
 }

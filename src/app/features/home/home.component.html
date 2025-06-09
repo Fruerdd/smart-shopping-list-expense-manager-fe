@@ -48,8 +48,12 @@
 
       <!-- CARDS -->
       <div
-        class="row text-center mx-auto justify-content-center scroll-animate stagger-cards"
+        class="row text-center mx-auto justify-content-center scroll-animate stagger-cards testimonials-container"
         style="max-width: 900px;"
+        (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)"
+        (mouseenter)="onTestimonialMouseEnter()"
+        (mouseleave)="onTestimonialMouseLeave()"
       >
         <ng-container *ngFor="let t of visibleTestimonials; let i = index">
           <div
@@ -121,11 +125,11 @@
     <div class="row align-items-center">
       <div class="col-md-6 text-md-start text-center">
         <ul class="hiw-list list-unstyled mx-auto scroll-animate stagger-list">
-          <li>Create an Account</li>
-          <li>Build Your Shopping List</li>
-          <li>Compare &amp; Save</li>
-          <li>Track Expenses</li>
-          <li>Earn Rewards</li>
+          <li (click)="onCreateAccount()" class="clickable-item">Create an Account</li>
+          <li (click)="onBuildShoppingList()" class="clickable-item">Build Your Shopping List</li>
+          <li (click)="onCompareAndSave()" class="clickable-item">Compare &amp; Save</li>
+          <li (click)="onTrackExpenses()" class="clickable-item">Track Expenses</li>
+          <li (click)="onEarnRewards()" class="clickable-item">Earn Rewards</li>
         </ul>
       </div>
       <div class="col-md-6 text-center mt-4 mt-md-0">
