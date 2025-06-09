@@ -13,9 +13,77 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #0B3B5B;
+  background: linear-gradient(-45deg, #0B3B5B, #1a4a6b, #0B3B5B, #2d5a7b);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
   padding: 20px;
   flex-direction: row-reverse;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(252, 172, 196, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: float 20s linear infinite;
+}
+
+.login-page::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(252, 172, 196, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(252, 172, 196, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  animation: pulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(100px, -100px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-50px, 50px) rotate(240deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
 }
 
 .phone-placeholder {
@@ -24,12 +92,24 @@ body {
   max-height: 100%;
   border-radius: 30px;
   margin-left: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 30px rgba(252, 172, 196, 0.3), 0 0 10px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #f0f0f0;
+  position: relative;
+  z-index: 2;
+  animation: phoneGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes phoneGlow {
+  0% {
+    box-shadow: 0 0 30px rgba(252, 172, 196, 0.3), 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 40px rgba(252, 172, 196, 0.5), 0 0 20px rgba(0, 0, 0, 0.4);
+  }
 }
 
 .phone-placeholder img {
@@ -39,17 +119,29 @@ body {
 }
 
 .login-card {
-  background-color: #fcacc4;
+  background: linear-gradient(135deg, #fcacc4, #ff9db8);
   border-radius: 20px;
   width: 320px;
   max-height: 100%;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 30px rgba(252, 172, 196, 0.4), 0 0 15px rgba(0, 0, 0, 0.2);
   padding: 30px 20px 20px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
   overflow-y: auto;
+  position: relative;
+  z-index: 2;
+  animation: cardFloat 6s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .login-header {
