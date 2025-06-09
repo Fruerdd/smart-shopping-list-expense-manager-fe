@@ -1,4 +1,4 @@
-import {Component, HostListener, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, HostListener, Inject, OnInit, PLATFORM_ID, AfterViewInit, ElementRef, ViewChildren, QueryList, OnDestroy} from '@angular/core';
 import {CommonModule, isPlatformBrowser, NgOptimizedImage} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {Router} from '@angular/router';
@@ -25,11 +25,14 @@ interface TestimonialView {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   testimonials: TestimonialView[] = [];
   startIndex   = 0;
   itemsToShow  = 3;
   private readonly isBrowser: boolean;
+  private observer!: IntersectionObserver;
+
+  @ViewChildren('animateOnScroll') animateElements!: QueryList<ElementRef>;
 
   constructor(
     private usersSvc: UsersService,
@@ -51,6 +54,37 @@ export class HomeComponent implements OnInit {
         this.testimonials = [];
       }
     });
+  }
+
+  ngAfterViewInit() {
+    if (this.isBrowser) {
+      this.setupScrollAnimations();
+    }
+  }
+
+  private setupScrollAnimations() {
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          // Optional: Stop observing after animation is triggered
+          this.observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1, // Trigger when 10% of element is visible
+      rootMargin: '0px 0px -50px 0px' // Trigger slightly before element is fully visible
+    });
+
+    // Observe all elements with scroll animation
+    const elementsToAnimate = document.querySelectorAll('.scroll-animate');
+    elementsToAnimate.forEach(el => this.observer.observe(el));
+  }
+
+  ngOnDestroy() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 
   @HostListener('window:resize')
