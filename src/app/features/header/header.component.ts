@@ -42,6 +42,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
   isPlaying = false;
   volume = 0.5;
   isMusicPopupVisible = false;
+  menuOpen = false;
 
   activePage: string = '';
   menuValue: boolean = false;
@@ -53,6 +54,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
   isOtherUserProfilePage: boolean = false;
   isEditProfilePage: boolean = false;
   isAdminPage: boolean = false;
+  isAdminSection: boolean = false;
   isAdmin: boolean = false; // Mimic admin state
   loggedInUserId: string | null = null;
   currentProfileUserId: string | null = null;
@@ -159,11 +161,17 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
     this.isPlaying = false;
   }
 
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
   toggleMusicPopup(): void {
     this.isMusicPopupVisible = !this.isMusicPopupVisible;
   }
 
   private updateActivePageFromUrl(url: string): void {
+    this.isAdminSection = url === '/admin-page' || url.startsWith('/admin-page/');
+    this.isAdminPage = url === '/admin-page';
     const profileMatch = url.match(/^\/user-profile\/([^\/]+)/);
     if (profileMatch) {
       this.currentProfileUserId = profileMatch[1];
