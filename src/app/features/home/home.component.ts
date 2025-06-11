@@ -71,24 +71,30 @@ export class HomeComponent implements OnInit {
         catchError(() => of(this.toView(dto, dto.avatar)))
       )
     );
-
+  
     forkJoin(calls).subscribe({
       next: views => {
-        // ① filter out anything under score 4
-        this.testimonials = views
-          .filter(v => v.score >= 4);              // ← drop below-4 reviews
-        // ② reset pagination if you want to start at page 0
-        this.startIndex   = 0;
+        // 1) filter out anything under score 4
+        let filtered = views.filter(v => v.score >= 4);
+  
+        // 2) limit to maximum 15 testimonials
+        filtered = filtered.slice(0, 15);
+  
+        this.testimonials = filtered;
+        // 3) reset pagination index so we start at page 0
+        this.startIndex = 0;
       },
       error: () => {
-        // apply same filter in the error fallback
-        this.testimonials = dtos
-          .map(dto => this.toView(dto, dto.avatar))
-          .filter(v => v.score >= 4);
-        this.startIndex   = 0;
+        // apply same filter + slicing in the error fallback
+        let fallback = dtos.map(dto => this.toView(dto, dto.avatar))
+                          .filter(v => v.score >= 4)
+                          .slice(0, 15);
+        this.testimonials = fallback;
+        this.startIndex = 0;
       }
     });
   }
+  
 
   private toView(dto: TestimonialDTO, avatarPath?: string|null): TestimonialView {
     const raw   = !isNaN(dto.reviewScore)
