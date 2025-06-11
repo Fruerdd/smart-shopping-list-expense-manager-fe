@@ -14,6 +14,7 @@ import {AuthService} from '@app/services/auth.service';
 })
 export class LoginComponent {
   imageUrl: string = 'assets/images/login_image.png';
+  errorMessage: string = '';
 
   loginForm: FormGroup;
 
@@ -31,16 +32,28 @@ export class LoginComponent {
   onSubmit() {
     if (!this.loginForm.valid) return;
 
+    this.errorMessage = '';
+    
     this.authService.login(this.loginForm.value).subscribe({
       next: res => {
-        // Token is automatically stored by AuthService
         if (res.userType === 'ADMIN') {
           this.router.navigate(['/admin-page']);
         } else {
           this.router.navigate(['/home']);
         }
       },
-      error: () => alert('Username or password is wrong'),
+      error: (err) => {
+        // Handle specific error cases
+        if (err.status === 401) {
+          this.errorMessage = 'Invalid email or password. Please try again.';
+        } else if (err.error && typeof err.error === 'string') {
+          this.errorMessage = err.error;
+        } else if (err.error?.message) {
+          this.errorMessage = err.error.message;
+        } else {
+          this.errorMessage = 'Login failed. Please check your credentials and try again.';
+        }
+      },
     });
   }
 }

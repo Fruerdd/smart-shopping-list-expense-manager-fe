@@ -230,6 +230,30 @@ button:disabled {
   padding-left: 5px;
 }
 
+.signup-error {
+  background-color: rgba(211, 47, 47, 0.1);
+  border: 1px solid rgba(211, 47, 47, 0.3);
+  border-radius: 5px;
+  color: #d32f2f;
+  padding: 10px;
+  margin: 15px 0 10px 0;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.signup-success {
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 5px;
+  color: #4caf50;
+  padding: 10px;
+  margin: 15px 0 10px 0;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.4;
+}
+
 @media (max-width: 992px) {
   .login-page {
     padding: 15px;
@@ -310,6 +334,13 @@ button:disabled {
     font-size: 16px;
   }
   
+  .signup-error,
+  .signup-success {
+    font-size: 13px;
+    padding: 8px;
+    margin: 12px 0 8px 0;
+  }
+  
   .or-divider {
     font-size: 14px;
     margin: 15px 0;
@@ -357,6 +388,13 @@ button:disabled {
     font-size: 16px;
   }
   
+  .signup-error,
+  .signup-success {
+    font-size: 12px;
+    padding: 8px;
+    margin: 10px 0 6px 0;
+  }
+  
   .or-divider {
     margin: 12px 0;
   }
@@ -376,6 +414,13 @@ button:disabled {
   input, button {
     font-size: 16px;
     padding: 10px;
+  }
+  
+  .signup-error,
+  .signup-success {
+    font-size: 11px;
+    padding: 6px;
+    margin: 8px 0 5px 0;
   }
   
   .or-divider, .signup-text {

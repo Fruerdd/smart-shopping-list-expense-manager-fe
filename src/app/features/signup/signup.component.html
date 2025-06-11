@@ -58,6 +58,16 @@
       <button type="submit" [disabled]="signupForm.invalid">Sign up</button>
     </form>
 
+    <!-- Error message display -->
+    <div *ngIf="errorMessage" class="signup-error">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Success message display -->
+    <div *ngIf="successMessage" class="signup-success">
+      {{ successMessage }}
+    </div>
+
     <div class="or-divider">OR</div>
 
     <p class="signup-text">

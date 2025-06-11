@@ -14,6 +14,8 @@ import {AuthService, RegisterDTO} from '@app/services/auth.service';
 export class SignupComponent {
   signupForm: FormGroup;
   imageUrl: string = 'assets/images/signup_image.png';
+  errorMessage: string = '';
+  successMessage: string = '';
 
   constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
     this.signupForm = this.fb.group({
@@ -26,12 +28,16 @@ export class SignupComponent {
 
   onSubmit() {
     if (this.signupForm.valid) {
+      // Clear previous messages
+      this.errorMessage = '';
+      this.successMessage = '';
+
       // Destructure form values
       const {password, confirmPassword, email, name} = this.signupForm.value;
 
       // Check if passwords match
       if (password !== confirmPassword) {
-        this.showMessageBox('Passwords do not match!', 'Error');
+        this.errorMessage = 'Passwords do not match!';
         return;
       }
 
@@ -42,8 +48,10 @@ export class SignupComponent {
       this.authService.register(newUser).subscribe({
         next: () => {
           // Display success message
-          this.showMessageBox('Registration successful!', 'Success');
-          this.router.navigate(['/login']); // Navigate to login page on success
+          this.successMessage = 'Registration successful! Redirecting to login...';
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
         },
         error: (err) => {
           console.error('Registration failed:', err);
@@ -64,40 +72,16 @@ export class SignupComponent {
 
           // Check for common error patterns
           if (errorMessage.includes('Email already registered')) {
-            this.showMessageBox('This email address is already registered. Please use a different email or try logging in.', 'Error');
+            this.errorMessage = 'This email address is already registered. Please use a different email or try logging in.';
           } else {
-            this.showMessageBox(`Registration failed: ${errorMessage}`, 'Error');
+            this.errorMessage = `Registration failed: ${errorMessage}`;
           }
         },
       });
     } else {
       // Mark all fields as touched to display validation errors
       this.signupForm.markAllAsTouched();
-      this.showMessageBox('Please fill in all required fields correctly.', 'Validation Error');
+      this.errorMessage = 'Please fill in all required fields correctly.';
     }
-  }
-
-  private showMessageBox(message: string, type: string) {
-    const messageDiv = document.createElement('div');
-    messageDiv.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: ${type === 'Success' ? '#4CAF50' : '#f44336'};
-      color: white;
-      padding: 15px;
-      border-radius: 5px;
-      z-index: 1000;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      font-family: 'Inter', sans-serif;
-      text-align: center;
-    `;
-    messageDiv.innerText = message;
-    document.body.appendChild(messageDiv);
-
-    setTimeout(() => {
-      document.body.removeChild(messageDiv);
-    }, 3000); // Message disappears after 3 seconds
   }
 }
