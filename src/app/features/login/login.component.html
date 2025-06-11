@@ -36,10 +36,15 @@
       <button type="submit" [disabled]="loginForm.invalid">Log in</button>
     </form>
 
+    <!-- Error message display -->
+    <div *ngIf="errorMessage" class="login-error">
+      {{ errorMessage }}
+    </div>
+
     <div class="or-divider">OR</div>
 
     <p class="signup-text">
-      Don’t have an account?
+      Don't have an account?
       <a routerLink="/signup" href="/signup">Sign up</a>
     </p>
   </div>

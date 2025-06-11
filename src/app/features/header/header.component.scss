@@ -96,7 +96,7 @@ header {
 }
 
 .log-out-button {
-  background-color: red;
+  background-color: #dc2626;
   color: white;
   cursor: pointer;
   padding: 0 8px;
@@ -155,7 +155,7 @@ header {
 .desktop_menu ul li:hover {
   font-size: 18px;
   font-weight: bold;
-  padding: 0 5px;
+  padding: 0 8px;
   cursor: pointer;
   color: #0B3B5B;
   transition: 0.2s ease-in-out;
@@ -241,28 +241,33 @@ header {
 
   .desktop_menu ul {
     display: block;
+    width: 100%;
   }
 
   .desktop_menu ul li {
-    display: block;
     text-align: left;
+    width: 100%;
     margin: 0;
     padding: 10px 0 10px 26px;
     border-bottom: 1px solid white;
   }
+
   .menu-icon {
     display: inline-flex !important;
     color: white;
     font-size: 40px;
     padding: 10px !important;
   }
+
   .mobile_menu {
     right: 0;
     transition: 0.4s ease-in-out;
   }
+
   .desktop_menu ul li.active {
     border-radius: 0;
   }
+
   .desktop_menu.mobile_menu {
     display: block;
     position: fixed;
@@ -272,13 +277,24 @@ header {
     height: 100%;
     background-color: #0B3B5B;
     transition: right 0.3s;
+    border-left: 0.5px solid #fcfcfc;
   }
+  
   .desktop_menu.mobile_menu ul li {
     display: block;
     text-align: left;
     margin: 0;
     padding: 10px 0 10px 26px;
     border-bottom: 1px solid white;
+    width: 100%;
+  }
+
+  .mobile_menu ul li:hover{
+    border-radius: 0 !important;
+    background-color: white;
+    color: #0B3B5B;
+    transition: 0.2s ease-in-out;
+    width: 100%;
   }
 
   .mobile-music-controls {
@@ -288,6 +304,28 @@ header {
     padding: 5px 0;
   }
 
+  .mobile_menu .log-out-button {
+    background-color: #dc2626;
+    color: white;
+    cursor: pointer;
+    border-radius: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border-top: 0.5px solid #fcfcfc;
+    border-bottom: none;
+  }
+
+  .mobile_menu .log-out-button:hover {
+    background-color: darkred !important;
+    color: white !important;
+    animation: none !important;
+    border-radius: 0 !important;
+  }
 
   .mobile-music-controls button[mat-icon-button] {
     color: #FCACC4;
