@@ -78,16 +78,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('animate-in');
-          // Optional: Stop observing after animation is triggered
           this.observer.unobserve(entry.target);
         }
       });
     }, {
-      threshold: 0.1, // Trigger when 10% of element is visible
-      rootMargin: '0px 0px -50px 0px' // Trigger slightly before element is fully visible
+      threshold: 0.1, 
+      rootMargin: '0px 0px -50px 0px' 
     });
 
-    // Observe all elements with scroll animation
     const elementsToAnimate = document.querySelectorAll('.scroll-animate');
     elementsToAnimate.forEach(el => this.observer.observe(el));
   }
@@ -120,18 +118,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   
     forkJoin(calls).subscribe({
       next: views => {
-        // 1) filter out anything under score 4
         let filtered = views.filter(v => v.score >= 4);
   
-        // 2) limit to maximum 15 testimonials
         filtered = filtered.slice(0, 15);
   
         this.testimonials = filtered;
-        // 3) reset pagination index so we start at page 0
         this.startIndex = 0;
       },
       error: () => {
-        // apply same filter + slicing in the error fallback
         let fallback = dtos.map(dto => this.toView(dto, dto.avatar))
                           .filter(v => v.score >= 4)
                           .slice(0, 15);
@@ -158,7 +152,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate([ this.auth.isLoggedIn() ? '/dashboard' : '/signup' ]);
   }
 
-  // Navigation methods for "How it Works" list items
   onCreateAccount() {
     if (this.auth.isLoggedIn()) {
       this.router.navigate(['/user-profile']);
@@ -199,24 +192,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /** ── PAGINATION LOGIC ── **/
 
-  // total pages = ceil(totalTestimonials / itemsToShow)
   get pages(): number[] {
     return Array(Math.ceil(this.testimonials.length / this.itemsToShow)).fill(0);
   }
 
-  // which page we're on
   get currentPage(): number {
     return Math.floor(this.startIndex / this.itemsToShow);
   }
 
-  // jump to a page
   goToPage(pageIndex: number): void {
     this.startIndex = pageIndex * this.itemsToShow;
   }
 
-  // slice out the visible 3 (or 1 on mobile)
   get visibleTestimonials(): TestimonialView[] {
     return this.testimonials.slice(
       this.startIndex,
@@ -236,7 +224,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     (evt.target as HTMLImageElement).src = '/assets/images/avatar.png';
   }
 
-  // Auto-advance functionality
   private startAutoAdvance() {
     if (!this.isBrowser || this.testimonials.length <= this.itemsToShow) {
       return;
@@ -246,7 +233,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.isAutoAdvancing && !this.isTransitioning) {
         this.nextPage();
       }
-    }, 4000); // Advance every 4 seconds
+    }, 4000);
   }
 
   private stopAutoAdvance() {
@@ -264,7 +251,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isAutoAdvancing = true;
   }
 
-  // Touch/drag functionality
   onTouchStart(event: TouchEvent) {
     if (!this.isBrowser || window.innerWidth > 768) return;
     
@@ -278,7 +264,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.touchEndX = event.changedTouches[0].clientX;
     this.handleSwipe();
     
-    // Resume auto-advance after 2 seconds
     setTimeout(() => this.resumeAutoAdvance(), 2000);
   }
 
@@ -288,22 +273,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (Math.abs(swipeDistance) > swipeThreshold) {
       if (swipeDistance > 0) {
-        // Swipe left - next page
         this.nextPage();
       } else {
-        // Swipe right - previous page
         this.previousPage();
       }
     }
   }
 
-  // Enhanced pagination methods
   nextPage() {
     if (this.isTransitioning) return;
     
     const nextIndex = this.startIndex + this.itemsToShow;
     if (nextIndex >= this.testimonials.length) {
-      // Loop back to beginning
       this.goToPageWithAnimation(0);
     } else {
       this.goToPageWithAnimation(Math.floor(nextIndex / this.itemsToShow));
@@ -315,7 +296,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     
     const prevIndex = this.startIndex - this.itemsToShow;
     if (prevIndex < 0) {
-      // Loop to last page
       const lastPageIndex = Math.floor((this.testimonials.length - 1) / this.itemsToShow);
       this.goToPageWithAnimation(lastPageIndex);
     } else {
@@ -329,13 +309,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isTransitioning = true;
     this.startIndex = pageIndex * this.itemsToShow;
     
-    // Reset transition flag after animation completes
     setTimeout(() => {
       this.isTransitioning = false;
-    }, 600); // Match transition duration
+    }, 600); 
   }
 
-  // Mouse hover pause functionality
   onTestimonialMouseEnter() {
     this.pauseAutoAdvance();
   }

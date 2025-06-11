@@ -1,144 +1,27 @@
-/* =============
-   BASE STYLES
-   ============= */
-   header {
-    padding: 10px;
-    background: #0B3B5B;
-    z-index: 999;
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-  
-  /* Music controls */
-  .music-controls button[mat-icon-button] {
-    color: #0B3B5B;
-  }
-  .music-controls input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    background: #ddd;
-    border-radius: 10px;
-    height: 10px;
-  }
-  .music-controls input[type="range"]::-webkit-slider-runnable-track {
-    background: linear-gradient(to right, #FCACC4, #0B3B5B);
-    height: 10px;
-    border-radius: 10px;
-  }
-  .music-controls input[type="range"]::-moz-range-track {
-    background: linear-gradient(to right, #FCACC4, #0B3B5B);
-    height: 10px;
-    border-radius: 10px;
-    border: none;
-  }
-  .music-controls input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 10px;
-    height: 10px;
-    background: white;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  .music-controls input[type="range"]::-moz-range-thumb {
-    width: 10px;
-    height: 10px;
-    background: white;
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
-  }
-  .music-controls input[type="range"]::-webkit-slider-thumb:active,
-  .music-controls input[type="range"]::-moz-range-thumb:active {
-    background: #0B3B5B;
-    color: #0B3B5B;
-  }
-  
-  /* Music popup (desktop) */
-  .music-popup {
-    position: absolute;
-    top: 80px;
-    right: 55px;
-    background-color: #FCACC4;
-    padding: 15px;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  /* Music icon in list items */
-  .music-icon-li mat-icon {
-    vertical-align: middle;
-    font-size: 24px;
-    color: white;
-  }
 
-  .music-icon-li mat-icon:hover {
-    color: #0B3B5B;
-    transition: 0.2s ease-in-out;
-
+header {
+  padding: 10px;
+  background: #0B3B5B;
+  z-index: 999;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
-.music-popup {
-  position: absolute;
-  top: 80px;
-  right: 55px;
-  background-color: #FCACC4;
-  padding: 15px;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.music-icon-li mat-icon {
-  vertical-align: middle;
-  font-size: 24px;
-  color: white;
-}
 
 .logo-image {
   display: flex;
   align-items: center;
   width: 50px;
   height: 50px;
-  border-radius: 50px;
+  border-radius: 50%;
 }
-
 .logo-container {
   display: flex !important;
   align-items: center !important;
   flex-wrap: nowrap !important;
   z-index: 100;
-}
-
-.log-out-button {
-  background-color: #dc2626;
-  color: white;
-  cursor: pointer;
-  padding: 0 8px;
-  border-radius: 50px;
-}
-
-#sign-up-button {
-  background-color: white;
-  color: #0B3B5B;
-  cursor: pointer;
-  padding: 0 8px;
-  border-radius: 30px;
-}
-
-#log-in-button {
-  background-color: #FCACC4;
-  color: #0B3B5B;
-  cursor: pointer;
-  padding: 0 8px;
-  border-radius: 30px;
 }
 
 .company-name {
@@ -152,17 +35,107 @@
 }
 
 
+.log-out-button,
+#sign-up-button,
+#log-in-button {
+  cursor: pointer;
+  padding: 0 8px;
+  transition: background-color 0.2s ease-in-out;
+}
+.log-out-button {
+  background-color: #dc2626;
+  color: white;
+  border-radius: 50px;
+}
+.log-out-button:hover {
+  background-color: darkred !important;
+  color: white !important;
+}
+#sign-up-button {
+  background-color: white;
+  color: #0B3B5B;
+  border-radius: 30px;
+}
+#sign-up-button:hover {
+  background-color: #f0f0f0;
+}
+#log-in-button {
+  background-color: #FCACC4;
+  color: #0B3B5B;
+  border-radius: 30px;
+}
+#log-in-button:hover {
+  background-color: #e79db8;
+}
+
+.log-out-button:active { background-color: #b22222; border-radius: 0; }
+#sign-up-button:active { background-color: #e0e0e0; border-radius: 0; }
+#log-in-button:active  { background-color: #e68fae; border-radius: 0; }
+
+
+.music-controls button[mat-icon-button] { color: #0B3B5B; }
+.music-controls input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #ddd;
+  border-radius: 10px;
+  height: 10px;
+}
+.music-controls input[type="range"]::-webkit-slider-runnable-track,
+.music-controls input[type="range"]::-moz-range-track {
+  background: linear-gradient(to right, #FCACC4, #0B3B5B);
+  height: 10px;
+  border-radius: 10px;
+  border: none;
+}
+.music-controls input[type="range"]::-webkit-slider-thumb,
+.music-controls input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.music-controls input[type="range"]::-webkit-slider-thumb:active,
+.music-controls input[type="range"]::-moz-range-thumb:active {
+  background: #0B3B5B;
+}
+
+.music-popup {
+  position: absolute;
+  top: 80px;
+  right: 55px;
+  background-color: #FCACC4;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 1001;
+}
+
+.music-icon-li mat-icon {
+  vertical-align: middle;
+  font-size: 24px;
+  color: white;
+  transition: color 0.2s ease-in-out;
+}
+.music-icon-li mat-icon:hover {
+  color: #0B3B5B;
+}
+
 .desktop_menu ul {
   padding: 0;
-  margin: 0;
-  margin-right: 65px;
+  margin: 0 65px 0 0;
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
-
 .desktop_menu ul li {
-  list-style-type: none;
+  list-style: none;
   color: white;
   display: inline-flex;
   align-items: center;
@@ -171,417 +144,228 @@
   font-weight: 500;
   padding: 0 8px;
   cursor: pointer;
-  transition: 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
-
 .desktop_menu ul li:hover {
-  font-size: 18px;
   font-weight: bold;
-  padding: 0 8px;
-  cursor: pointer;
   color: #0B3B5B;
-  transition: 0.2s ease-in-out;
-  background-color: white;
+  background: white;
   border-radius: 50px;
 }
-
-.log-out-button:hover {
-  background-color: darkred !important;
-  color: white !important;
-  transition: 0.2s ease-in-out;
-}
-
 .desktop_menu ul li.active {
   border: 2px solid white;
   border-radius: 30px;
   color: #0B3B5B;
-  background-color: white;
+  background: white;
   transition: all 0.3s ease-in-out;
 }
 
-.menu-icon {
-  display: none;
-  color: white;
-  font-size: 30px;
-  cursor: pointer;
-  padding-top: 10px;
+
+.notifications-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+.notifications-menu-item i { font-size: 18px; }
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  background: #dc2626;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0B3B5B;
+  z-index: 10;
+}
+
+.mobile-music-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+.mobile-music-controls button[mat-icon-button] {
+  color: #FCACC4;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mobile-music-controls mat-icon {
+  font-size: 24px;
+}
+.mobile-music-controls input[type="range"] {
+  width: 100px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #ddd;
+  border-radius: 5px;
+  height: 5px;
+}
+.mobile-music-controls input[type="range"]::-webkit-slider-runnable-track,
+.mobile-music-controls input[type="range"]::-moz-range-track {
+  background: linear-gradient(to right, #0B3B5B, #FCACC4);
+  height: 5px;
+  border-radius: 5px;
+  border: none;
+}
+.mobile-music-controls input[type="range"]::-webkit-slider-thumb,
+.mobile-music-controls input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #FCACC4;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -5px;
+}
+.mobile-music-controls input[type="range"]::-webkit-slider-thumb:active,
+.mobile-music-controls input[type="range"]::-moz-range-thumb:active {
+  background: #0B3B5B;
+}
+
+
+@media (max-width: 768px) {
+  .company-name {
+    font-size: 1.2rem;
+    max-width: 150px;
+  }
+}
+@media (max-width: 576px) {
+  .company-name {
+    font-size: 1rem;
+    max-width: 120px;
+  }
+}
+
+
+
+.menu-icon {
+  display: none;             
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  transition: color 0.2s ease-in-out;
+}
+.menu-icon:hover {
+  color: #FCACC4;
+}
+
+/* Drawer panel */
+.desktop_menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 240px;                  
+  max-width: 75vw;
+  height: 100%;
+  background: rgba(11, 59, 91, 0.9); 
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  pointer-events: auto !important;
+  z-index: 1001;
+}
+
+
+.desktop_menu::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 240px;              
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: auto;        
+  z-index: 1000;                 
+}
+
+
+.desktop_menu.mobile_menu {
+  transform: translateX(0);
+}
+
+
+.desktop_menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.desktop_menu ul li {
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease-in-out;
+}
+.desktop_menu ul li:hover {
+  background: rgba(255,255,255,0.2);
+}
+.desktop_menu ul li.active {
+  background: rgba(255,255,255,0.4);
+  color: #0B3B5B;
+}
+
 
 @media (max-width: 1200px) {
-  /* 1) Hide the desktop nav unless we’re in “mobile_menu” mode */
-  .desktop_menu:not(.mobile_menu) {
+  .menu-icon {
+    display: block;
+  }
+}
+
+@media (min-width: 1201px) {
+  .menu-icon {
     display: none !important;
   }
-
-  /* 2) When you click the icon, Angular adds .mobile_menu → show it */
-  .desktop_menu.mobile_menu {
-    display: flex !important;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 280px;
-    height: 100%;
-    background-color: #0B3B5B;
-    padding-top: 60px;     /* push content below your header bar */
-    transition: right 0.3s ease-in-out;
-  }
-
-  /* (optional) push the hamburger icon flush right */
-  .col {
-    display: flex !important;
-    justify-content: flex-end;
-    align-items: center;
-  }
-}
-
-
-@media screen and (min-width: 128px) and (max-width: 1200px) {
-    .desktop_menu {
-      display: none;
-    }
-    .text-end {
-      display: flex !important;
-      justify-content: flex-end;
-      align-items: center;
-    }
-.music-icon-li mat-icon:hover {
-  color: #0B3B5B;
-  transition: 0.2s ease-in-out;
-}
-
-@media screen and (min-width: 128px) and (max-width: 1200px) {
   .desktop_menu {
-    display: none;
-  }
-  
-  /* Logo */
-  .logo-image {
-    display: flex;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
-  }
-  .logo-container {
+    position: static !important;
+    transform: none !important;
+    transition: none !important;
     display: flex !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-    z-index: 100;
+    flex-direction: row;
+    background: none;
+    height: auto;
+    padding-top: 0;
+    width: auto;
+    z-index: auto;
   }
-  
-  /* Buttons */
-  .log-out-button {
-    background-color: red;
-    color: white;
-    cursor: pointer;
-    padding: 0 8px;
-    border-radius: 50px;
-  }
-  .log-out-button:hover {
-    background-color: darkred !important;
-    color: white !important;
-    transition: 0.2s ease-in-out;
-  }
-  #sign-up-button {
-    background-color: white;
-    color: #0B3B5B;
-    cursor: pointer;
-    padding: 0 8px;
-    border-radius: 30px;
-  }
-  #log-in-button {
-    background-color: #FCACC4;
-    color: #0B3B5B;
-    cursor: pointer;
-    padding: 0 8px;
-    border-radius: 30px;
-  }
-  
-  /* Company name */
-  .company-name {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-left: 10px;
-    color: white;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Desktop menu */
   .desktop_menu ul {
-    padding: 0;
-    margin: 0;
-    margin-right: 65px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-
+    flex-direction: row;
   }
   .desktop_menu ul li {
-    list-style-type: none;
-    color: white;
-    display: inline-flex;
-    align-items: center;
-    font-size: 18px;
-    margin-left: 15px;
-    font-weight: 500;
-    padding: 0 8px;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
-  }
-  .desktop_menu ul li:hover {
-    font-weight: bold;
-    padding: 0 5px;
-    color: #0B3B5B;
-    background-color: white;
-    border-radius: 50px;
-  }
-  .desktop_menu ul li.active {
-    border: 2px solid white;
-    border-radius: 30px;
-    color: #0B3B5B;
-    background-color: white;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .menu-icon {
-    font-size: 30px;       /* adjust size as needed */
-    color: white;
-    cursor: pointer;
-    padding: 10px;
-    /* no margin-left needed because parent flex with justify-content-end pushes it right */
-  }
-  
-  /* Notification badge */
-  .notifications-menu-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .notifications-menu-item i {
-    font-size: 18px;
-  }
-  .notification-badge {
-    position: absolute;
-    top: -8px;
-    left: 12px;
-    background-color: #dc2626;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 10px;
-    font-weight: bold;
-    min-width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #0B3B5B;
-    z-index: 10;
-  
-  /* Mobile music controls */
-  .mobile-music-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 5px 0;
-  }
-
-
-  .mobile_menu .log-out-button {
-    background-color: #dc2626;
-    color: white;
-    cursor: pointer;
-    border-radius: 0;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    border-top: 0.5px solid #fcfcfc;
     border-bottom: none;
+    position: relative;
+    z-index: auto;
   }
+}
 
-  .mobile_menu .log-out-button:hover {
-    background-color: darkred !important;
-    color: white !important;
-    animation: none !important;
-    border-radius: 0 !important;
-  }
 
-  .mobile-music-controls button[mat-icon-button] {
-    color: #FCACC4;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .mobile-music-controls mat-icon {
-    font-size: 24px;
-    height: 24px;
-    width: 24px;
-    line-height: 24px;
-  }
-  .mobile-music-controls input[type="range"] {
-    width: 100px;
-    -webkit-appearance: none;
-    appearance: none;
-    background: #ddd;
-    border-radius: 5px;
-    height: 5px;
-    vertical-align: middle;
-  }
-  .mobile-music-controls input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 15px;
-    height: 15px;
-    background: #FCACC4;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-top: -5px;
-  }
-  .mobile-music-controls input[type="range"]::-moz-range-thumb {
-    width: 15px;
-    height: 15px;
-    background: #FCACC4;
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
-  }
-  .mobile-music-controls input[type="range"]::-webkit-slider-thumb:active,
-  .mobile-music-controls input[type="range"]::-moz-range-thumb:active {
-    background: #0B3B5B;
-  }
-  .mobile-music-controls input[type="range"]::-webkit-slider-runnable-track {
-    background: linear-gradient(to right, #0B3B5B, #FCACC4);
-    height: 5px;
-    border-radius: 5px;
-  }
-  .mobile-music-controls input[type="range"]::-moz-range-track {
-    background: linear-gradient(to right, #0B3B5B, #FCACC4);
-    height: 5px;
-    border-radius: 5px;
-    border: none;
-  }
-  
-  /* Company name responsiveness */
-  @media screen and (max-width: 768px) {
-    .company-name {
-      font-size: 1.2rem;
-      max-width: 150px;
-    }
-  }
-  @media screen and (max-width: 576px) {
-    .company-name {
-      font-size: 1rem;
-      max-width: 120px;
-    }
-  }
-  
-  /* ===========================
-     MOBILE / TABLET VIEWS
-     =========================== */
-  
-  /* Hide desktop menu on narrower screens */
-  @media screen and (min-width: 128px) and (max-width: 1000px) {
-    .desktop_menu {
-      display: none;
-    }
-    .text-end {
-      display: flex !important;
-      justify-content: flex-end;
-      align-items: center;
-    }
-  }
-  
-  /* Primary mobile menu breakpoint */
-  @media screen and (max-width: 900px) {
-    /* Right-align handled by HTML flex; here focus on menu slide-in & vertical items */
-    header .row .col {
-      display: flex;
-      justify-content: flex-end; /* secondary: aligns children to right */
-      align-items: center;       /* vertically center if needed */
-      position: relative;        /* keep as is or explicit for safety */
-    }
-    header .row .col .menu-icon {
-      margin-left: auto;
-    }
-    .menu-icon {
-      font-size: 30px;       /* adjust size as needed */
-      color: white;
-      cursor: pointer;
-      padding: 10px;
-      /* no margin-left needed because parent flex with justify-content-end pushes it right */
-    }
-    .desktop_menu {
-      display: block !important;
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: auto !important;
-      min-width: 200px !important;
-      max-height: 100vh !important;
-      overflow-y: auto !important;
-      background-color: rgba(11, 59, 91, 0.8) !important;
-      transition: transform 0.3s ease-in-out;
-      transform: translateX(100%); /* off-screen right */
-      z-index: 1000;
-    }
-    .desktop_menu.mobile_menu {
-      transform: translateX(0);   /* slide in */
-    }
-    .desktop_menu ul {
-      display: flex;
-      flex-direction: column;     /* vertical stack */
-      padding: 0;
-      margin: 0;
-    }
-    .desktop_menu ul li {
-      list-style: none;
-      margin: 0;
-      padding: 12px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.3);
-      color: white;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.2s;
-    }
-    .desktop_menu ul li:hover {
-      background: rgba(255,255,255,0.2);
-    }
-    .desktop_menu ul li.active {
-      background: rgba(255,255,255,0.4);
-      color: #0B3B5B;
-    }
-  
-    /* Backdrop */
-    .menu-backdrop {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.4);
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      pointer-events: none;
-      z-index: 999;
-    }
-    .menu-backdrop.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-  }
-  
-  /* Extra margin if needed */
-  .mobile_menu .desktop_menu {
-    margin-top: 10px;
-  }
-  
 
-  
+
+header .row.align-items-center {
+  display: flex;                 
+  justify-content: space-between;  
+  align-items: center;
+}
+header .row.align-items-center > .col:last-child {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+header .menu-icon {
+  margin-left: auto;
+  display: block;
+}
