@@ -320,11 +320,21 @@ header {
 }
 
 
-@media (max-width: 1200px) {
-  .menu-icon {
-    display: block;
+@media (min-width: 1201px) {
+  .desktop_menu ul li {
+    padding: 4px 12px;
+    border-radius: 24px;
+    transition: background-color 0.2s ease-in-out,
+                color 0.2s ease-in-out;
+  }
+
+  .desktop_menu ul li:hover {
+    background-color: #ffffff;
+    color: #0B3B5B;
+    font-weight: bold;
   }
 }
+
 
 @media (min-width: 1201px) {
   .menu-icon {
@@ -349,6 +359,9 @@ header {
     border-bottom: none;
     position: relative;
     z-index: auto;
+  }
+  .desktop_menu::before {
+    display: none !important;
   }
 }
 
