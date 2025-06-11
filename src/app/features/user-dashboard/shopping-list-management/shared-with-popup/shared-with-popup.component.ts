@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CollaboratorDTO, PermissionEnum} from '@app/models/collaborator.dto';
 import {MatIconModule} from '@angular/material/icon';
-import {MatMenuModule} from '@angular/material/menu';
+import {MatMenuModule, MatMenu} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 
@@ -19,6 +19,7 @@ export class SharedWithPopupComponent {
   @Output() close = new EventEmitter<void>();
   @Output() removeCollaborator = new EventEmitter<string>();
   @Output() updatePermission = new EventEmitter<{ collaboratorId: string, permission: PermissionEnum }>();
+  @ViewChild('menu') menu?: MatMenu;
 
   protected readonly PermissionEnum = PermissionEnum;
 

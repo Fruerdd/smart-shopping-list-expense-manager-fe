@@ -7,12 +7,10 @@
     <div *ngIf="collaborators.length > 0; else noUsers">
       <div class="users-list">
         <div class="user-item" *ngFor="let user of collaborators"
-             [matMenuTriggerFor]="menu"
-             [matMenuTriggerData]="{user: user}"
              [class.clickable]="isOwner">
           <mat-icon class="user-icon">person</mat-icon>
           <span class="user-name">{{ user.userName }}</span>
-          <mat-icon class="more-icon" *ngIf="isOwner">more_vert</mat-icon>
+          <mat-icon class="more-icon" *ngIf="isOwner" [matMenuTriggerFor]="isOwner && menu ? menu : null" [matMenuTriggerData]="{user: user}">more_vert</mat-icon>
         </div>
       </div>
     </div>
@@ -25,7 +23,7 @@
   </div>
 </div>
 
-<mat-menu #menu="matMenu">
+<mat-menu #menu="matMenu" [overlapTrigger]="false" *ngIf="isOwner">
   <ng-template matMenuContent let-user="user">
     <ng-container *ngIf="user.permission === PermissionEnum.VIEW">
       <button mat-menu-item

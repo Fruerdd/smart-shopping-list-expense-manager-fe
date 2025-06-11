@@ -76,9 +76,183 @@
     font-size: 24px;
     color: white;
   }
+
   .music-icon-li mat-icon:hover {
     color: #0B3B5B;
     transition: 0.2s ease-in-out;
+
+}
+
+.music-popup {
+  position: absolute;
+  top: 80px;
+  right: 55px;
+  background-color: #FCACC4;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.music-icon-li mat-icon {
+  vertical-align: middle;
+  font-size: 24px;
+  color: white;
+}
+
+.logo-image {
+  display: flex;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+}
+
+.logo-container {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  z-index: 100;
+}
+
+.log-out-button {
+  background-color: #dc2626;
+  color: white;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 50px;
+}
+
+#sign-up-button {
+  background-color: white;
+  color: #0B3B5B;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 30px;
+}
+
+#log-in-button {
+  background-color: #FCACC4;
+  color: #0B3B5B;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 30px;
+}
+
+.company-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-left: 10px;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.desktop_menu ul {
+  padding: 0;
+  margin: 0;
+  margin-right: 65px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.desktop_menu ul li {
+  list-style-type: none;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+  margin-left: 15px;
+  font-weight: 500;
+  padding: 0 8px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.desktop_menu ul li:hover {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 0 8px;
+  cursor: pointer;
+  color: #0B3B5B;
+  transition: 0.2s ease-in-out;
+  background-color: white;
+  border-radius: 50px;
+}
+
+.log-out-button:hover {
+  background-color: darkred !important;
+  color: white !important;
+  transition: 0.2s ease-in-out;
+}
+
+.desktop_menu ul li.active {
+  border: 2px solid white;
+  border-radius: 30px;
+  color: #0B3B5B;
+  background-color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+.menu-icon {
+  display: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  padding-top: 10px;
+}
+
+@media (max-width: 1200px) {
+  /* 1) Hide the desktop nav unless we’re in “mobile_menu” mode */
+  .desktop_menu:not(.mobile_menu) {
+    display: none !important;
+  }
+
+  /* 2) When you click the icon, Angular adds .mobile_menu → show it */
+  .desktop_menu.mobile_menu {
+    display: flex !important;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100%;
+    background-color: #0B3B5B;
+    padding-top: 60px;     /* push content below your header bar */
+    transition: right 0.3s ease-in-out;
+  }
+
+  /* (optional) push the hamburger icon flush right */
+  .col {
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+
+
+@media screen and (min-width: 128px) and (max-width: 1200px) {
+    .desktop_menu {
+      display: none;
+    }
+    .text-end {
+      display: flex !important;
+      justify-content: flex-end;
+      align-items: center;
+    }
+.music-icon-li mat-icon:hover {
+  color: #0B3B5B;
+  transition: 0.2s ease-in-out;
+}
+
+@media screen and (min-width: 128px) and (max-width: 1200px) {
+  .desktop_menu {
+    display: none;
   }
   
   /* Logo */
@@ -143,6 +317,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+
   }
   .desktop_menu ul li {
     list-style-type: none;
@@ -171,7 +346,6 @@
     transition: all 0.3s ease-in-out;
   }
   
-  /* Menu icon */
   .menu-icon {
     font-size: 30px;       /* adjust size as needed */
     color: white;
@@ -207,7 +381,6 @@
     justify-content: center;
     border: 2px solid #0B3B5B;
     z-index: 10;
-  }
   
   /* Mobile music controls */
   .mobile-music-controls {
@@ -216,6 +389,31 @@
     gap: 10px;
     padding: 5px 0;
   }
+
+
+  .mobile_menu .log-out-button {
+    background-color: #dc2626;
+    color: white;
+    cursor: pointer;
+    border-radius: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border-top: 0.5px solid #fcfcfc;
+    border-bottom: none;
+  }
+
+  .mobile_menu .log-out-button:hover {
+    background-color: darkred !important;
+    color: white !important;
+    animation: none !important;
+    border-radius: 0 !important;
+  }
+
   .mobile-music-controls button[mat-icon-button] {
     color: #FCACC4;
     margin-right: 10px;
