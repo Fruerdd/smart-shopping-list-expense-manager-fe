@@ -7,7 +7,7 @@
           <img src="app_logo.jpg" class="logo-image" alt="logo" (click)="scrollToTopAndActivateHome()" style="cursor: pointer;" />
 
           <span class="company-name" (click)="scrollToTop()" style="cursor: pointer;">
-            <span *ngIf="isAdminPage">Admin Dashboard</span>
+            <span *ngIf="isAdminSection">Admin Dashboard</span>
             <span *ngIf="isMyProfilePage">My Profile</span>
             <span *ngIf="isOtherUserProfilePage">User Profile</span>
             <span *ngIf="isDashboardPage">User Dashboard</span>
@@ -24,6 +24,7 @@
 
         <div class="desktop_menu" [class.mobile_menu]="menuValue">
           <ul>
+            <ng-container *ngIf="!isAdminSection">
             <audio
               #backgroundMusic
               src="/assets/music/background_tune.mp3"
@@ -92,12 +93,10 @@
                 [ngClass]="{'active': activePage === 'log-out'}" class="log-out-button">
               Log Out
             </li>
-            <!-- Music Player -->
             <li *ngIf="!isMobileView && !isAdminPage && !isMyProfilePage && !isOtherUserProfilePage && !isDashboardPage && !isShoppingListPage && !isEditProfilePage">
               <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
             </li>
-
-            <!-- User dashboard specific links -->
+          </ng-container>
             <ng-container *ngIf="isDashboardPage">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
               <li [routerLink]="['/user-profile', loggedInUserId]" routerLinkActive="active" (click)="activatePage('user-profile')">My Profile</li>
@@ -140,8 +139,9 @@
               </li>
             </ng-container>
 
-            <ng-container *ngIf="isAdminPage">
+            <ng-container *ngIf="isAdminSection">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
+              <li routerLink="/admin-page" class="admin-button" (click)="activatePage('admin-page')">Admin page</li>         
               <li (click)="activatePage('log-out')" [ngClass]="{'active': activePage === 'log-out'}" class="log-out-button">Log Out</li>
               <li *ngIf="!isMobileView">
                 <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>

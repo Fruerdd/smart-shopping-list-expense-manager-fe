@@ -1,7 +1,8 @@
+<!-- 1) Container for Edit Products -->
 <div class="container mt-4">
   <h2>Edit Products</h2>
 
-  <!-- 1) Store selector -->
+  <!-- 2) Store selector -->
   <div class="mb-3 col-md-4">
     <label class="form-label">Store</label>
     <select
@@ -17,66 +18,77 @@
     </select>
   </div>
 
-  <!-- 2) Editable table -->
-  <table *ngIf="products.length" class="table table-striped mt-3">
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Category</th>
-      <th>Description</th>
-      <th class="text-center">Active</th>
-      <th>Price</th>
-      <th>Barcode</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let p of products; let i = index">
-      <td>{{ p.productName }}</td>
-      <td>
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          [(ngModel)]="p.category"
-          name="category{{i}}"
-        />
-      </td>
-      <td>
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          [(ngModel)]="p.description"
-          name="description{{i}}"
-        />
-      </td>
-      <td class="text-center">
-        <input
-          type="checkbox"
-          class="form-check-input"
-          [(ngModel)]="p.isActive"
-          name="active{{i}}"
-        />
-      </td>
-      <td style="max-width: 100px;">
-        <input
-          type="number"
-          class="form-control form-control-sm"
-          [(ngModel)]="p.price"
-          name="price{{i}}"
-        />
-      </td>
-      <td style="max-width: 120px;">
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          [(ngModel)]="p.barcode"
-          name="barcode{{i}}"
-        />
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <!-- 3) Responsive wrapper for the table -->
+  <!-- Wrapping the table in .table-responsive makes it scroll horizontally on small screens rather than overflow -->
+  <!-- Reference: Bootstrap Responsive Tables: https://getbootstrap.com/docs/5.3/content/tables/#responsive-tables -->
+  <div *ngIf="products.length" class="table-responsive mt-3">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <!-- Example: Hide less-critical columns on very small screens if desired -->
+          <!-- <th class="d-none d-sm-table-cell">Category</th> -->
+          <th>Category</th>
+          <th class="d-none d-xs-table-cell d-sm-table-cell">Description</th>
+          <th class="text-center">Active</th>
+          <th>Price</th>
+          <th class="d-none d-md-table-cell">Barcode</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products; let i = index">
+          <td>
+            <!-- If productName is long, ensure it wraps or truncates -->
+            <div class="text-truncate" style="max-width: 150px;">
+              {{ p.productName }}
+            </div>
+          </td>
+          <td>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              [(ngModel)]="p.category"
+              name="category{{i}}"
+            />
+          </td>
+          <td class="d-none d-xs-table-cell d-sm-table-cell">
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              [(ngModel)]="p.description"
+              name="description{{i}}"
+            />
+          </td>
+          <td class="text-center">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [(ngModel)]="p.isActive"
+              name="active{{i}}"
+            />
+          </td>
+          <td style="max-width: 100px;">
+            <input
+              type="number"
+              class="form-control form-control-sm"
+              [(ngModel)]="p.price"
+              name="price{{i}}"
+            />
+          </td>
+          <td class="d-none d-md-table-cell" style="max-width: 120px;">
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              [(ngModel)]="p.barcode"
+              name="barcode{{i}}"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <!-- 3) Submit button -->
+  <!-- 4) Submit button -->
   <button
     *ngIf="products.length"
     class="btn btn-primary mt-2"
@@ -85,7 +97,7 @@
     Submit Changes
   </button>
 
-  <!-- 4) No products message -->
+  <!-- 5) No products message -->
   <div
     *ngIf="selectedStoreId && !products.length"
     class="alert alert-info mt-2"
