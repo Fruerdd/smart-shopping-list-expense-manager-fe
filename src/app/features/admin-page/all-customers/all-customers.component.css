@@ -1,56 +1,138 @@
-.all-customers-container {
-  margin-top: 1rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-}
+:host {
+  display: block;
 
-.customers-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
+  .all-customers-container {
+    margin-top: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
 
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
+    .customers-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
 
-.add-user-btn {
-  background-color: #6c63ff;
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-}
+      h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #333;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .add-user-btn {
+        background-color: #6c63ff;
+        color: #fff;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+      }
+      .add-user-btn:hover {
+        background-color: #5a55d1;
+      }
+    }
 
-.add-user-btn:hover {
-  background-color: #5a55d1;
-}
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto; /* allow horizontal scroll on narrow screens if needed */
+    }
 
-.customers-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    .customers-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1rem;
+    }
+    .customers-table th,
+    .customers-table td {
+      text-align: left;
+      padding: 0.5rem;
+      border-bottom: 1px solid #ccc;
+    }
+    .active-status {
+      color: green;
+      font-weight: 600;
+    }
+    .inactive-status {
+      color: red;
+      font-weight: 600;
+    }
+  }
 
-.customers-table th,
-.customers-table td {
-  text-align: left;
-  padding: 0.5rem;
-  border-bottom: 1px solid #ccc;
-}
+  /* Tablet breakpoint: adjust padding and font-sizes */
+  @media screen and (max-width: 1024px) {
+    .all-customers-container {
+      padding: 0.8rem;
 
-.active-status {
-  color: green;
-  font-weight: 600;
-}
+      .customers-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
 
-.inactive-status {
-  color: red;
-  font-weight: 600;
+        h3 {
+          font-size: 1.1rem;
+        }
+        .add-user-btn {
+          padding: 0.5rem 0.8rem;
+          font-size: 0.9rem;
+        }
+      }
+      .customers-table {
+        font-size: 0.9rem;
+      }
+      .customers-table th,
+      .customers-table td {
+        padding: 0.4rem;
+      }
+      /* Do not hide columns on tablet unless desired. */
+    }
+  }
+
+  /* Mobile breakpoint: hide Phone, Email, City columns */
+  @media screen and (max-width: 768px) {
+    .all-customers-container {
+      padding: 0.6rem;
+
+      .customers-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+
+        h3 {
+          font-size: 1rem;
+        }
+        .add-user-btn {
+          padding: 0.4rem 0.6rem;
+          font-size: 0.85rem;
+        }
+      }
+      .table-responsive {
+        overflow-x: auto;
+      }
+      .customers-table {
+        font-size: 0.85rem;
+      }
+      .customers-table th,
+      .customers-table td {
+        padding: 0.3rem;
+      }
+
+      /* Hide columns: nth-child indices based on column order:
+         1: Name, 2: Phone Number, 3: Email, 4: City, 5: Status */
+      .customers-table th:nth-child(2),
+      .customers-table th:nth-child(3),
+      .customers-table th:nth-child(4),
+      .customers-table td:nth-child(2),
+      .customers-table td:nth-child(3),
+      .customers-table td:nth-child(4) {
+        display: none;
+      }
+    }
+  }
 }

@@ -68,6 +68,7 @@
             <li *ngIf="isLoggedIn && !isDashboardPage && !isMyProfilePage && !isOtherUserProfilePage && !isAdminPage && !isAdmin && !isShoppingListPage && !isEditProfilePage"
                 routerLink="/dashboard"
                 routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
                 (click)="activatePage('dashboard')"
                 [ngClass]="{'active': activePage === 'dashboard'}">
               Dashboard
@@ -158,7 +159,7 @@
 
             <!-- Shopping List specific links -->
             <ng-container *ngIf="isShoppingListPage">
-              <li routerLink="/dashboard" routerLinkActive="active" (click)="activatePage('dashboard')">Dashboard</li>
+              <li routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="activatePage('dashboard')">Dashboard</li>
               <li *ngIf="!isMobileView">
                 <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
               </li>

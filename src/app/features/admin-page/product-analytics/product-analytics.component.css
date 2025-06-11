@@ -1,139 +1,256 @@
-.product-analytics-wrapper {
-  width: 100%;
-  padding: 1rem 2rem;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
+:host {
+  display: block;
 
-.analytics-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
+  .product-analytics-wrapper {
+    width: 100%;
+    padding: 1rem 2rem;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 
-.date-range {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #666;
-}
+    .analytics-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
 
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
+      h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #333;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .add-product-btn {
+        background-color: #6c63ff;
+        color: #fff;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+      }
+      .add-product-btn:hover {
+        background-color: #5a55d1;
+      }
+    }
 
-.add-product-btn {
-  background-color: #6c63ff;
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-}
+    .charts-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .chart-card {
+      flex: 1;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
 
-.add-product-btn:hover {
-  background-color: #5a55d1;
-}
+      .card-header {
+        margin-bottom: 0.5rem;
+      }
+      .chart-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+      }
+      .chart-stats {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin-bottom: 1rem;
 
-.charts-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
+        h3 {
+          margin: 0;
+          font-size: 2rem;
+          font-weight: 600;
+        }
+        .new-added {
+          font-size: 0.9rem;
+          color: #4f86f7;
+        }
+      }
+      .chart-container {
+        /* Desktop/base height: defined explicitly so chart has room */
+        width: 100%;
+        height: 300px;
+        /* Remove flex:1 on desktop to avoid auto-collapse issues */
+        flex: none;
+      }
+    }
 
-.chart-card {
-  flex: 1;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-}
+    .table-section {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
-.card-header {
-  margin-bottom: 0.5rem;
-}
+      h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        color: #333;
+      }
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+      }
+      .table-compact {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 1rem;
+      }
+      .table-compact th,
+      .table-compact td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+      }
+      thead tr {
+        background-color: #f3f3f3;
+      }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+    }
+  }
 
-.chart-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-}
+  /* ---------- Tablet (<=1024px) ---------- */
+  @media screen and (max-width: 1024px) {
+    .product-analytics-wrapper {
+      padding: 1rem;
 
-.chart-stats {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
+      .analytics-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
 
-.chart-stats h3 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 600;
-}
+        h2 {
+          font-size: 1.4rem;
+        }
+        .add-product-btn {
+          padding: 0.5rem 0.8rem;
+          font-size: 0.9rem;
+        }
+      }
 
-.new-added {
-  font-size: 0.9rem;
-  color: #4f86f7;
-}
+      /* Stack charts vertically */
+      .charts-row {
+        flex-direction: column;
+      }
+      .chart-card {
+        .chart-container {
+          /* Explicit height on tablet so chart shows */
+          width: 100%;
+          height: 250px;
+          flex: none;
+        }
+        .chart-title {
+          font-size: 0.95rem;
+        }
+        .chart-stats {
+          h3 {
+            font-size: 1.8rem;
+          }
+          .new-added {
+            font-size: 0.85rem;
+          }
+        }
+      }
 
-.chart-container {
-  flex: 1;
-  min-height: 300px;
-  border: 1px;
-}
+      .table-section {
+        padding: 0.8rem;
 
-/* Table Section */
-.table-section {
-  background-color: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+        h3 {
+          font-size: 1.1rem;
+        }
+        .table-compact {
+          font-size: 0.9rem;
+        }
+        .table-compact th,
+        .table-compact td {
+          padding: 0.5rem;
+        }
+        /* On tablet, keep all columns visible */
+      }
+    }
+  }
 
-.table-section h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-  color: #333;
-}
+  /* ---------- Mobile (<=768px) ---------- */
+  @media screen and (max-width: 768px) {
+    .product-analytics-wrapper {
+      padding: 0.6rem;
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
+      .analytics-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
 
-thead tr {
-  background-color: #f3f3f3;
-}
+        h2 {
+          font-size: 1.2rem;
+        }
+        .add-product-btn {
+          padding: 0.4rem 0.6rem;    /* same smaller style as all-customers */
+          font-size: 0.85rem;
+        }
+      }
 
-thead th {
-  padding: 0.75rem;
-  font-weight: 600;
-}
+      /* Stack charts vertically */
+      .charts-row {
+        flex-direction: column;
+      }
+      .chart-card {
+        .chart-container {
+          /* Explicit height on mobile so chart renders */
+          width: 100%;
+          height: 200px;
+          flex: none;
+        }
+        .chart-title {
+          font-size: 0.9rem;
+        }
+        .chart-stats {
+          h3 {
+            font-size: 1.5rem;
+          }
+          .new-added {
+            font-size: 0.8rem;
+          }
+        }
+      }
 
-tbody tr {
-  border-bottom: 1px solid #e0e0e0;
-}
+      .table-section {
+        padding: 0.6rem;
 
-tbody td {
-  padding: 0.75rem;
-  vertical-align: middle;
-}
+        h3 {
+          font-size: 1rem;
+        }
+        .table-responsive {
+          overflow-x: auto;
+        }
+        .table-compact {
+          font-size: 0.85rem;
+        }
+        .table-compact th,
+        .table-compact td {
+          padding: 0.4rem;
+        }
 
-tbody tr:last-child {
-  border-bottom: none;
-}
-
-igx-category-chart,
-i gx-data-chart {
-  background-color: #fafafa;
-  border: 2px;
+        /* Hide columns: Total Searches (2nd) and Price (4th) */
+        .table-compact th:nth-child(2),
+        .table-compact th:nth-child(4),
+        .table-compact td:nth-child(2),
+        .table-compact td:nth-child(4) {
+          display: none;
+        }
+        /* Remains: SN (1), Name (3), Shop (5) */
+      }
+    }
+  }
 }
