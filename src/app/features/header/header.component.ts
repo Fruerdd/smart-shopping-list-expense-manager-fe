@@ -42,6 +42,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
   isPlaying = false;
   volume = 0.5;
   isMusicPopupVisible = false;
+  menuOpen = false;
 
   activePage: string = '';
   menuValue: boolean = false;
@@ -157,6 +158,10 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
   pauseMusic(): void {
     this.backgroundMusicRef.nativeElement.pause();
     this.isPlaying = false;
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
   }
 
   toggleMusicPopup(): void {
