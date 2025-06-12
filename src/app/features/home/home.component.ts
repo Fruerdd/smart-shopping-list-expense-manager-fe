@@ -1,5 +1,5 @@
 import {Component, HostListener, Inject, OnInit, PLATFORM_ID, AfterViewInit, ElementRef, ViewChildren, QueryList, OnDestroy} from '@angular/core';
-import {CommonModule, isPlatformBrowser, NgOptimizedImage} from '@angular/common';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {forkJoin, of} from 'rxjs';

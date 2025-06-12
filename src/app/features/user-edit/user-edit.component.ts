@@ -4,11 +4,12 @@ import {FormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserProfileService} from '@app/services/user-profile.service';
 import {ImageUrlService} from '@app/services/image-url.service';
+import {PopupComponent} from '@app/features/user-profile/popup/popup.component';
 
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PopupComponent],
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.css'],
 })
@@ -19,6 +20,10 @@ export class UserEditComponent implements OnInit {
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
   isUploading: boolean = false;
+
+  showPopup = false;
+  popupTitle = '';
+  popupMessage = '';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -31,7 +36,7 @@ export class UserEditComponent implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      const routeId = this.route.snapshot.paramMap.get('id'); // UUID as string
+      const routeId = this.route.snapshot.paramMap.get('id');
 
       if (routeId && routeId !== 'null') {
         this.userProfileService.getUserProfileById(routeId).subscribe({
@@ -39,7 +44,6 @@ export class UserEditComponent implements OnInit {
             this.user = data;
           },
           error: (error) => {
-            console.error('Error fetching user profile:', error);
             alert('Invalid user ID or profile not found');
             this.router.navigate(['/']);
           },
@@ -56,13 +60,11 @@ export class UserEditComponent implements OnInit {
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         alert('Please select a valid image file.');
         return;
       }
 
-      // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB.');
         return;
@@ -70,7 +72,6 @@ export class UserEditComponent implements OnInit {
 
       this.selectedFile = file;
 
-      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         this.previewImageUrl = e.target?.result as string;
@@ -95,12 +96,20 @@ export class UserEditComponent implements OnInit {
     return this.imageUrlService.getFullImageUrl(avatarPath);
   }
 
+  private showPopupMessage(title: string, message: string) {
+    this.popupTitle = title;
+    this.popupMessage = message;
+    this.showPopup = true;
+  }
+
+  onPopupClose() {
+    this.showPopup = false;
+  }
+
   onSubmit(): void {
     if (this.user?.id) {
-      // Handle profile picture if selected
       if (this.selectedFile) {
         this.isUploading = true;
-        // Upload file to server using the proper endpoint
         this.userProfileService.uploadProfilePicture(this.user.id, this.selectedFile).subscribe({
           next: (avatarPath) => {
             this.user.avatar = avatarPath;
@@ -111,26 +120,28 @@ export class UserEditComponent implements OnInit {
           error: (error) => {
             console.error('File upload failed:', error);
             this.isUploading = false;
-            alert('Failed to upload profile picture. Please try again.');
+            this.showPopupMessage('Upload Failed', 'Failed to upload profile picture. Please try again.');
           }
         });
       } else {
         this.updateUserProfile();
       }
     } else {
-      alert('No user data available to update');
+      this.showPopupMessage('Error', 'No user data available to update');
     }
   }
 
   private updateUserProfile(): void {
     this.userProfileService.updateUserProfile(this.user.id, this.user).subscribe({
       next: () => {
-        alert('Profile updated successfully!');
-        this.router.navigate(['/user-profile', this.user.id]);
+        this.showPopupMessage('Success', 'Profile updated successfully!');
+        setTimeout(() => {
+          this.router.navigate(['/user-profile', this.user.id]);
+        }, 2000);
       },
       error: (error) => {
         console.error('Error updating user profile:', error);
-        alert('Failed to update profile. Please try again.');
+        this.showPopupMessage('Update Failed', 'Failed to update profile. Please try again.');
       },
     });
   }

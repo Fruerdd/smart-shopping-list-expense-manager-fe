@@ -1,14 +1,20 @@
 import {Injectable} from '@angular/core';
 import {UserProfileService} from './user-profile.service';
 import {AuthService} from './auth.service';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
+export interface PointsNotification {
+  title: string;
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoyaltyPointsService {
+  private pointsNotificationSubject = new Subject<PointsNotification>();
+  pointsNotification$ = this.pointsNotificationSubject.asObservable();
 
   constructor(
     private userProfileService: UserProfileService,
@@ -16,41 +22,35 @@ export class LoyaltyPointsService {
   ) {
   }
 
-  // Generic method to award points for any activity
   private awardPoints(activity: string, count: number = 1): Observable<string> {
     const currentUserId = this.getCurrentUserId();
 
     if (!currentUserId) {
-      console.warn('No current user found for points awarding');
       return of('No user logged in');
     }
 
     return this.userProfileService.awardLoyaltyPoints(currentUserId, activity, count).pipe(
-      catchError(error => {
-        console.error(`Error awarding points for ${activity}:`, error);
+      catchError(() => {
         return of('Points could not be awarded');
       })
     );
   }
 
-  // Show a notification for points awarded
-  showPointsNotification(message: string, showAlert: boolean = false): void {
+  private showPointsNotification(message: string, showAlert: boolean = false): void {
     if (message.includes('Earned') || message.includes('Lucky')) {
       if (showAlert) {
+        this.pointsNotificationSubject.next({
+          title: 'Points Update',
+          message: message
+        });
       }
-    } else {
-      console.log(message);
     }
   }
 
-  // Award points with notification
   awardPointsWithNotification(activity: string, count: number = 1, showAlert: boolean = false): void {
     this.awardPoints(activity, count).subscribe({
       next: (message) => {
         this.showPointsNotification(message, showAlert);
-      },
-      error: (error) => {
-        console.error('Failed to award points:', error);
       }
     });
   }
@@ -63,7 +63,6 @@ export class LoyaltyPointsService {
         return tokenPayload.id || tokenPayload.userId || tokenPayload.sub || null;
       }
 
-      // Fallback to localStorage
       const userInfo = localStorage.getItem('userInfo');
       if (userInfo) {
         const user = JSON.parse(userInfo);
@@ -71,8 +70,7 @@ export class LoyaltyPointsService {
       }
 
       return null;
-    } catch (error) {
-      console.error('Error extracting user ID:', error);
+    } catch {
       return null;
     }
   }

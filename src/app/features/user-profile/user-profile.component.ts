@@ -14,6 +14,8 @@ import {PriceAverageChartComponent} from './price-average-chart/price-average-ch
 import {AverageSavedChartComponent} from './average-saved-chart/average-saved-chart.component';
 import {CategorySpendingChartComponent} from './category-spending-chart/category-spending-chart.component';
 import {ImageUrlService} from '@app/services/image-url.service';
+import {LoyaltyPointsService, PointsNotification} from '@app/services/loyalty-points.service';
+import {PopupComponent} from '@app/features/user-profile/popup/popup.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -26,7 +28,8 @@ import {ImageUrlService} from '@app/services/image-url.service';
     PriceAverageChartComponent,
     ExpensesByStoreChartComponent,
     AverageSavedChartComponent,
-    CategorySpendingChartComponent
+    CategorySpendingChartComponent,
+    PopupComponent
   ],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
@@ -53,13 +56,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   isFriend = false;
   hasPendingFriendRequest = false;
 
+  showPopup = false;
+  popupTitle = '';
+  popupMessage = '';
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private route: ActivatedRoute,
     private userProfileService: UserProfileService,
     private router: Router,
     private authService: AuthService,
-    private imageUrlService: ImageUrlService
+    private imageUrlService: ImageUrlService,
+    private loyaltyPointsService: LoyaltyPointsService
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -77,11 +85,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.isSearching = false;
         this.showSearchResults = this.searchQuery.trim().length >= 2;
       },
-      error: (error) => {
-        console.error('Search error:', error);
+      error: () => {
         this.isSearching = false;
         this.searchResults = [];
       }
+    });
+
+    this.loyaltyPointsService.pointsNotification$.subscribe(notification => {
+      this.showPointsPopup(notification);
     });
   }
 
@@ -100,7 +111,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return 'BRONZE';
   }
 
-  // Get tier color for styling
   getTierColor(tier: string): string {
     switch (tier) {
       case 'GOLD':
@@ -114,7 +124,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Search functionality
   onSearchInput(query: string) {
     this.searchQuery = query;
     this.searchSubject.next(query);
@@ -145,43 +154,67 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
 
     if (this.isFriend) {
-      this.userProfileService.removeFriend(this.currentUserId, this.user.id).subscribe({
-        next: (response) => {
-          console.log('Friend removed:', response);
-          this.isFriend = false;
-          this.hasPendingFriendRequest = false;
-          this.loadUserData(this.user!.id);
-        },
-        error: (error) => {
-          console.error('Error removing friend:', error);
-          alert('Failed to remove friend. Please try again.');
-        }
-      });
-    } else {
-      this.userProfileService.sendFriendRequest(this.currentUserId, this.user.id).subscribe({
-        next: (response) => {
-          console.log('Friend request sent:', response);
-          this.hasPendingFriendRequest = true;
-        },
-        error: (error) => {
-          console.error('Error sending friend request:', error);
-          if (error.message && error.message.includes('already exists')) {
-            alert('Friend request already sent or you are already friends.');
-          } else {
-            alert('Failed to send friend request. Please try again.');
+      this.userProfileService.removeFriend(this.currentUserId, this.user.id)
+        .subscribe({
+          next: () => {
+            this.isFriend = false;
+            this.hasPendingFriendRequest = false;
+            this.loadUserData(this.user!.id);
+          },
+          error: () => {
+            alert('Failed to remove friend. Please try again.');
           }
-        }
-      });
+        });
+    } else {
+      this.userProfileService.sendFriendRequest(this.currentUserId, this.user.id)
+        .subscribe({
+          next: () => {
+            this.hasPendingFriendRequest = true;
+          },
+          error: (error) => {
+            if (error.message && error.message.includes('already exists')) {
+              alert('Friend request already sent');
+            } else {
+              alert('Failed to send friend request. Please try again.');
+            }
+          }
+        });
     }
   }
 
   copyCoupon(couponCode: string): void {
     if (isPlatformBrowser(this.platformId)) {
       navigator.clipboard.writeText(couponCode).then(() => {
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
+      }).catch(() => {
       });
     }
+  }
+
+  private showErrorPopup(title: string, message: string) {
+    this.popupTitle = title;
+    this.popupMessage = message;
+    this.showPopup = true;
+  }
+
+  onPopupClose() {
+    this.showPopup = false;
+  }
+
+  saveReview(): void {
+    if (!this.editedReview || !this.user?.id) {
+      return;
+    }
+
+    this.userProfileService.updateUserReview(this.user.id, this.editedReview).subscribe({
+      next: (updatedReview) => {
+        this.userReview = updatedReview;
+        this.isEditingReview = false;
+        this.editedReview = null;
+      },
+      error: () => {
+        this.showErrorPopup('Update Failed', 'Failed to update review. Please try again.');
+      }
+    });
   }
 
   submitReferral(referralCode: string): void {
@@ -190,7 +223,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
 
     if (!this.user?.id) {
-      alert('User not found');
+      this.showErrorPopup('Error', 'User not found');
       return;
     }
 
@@ -201,8 +234,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.loadUserData(this.user!.id);
       },
       error: (error) => {
-        console.error('Error applying referral code:', error);
-
         let errorMessage = error.message || 'Failed to apply referral code. Please try again.';
 
         if (errorMessage.includes('already used a referral code') ||
@@ -211,7 +242,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           errorMessage = 'You have already been referred by another user. Each user can only be referred once.';
         }
 
-        alert(errorMessage);
+        this.showErrorPopup('Referral Code Error', errorMessage);
       }
     });
   }
@@ -234,24 +265,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   cancelEditingReview(): void {
     this.isEditingReview = false;
     this.editedReview = null;
-  }
-
-  saveReview(): void {
-    if (!this.editedReview || !this.user?.id) {
-      return;
-    }
-
-    this.userProfileService.updateUserReview(this.user.id, this.editedReview).subscribe({
-      next: (updatedReview) => {
-        this.userReview = updatedReview;
-        this.isEditingReview = false;
-        this.editedReview = null;
-      },
-      error: (error) => {
-        console.error('Error updating review:', error);
-        alert('Failed to update review. Please try again.');
-      }
-    });
   }
 
   updateReviewRating(rating: number): void {
@@ -285,8 +298,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
         this.loading = false;
       },
-      error: (error) => {
-        console.error('Error loading user data:', error);
+      error: () => {
         this.userProfileService.getUserProfileById(userId).subscribe({
           next: (profile) => {
             this.user = profile;
@@ -294,8 +306,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             this.isFriend = false;
             this.loading = false;
           },
-          error: (profileError) => {
-            console.error('Error loading user profile:', profileError);
+          error: () => {
             alert('Failed to load user profile. Please try again later.');
             this.router.navigate(this.currentUserId ? ['/user-profile', this.currentUserId] : ['/user-profile']);
             this.loading = false;
@@ -318,8 +329,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.loadUserData(data.id);
         }
       },
-      error: (error) => {
-        console.error('Error fetching current user profile:', error);
+      error: () => {
         alert('Failed to load your profile. Please try again later.');
         this.router.navigate(['/login']);
         this.loading = false;
@@ -334,8 +344,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
         this.loadUserData(targetUserId);
       },
-      error: (error) => {
-        console.error('Error fetching current user profile:', error);
+      error: () => {
         alert('Failed to load your profile. Please try again later.');
         this.router.navigate(['/login']);
         this.loading = false;
@@ -396,7 +405,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         }
       }
     } catch (error) {
-      console.error('Error extracting user ID from token:', error);
       this.currentUserId = null;
     }
   }
@@ -405,9 +413,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return /^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$/i.test(str);
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy(): void { 
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+  }
+
+  private showPointsPopup(notification: PointsNotification) {
+    this.popupTitle = notification.title;
+    this.popupMessage = notification.message;
+    this.showPopup = true;
   }
 }

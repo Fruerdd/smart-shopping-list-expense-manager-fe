@@ -58,7 +58,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           this.unreadCount = count;
           this.notificationCountChanged.emit(count);
 
-          // If count changed, reload notifications
           if (count !== previousCount) {
             this.loadNotifications();
           }
@@ -84,8 +83,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         });
         this.loading = false;
       },
-      error: (error) => {
-        console.error('Error loading notifications:', error);
+      error: () => {
         this.notifications = [];
         this.loading = false;
       }
@@ -107,35 +105,33 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   acceptFriendRequest(notification: NotificationDTO) {
     if (!this.currentUserId) return;
 
-    this.userProfileService.acceptFriendRequest(this.currentUserId, notification.sourceUserId).subscribe({
-      next: (response) => {
-        console.log('Friend request accepted:', response);
-        this.markAsRead(notification);
-        this.loadNotifications();
-        this.loadUnreadCount();
-      },
-      error: (error) => {
-        console.error('Error accepting friend request:', error);
-        alert('Failed to accept friend request');
-      }
-    });
+    this.userProfileService.acceptFriendRequest(this.currentUserId, notification.sourceUserId)
+      .subscribe({
+        next: () => {
+          this.markAsRead(notification);
+          this.loadNotifications();
+          this.loadUnreadCount();
+        },
+        error: () => {
+          alert('Failed to accept friend request. Please try again.');
+        }
+      });
   }
 
   declineFriendRequest(notification: NotificationDTO) {
     if (!this.currentUserId) return;
 
-    this.userProfileService.declineFriendRequest(this.currentUserId, notification.sourceUserId).subscribe({
-      next: (response) => {
-        console.log('Friend request declined:', response);
-        this.markAsRead(notification);
-        this.loadNotifications();
-        this.loadUnreadCount();
-      },
-      error: (error) => {
-        console.error('Error declining friend request:', error);
-        alert('Failed to decline friend request');
-      }
-    });
+    this.userProfileService.declineFriendRequest(this.currentUserId, notification.sourceUserId)
+      .subscribe({
+        next: () => {
+          this.markAsRead(notification);
+          this.loadNotifications();
+          this.loadUnreadCount();
+        },
+        error: () => {
+          alert('Failed to decline friend request. Please try again.');
+        }
+      });
   }
 
   markAsRead(notification: NotificationDTO) {
@@ -143,10 +139,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       next: () => {
         notification.isRead = true;
         this.loadUnreadCount();
-      },
-      error: (error) => {
-        console.error('Error marking notification as read:', error);
       }
+      
     });
   }
 
@@ -170,9 +164,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         });
         this.loadUnreadCount();
       },
-      error: (error) => {
-        console.error('Backend mark-all-as-read failed, using individual marking:', error);
-
+      error: () => {
         this.markNotificationsIndividually(nonFriendRequestNotifications);
       }
     });
@@ -192,8 +184,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
             this.loadUnreadCount();
           }
         },
-        error: (error) => {
-          console.error(`Error marking notification ${notification.id} as read:`, error);
+        error: () => {
           completedCount++;
 
           if (completedCount === totalCount) {
