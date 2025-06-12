@@ -5,21 +5,16 @@
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    /* Desktop/base padding */
     padding: 24px;
     margin: 20px 0;
 
     display: flex;
     flex-direction: column;
-    /* No fixed min-height here; chart-side will have explicit height */
   }
 
   .chart-header {
     text-align: left;
     margin-bottom: 16px;
-    /* Match container padding: but since container has padding, we can omit extra horizontal padding */
-    /* padding: 0 24px 8px; */ 
-    /* Instead rely on container padding */
     h3 {
       margin: 0;
       font-size: 1.2rem;
@@ -32,9 +27,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    /* Space around chart and legend; no extra padding needed as container already padded */
-    /* padding: 0 24px; */
-    gap: 1rem; /* space between chart-side and legend-side */
+    gap: 1rem; 
   }
 
   .chart-side {
@@ -45,25 +38,20 @@
 
     igx-pie-chart {
       width: 100%;
-      /* Desktop/base height: give a pixel height so chart renders */
       height: 300px;
     }
   }
 
   .legend-side {
-    /* On desktop, occupy about 40% width but not less than some min */
     flex: 0 0 40%;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Ensure legend does not overflow; can scroll if too large */
     overflow-y: auto;
     max-height: 300px;
   }
 
-  /* --------------------------------------------- */
-  /* Tablet breakpoint: <=1024px                    */
-  /* --------------------------------------------- */
+
   @media screen and (max-width: 1024px) {
     .city-allocation-container {
       padding: 16px;
@@ -72,30 +60,22 @@
       font-size: 1.6rem;
     }
     .allocation-body {
-      /* Stack vertically */
       flex-direction: column;
       align-items: stretch;
-      /* gap between chart and legend */
       gap: 1rem;
     }
     .chart-side {
       igx-pie-chart {
-        /* Slightly smaller height on tablet */
         height: 250px;
       }
     }
     .legend-side {
-      /* Full width under chart */
       flex: none;
       width: 100%;
-      /* Place below chart */
-      max-height: none; /* allow natural height or scrollbar if too large */
+      max-height: none;
     }
   }
 
-  /* --------------------------------------------- */
-  /* Mobile breakpoint: <=768px                     */
-  /* --------------------------------------------- */
   @media screen and (max-width: 768px) {
     .city-allocation-container {
       padding: 12px;
@@ -110,14 +90,12 @@
     }
     .chart-side {
       igx-pie-chart {
-        /* Smaller height on mobile */
         height: 200px;
       }
     }
     .legend-side {
       flex: none;
       width: 100%;
-      /* Optionally reduce legend font-size via global or component styles if needed */
     }
   }
 }

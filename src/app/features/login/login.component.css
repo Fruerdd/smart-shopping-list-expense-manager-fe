@@ -238,7 +238,6 @@ button:disabled {
   line-height: 1.4;
 }
 
-/* Tablet styles */
 @media (max-width: 992px) {
   .login-page {
     padding: 15px;
@@ -261,7 +260,6 @@ button:disabled {
   }
 }
 
-/* Mobile landscape */
 @media (max-width: 768px) {
   .login-page {
     flex-direction: column;
@@ -285,7 +283,6 @@ button:disabled {
   }
 }
 
-/* Mobile portrait */
 @media (max-width: 576px) {
   .login-page {
     padding: 15px;

@@ -41,12 +41,10 @@
 
   <nav aria-label="Customer pagination" class="mt-3">
     <ul class="pagination justify-content-center">
-      <!-- Previous button: always visible -->
       <li class="page-item" [class.disabled]="currentPage === 1">
         <a class="page-link" (click)="goToPrevious()" tabindex="-1">Previous</a>
       </li>
 
-      <!-- Page numbers / ellipsis: hidden on extra-small screens -->
       <ng-container *ngIf="displayPages.length">
         <li
           class="page-item d-none d-sm-block"
@@ -54,7 +52,6 @@
           [class.active]="page === currentPage"
           [class.disabled]="page === '...'"
         >
-          <!-- If it's a number, make clickable -->
           <a
             class="page-link"
             *ngIf="page !== '...'; else ellipsisTpl"
@@ -62,14 +59,12 @@
           >
             {{ page }}
           </a>
-          <!-- Ellipsis template -->
           <ng-template #ellipsisTpl>
             <span class="page-link">…</span>
           </ng-template>
         </li>
       </ng-container>
 
-      <!-- Next button: always visible -->
       <li class="page-item" [class.disabled]="currentPage === totalPages">
         <a class="page-link" (click)="goToNext()">Next</a>
       </li>

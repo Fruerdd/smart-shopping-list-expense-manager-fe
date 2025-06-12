@@ -1,117 +1,181 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import {StoreDetailsDTO, StoreDTO, StorePriceDTO, StoreService} from '@app/services/store.service';
-import {AddProductPayload, ProductService} from '@app/services/product.service';
+import {
+  StoreDTO,
+  StoreDetailsDTO,
+  StoreService,
+  AvailableProductDTO
+} from '@app/services/store.service';
+
+import { AddProductPayload, ProductService } from '@app/services/product.service';
 
 @Component({
   selector: 'app-add-products',
   standalone: true,
-
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    MatSnackBarModule
   ],
-
   templateUrl: './add-products.component.html',
   styleUrls: ['./add-products.component.css']
 })
 export class AddProductsComponent implements OnInit {
-  productsForm!: FormGroup;
+  stores: StoreDTO[] = [];
+  store: StoreDetailsDTO | null = null;
+  storeId: string | null = null;
+  availableProducts: AvailableProductDTO[] = [];
   csvProducts: AddProductPayload[] = [];
 
-  storeId: string | null = null;
-  store: StoreDetailsDTO | null = null;
-  stores: StoreDTO[] = [];
-  existingProducts: StorePriceDTO[] = [];
+  searchTerm: string = '';
+  filterCategory: string = '';
+  currentPage: number = 1;
+  readonly pageSize: number = 10;
 
   constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
     private storeSvc: StoreService,
-    private productSvc: ProductService
-  ) {
-  }
+    private productSvc: ProductService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    // 1) build form before subscribing
-    this.productsForm = this.fb.group({
-      products: this.fb.array([this.createProductGroup()])
+    this.storeSvc.getStores().subscribe((sts: StoreDTO[]) => {
+      this.stores = sts;
     });
 
-    // 2) load store list
-    this.storeSvc.getStores().subscribe(list => this.stores = list);
-
-    // 3) react to route changes
     this.route.paramMap.subscribe(params => {
       const id = params.get('storeId');
       if (id) {
         this.storeId = id;
         this.loadStore(id);
-        this.loadExisting(id);
-        this.patchStoreIdToForm(id);
+        this.loadAvailableProducts(id);
       } else {
         this.storeId = null;
         this.store = null;
-        this.existingProducts = [];
+        this.availableProducts = [];
       }
     });
   }
 
-  get productsArray(): FormArray {
-    return this.productsForm.get('products') as FormArray;
-  }
-
-  private createProductGroup(): FormGroup {
-    return this.fb.group({
-      storeId: [this.storeId, Validators.required],
-      productName: ['', Validators.required],
-      category: [''],
-      description: [''],
-      price: [0, [Validators.required, Validators.min(0)]],
-      barcode: [''],
-      isActive: [true]
-    });
-  }
-
-  private patchStoreIdToForm(storeId: string) {
-    this.productsArray.controls.forEach(ctrl =>
-      ctrl.patchValue({storeId})
-    );
-  }
-
-  addProductRow(): void {
-    const group = this.createProductGroup();
-    if (this.storeId) group.patchValue({storeId: this.storeId});
-    this.productsArray.push(group);
-  }
-
-  removeProductRow(i: number): void {
-    this.productsArray.removeAt(i);
-  }
-
   onStoreSelected(id: string): void {
-    if (!id) {
-      this.router.navigate(['/admin-page/add-products']);
-    } else {
+    if (id) {
       this.router.navigate(['/admin-page/add-products', id]);
+    } else {
+      this.router.navigate(['/admin-page/add-products']);
     }
   }
 
-  onSubmit(): void {
-    if (!this.productsForm.valid) return;
-    const payload: AddProductPayload[] = this.productsForm.value.products;
-    this.productSvc.bulkAddProducts(payload).subscribe({
-      next: () => alert('Manual products added'),
-      error: e => alert('Error: ' + e.message)
+  private loadStore(id: string): void {
+    this.storeSvc.getStore(id)
+      .subscribe((s: StoreDetailsDTO) => {
+        this.store = s;
+      });
+  }
+
+  private loadAvailableProducts(id: string): void {
+    this.storeSvc.getAvailableProducts(id)
+      .subscribe((list: AvailableProductDTO[]) => {
+        this.availableProducts = list;
+        this.searchTerm = '';
+        this.filterCategory = '';
+        this.currentPage = 1;
+      });
+  }
+
+  get categories(): string[] {
+    const cats = Array.from(
+      new Set(
+        this.availableProducts
+          .map(p => p.category)
+          .filter(c => !!c)
+      )
+    );
+    return cats.sort((a, b) => a.localeCompare(b));
+  }
+
+  get filteredProducts(): AvailableProductDTO[] {
+    let items = this.availableProducts;
+    if (this.searchTerm && this.searchTerm.trim()) {
+      const term = this.searchTerm.trim().toLowerCase();
+      items = items.filter(p =>
+        p.productName.toLowerCase().includes(term)
+      );
+    }
+    if (this.filterCategory && this.filterCategory !== '') {
+      items = items.filter(p => p.category === this.filterCategory);
+    }
+    return items;
+  }
+
+  get totalPages(): number {
+    const len = this.filteredProducts.length;
+    const tp = Math.ceil(len / this.pageSize);
+    return tp > 0 ? tp : 1;
+  }
+
+  get pagedProducts(): AvailableProductDTO[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.filteredProducts.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  onSearchTermChange(): void {
+    this.currentPage = 1;
+  }
+  onFilterCategoryChange(): void {
+    this.currentPage = 1;
+  }
+
+  addToStore(item: AvailableProductDTO): void {
+    if (!this.storeId) return;
+
+    const payload: AddProductPayload = {
+      storeId: this.storeId,
+      productId: item.productId,
+      productName: item.productName,
+      category: item.category,
+      description: item.description,
+      price: 0,
+      barcode: '',
+      isActive: item.active
+    };
+
+    this.productSvc.bulkAddProducts([payload]).subscribe({
+      next: () => {
+        this.snackBar.open(
+          `${item.productName} added to ${this.store?.name}`,
+          '',
+          { duration: 3000 }
+        );
+        this.loadAvailableProducts(this.storeId!);
+      },
+      error: e => {
+        this.snackBar.open(
+          `Error: ${e.message}`,
+          '',
+          { duration: 5000 }
+        );
+      }
     });
   }
 
-  onFileSelected(evt: Event) {
+  onFileSelected(evt: Event): void {
     const file = (evt.target as HTMLInputElement).files?.[0];
     if (!file || !this.storeId) return;
 
@@ -141,21 +205,23 @@ export class AddProductsComponent implements OnInit {
 
   onSubmitCsv(): void {
     if (!this.csvProducts.length) return;
+
     this.productSvc.bulkAddProducts(this.csvProducts).subscribe({
       next: () => {
-        alert('CSV products uploaded');
+        this.snackBar.open(
+          `CSV products uploaded successfully!`,
+          '',
+          { duration: 3000 }
+        );
         this.csvProducts = [];
       },
-      error: e => alert('CSV upload error: ' + e.message)
+      error: e => {
+        this.snackBar.open(
+          `CSV upload error:<br>${e.message}`,
+          '',
+          { duration: 5000 }
+        );
+      }
     });
-  }
-
-  private loadStore(id: string) {
-    this.storeSvc.getStore(id).subscribe(s => this.store = s);
-  }
-
-  private loadExisting(id: string) {
-    this.storeSvc.getStoreProducts(id)
-      .subscribe(list => this.existingProducts = list);
   }
 }

@@ -10,7 +10,6 @@
   margin-top: 1rem;
 }
 
-/* Base styles (already in your code) */
 .product-analytics-wrapper {
   width: 100%;
   padding: 1rem 2rem;
@@ -41,12 +40,12 @@
   background-color: #6c63ff;
   color: #fff;
   border: none;
-  padding: 0.6rem 1rem;      /* default padding */
+  padding: 0.6rem 1rem;    
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s ease;
-  font-size: 1rem;          /* default font-size */
+  font-size: 1rem;         
 }
 
 .add-product-btn:hover {
@@ -99,11 +98,11 @@
 
 .chart-container {
   flex: 1;
-  min-height: 300px;         /* default height */
-  border: 1px;              /* seems unused, consider removing or specifying border style */
+  min-height: 300px;         
+  border: 1px;             
 }
 
-/* Table Section */
+
 .table-section {
   background-color: #fff;
   padding: 1rem;
@@ -146,7 +145,6 @@ tbody tr:last-child {
   border-bottom: none;
 }
 
-/* Customers section (as shown) */
 .all-customers-container {
   margin-top: 1rem;
   background-color: #fff;
@@ -200,25 +198,17 @@ tbody tr:last-child {
   font-weight: 600;
 }
 
-/* ============================================= */
-/* Responsive adjustments for tablets and mobile */
-/* Breakpoint example: tablets ~ up to 1024px, phones ~ up to 768px */
-/* Adjust as needed for your design/system */
 
-/* 1. For tablets (max-width: 1024px) */
 @media screen and (max-width: 1024px) {
-  /* Place charts in a single column for better readability on narrower screens */
   .charts-row {
     flex-direction: column;
-    gap: 1rem;             /* vertical spacing between chart-cards */
+    gap: 1rem;
   }
 
-  /* Reduce chart-container height slightly */
   .chart-container {
     min-height: 250px;
   }
 
-  /* Shrink header font-sizes */
   .chart-title {
     font-size: 0.95rem;
   }
@@ -229,14 +219,12 @@ tbody tr:last-child {
     font-size: 0.85rem;
   }
 
-  /* Buttons slightly smaller */
   .add-product-btn,
   .add-user-btn {
     padding: 0.5rem 0.8rem;
     font-size: 0.9rem;
   }
 
-  /* Table: slightly smaller text */
   table, .customers-table {
     font-size: 0.9rem;
   }
@@ -245,9 +233,7 @@ tbody tr:last-child {
   }
 }
 
-/* 2. For mobile phones (max-width: 768px) */
 @media screen and (max-width: 768px) {
-  /* Further stack everything in column */
   .analytics-header {
     flex-direction: column;
     align-items: flex-start;
@@ -262,10 +248,9 @@ tbody tr:last-child {
     flex-direction: column;
   }
   .chart-container {
-    min-height: 200px;    /* smaller height for phone */
+    min-height: 200px;
   }
 
-  /* Even smaller font-sizes */
   .chart-title {
     font-size: 0.9rem;
   }
@@ -282,7 +267,6 @@ tbody tr:last-child {
     font-size: 0.85rem;
   }
 
-  /* Table: make table horizontally scrollable if too wide */
   .table-section, .customers-table {
     overflow-x: auto;
   }
@@ -293,7 +277,6 @@ tbody tr:last-child {
     padding: 0.4rem;
   }
 
-  /* Reduce padding in wrappers */
   .product-analytics-wrapper {
     padding: 1rem;
   }
@@ -302,19 +285,4 @@ tbody tr:last-child {
     padding: 0.8rem;
   }
 
-  /* Optional: collapse less important columns or hide on very small screens.
-     For example, hide 'Price' or 'Shop' if necessary:
-     .table-section th:nth-child(4),
-     .table-section td:nth-child(4),
-     .table-section th:nth-child(5),
-     .table-section td:nth-child(5) {
-       display: none;
-     }
-     Use carefully based on UX needs.
-  */
 }
-
-/* Reference:
-   - CSS Media Queries: https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
-   - Flexbox basics: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
-*/

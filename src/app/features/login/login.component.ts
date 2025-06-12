@@ -42,6 +42,7 @@ export class LoginComponent {
           this.router.navigate(['/home']);
         }
       },
+
       error: () => {
         this.errorMessage = 'Login failed. Please check your credentials and try again.';
       }

@@ -5,6 +5,15 @@ import {map} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 
 
+export interface AvailableProductDTO {
+  productId: string;
+  productName: string;
+  category: string;
+  description: string;
+  active: boolean;
+}
+
+
 export interface StoreDTO {
   storeId: string;
   name: string;
@@ -77,6 +86,12 @@ export class StoreService {
     return this.http.get<StorePriceDTO[]>(`${this.apiUrl}/${id}/products`);
   }
 
+  getAvailableProducts(storeId: string): Observable<AvailableProductDTO[]> {
+    return this.http.get<AvailableProductDTO[]>(
+      `${this.base}/api/stores/${storeId}/available-products`
+    );
+  }
+
   /** — new methods — */
 
   /**
@@ -127,3 +142,4 @@ export class StoreService {
       })));
   }
 }
+

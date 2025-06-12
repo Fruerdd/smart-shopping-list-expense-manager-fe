@@ -29,12 +29,10 @@
 
     .chart-wrapper {
       width: 100%;
-      /* Desktop/base height */
       height: 300px;
     }
   }
 
-  /* Tablet: max-width ~1024px */
   @media screen and (max-width: 1024px) {
     .popular-shops-container {
       padding: 0.8rem;
@@ -43,13 +41,11 @@
         font-size: 1.1rem;
       }
       .chart-wrapper {
-        /* Slightly smaller height */
         height: 250px;
       }
     }
   }
 
-  /* Mobile: max-width ~768px */
   @media screen and (max-width: 768px) {
     .popular-shops-container {
       padding: 0.6rem;
@@ -58,7 +54,6 @@
         font-size: 1rem;
       }
       .chart-wrapper {
-        /* Smaller height on phone */
         height: 200px;
       }
     }

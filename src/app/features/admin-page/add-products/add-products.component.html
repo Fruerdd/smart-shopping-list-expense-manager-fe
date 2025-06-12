@@ -1,6 +1,4 @@
 <div class="container">
-
-  <!-- Top-level Store selector -->
   <div class="mb-4">
     <label for="storeSelect" class="form-label">Choose Store:</label>
     <select
@@ -16,29 +14,91 @@
     </select>
   </div>
 
-  <!-- Existing Products -->
   <div *ngIf="storeId && store" class="mb-4">
     <h2>Add Products to {{ store.name }}</h2>
+
+    <div class="row mb-3">
+      <div class="col-md-6 mb-2">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by name..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchTermChange()"
+        />
+      </div>
+      <div class="col-md-4 mb-2">
+        <select
+          class="form-select"
+          [(ngModel)]="filterCategory"
+          (ngModelChange)="onFilterCategoryChange()"
+        >
+          <option value="">All Categories</option>
+          <option *ngFor="let cat of categories" [value]="cat">
+            {{ cat }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2 text-end">
+        <small class="text-muted">
+          {{ filteredProducts.length }} found
+        </small>
+      </div>
+    </div>
+
     <h4>Existing Products</h4>
     <table class="table table-striped">
       <thead>
-      <tr>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Barcode</th>
-      </tr>
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th class="text-center">Active</th>
+          <th>Add</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let item of existingProducts">
-        <td>{{ item.productName }}</td>
-        <td>{{ item.price | number:'1.2-2' }}</td>
-        <td>{{ item.barcode || '–' }}</td>
-      </tr>
+        <tr *ngFor="let item of pagedProducts">
+          <td>{{ item.productName }}</td>
+          <td>{{ item.category }}</td>
+          <td>{{ item.description }}</td>
+          <td class="text-center">
+            <input type="checkbox" [checked]="item.active" disabled />
+          </td>
+          <td>
+            <button
+              class="btn btn-sm btn-primary"
+              (click)="addToStore(item)"
+            >+</button>
+          </td>
+        </tr>
+        <tr *ngIf="pagedProducts.length === 0">
+          <td colspan="5" class="text-center">No products found.</td>
+        </tr>
       </tbody>
     </table>
+
+    <div class="d-flex justify-content-between align-items-center">
+      <button
+        class="btn btn-secondary"
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+      >
+        Previous
+      </button>
+      <div>
+        Page {{ currentPage }} of {{ totalPages }}
+      </div>
+      <button
+        class="btn btn-secondary"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages"
+      >
+        Next
+      </button>
+    </div>
   </div>
 
-  <!-- CSV Importer -->
   <div class="mb-4">
     <h4>Import via CSV</h4>
     <input
@@ -52,118 +112,26 @@
     <h5>Preview CSV Data</h5>
     <table class="table table-sm table-striped mb-3">
       <thead>
-      <tr>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Barcode</th>
-      </tr>
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Barcode</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let p of csvProducts">
-        <td>{{ p.productName }}</td>
-        <td>{{ p.category }}</td>
-        <td>{{ p.description }}</td>
-        <td>{{ p.price | number:'1.2-2' }}</td>
-        <td>{{ p.barcode }}</td>
-      </tr>
+        <tr *ngFor="let p of csvProducts">
+          <td>{{ p.productName }}</td>
+          <td>{{ p.category }}</td>
+          <td>{{ p.description }}</td>
+          <td>{{ p.price | number:'1.2-2' }}</td>
+          <td>{{ p.barcode }}</td>
+        </tr>
       </tbody>
     </table>
     <button class="btn btn-success" (click)="onSubmitCsv()">
       Upload CSV Products
     </button>
   </div>
-
-  <!-- Manual Entry Form -->
-  <form [formGroup]="productsForm" (ngSubmit)="onSubmit()">
-    <div formArrayName="products">
-      <div
-        *ngFor="let prodCtrl of productsArray.controls; let i = index"
-        [formGroupName]="i"
-        class="card mb-3"
-      >
-        <div class="card-header">
-          <h5>New Product {{ i + 1 }}</h5>
-        </div>
-        <div class="card-body">
-          <div class="mb-3">
-            <label class="form-label">Store</label>
-            <input
-              type="text"
-              class="form-control"
-              [value]="store?.name"
-              readonly
-            />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Product Name</label>
-            <input
-              type="text"
-              formControlName="productName"
-              class="form-control"
-              placeholder="Enter product name"
-              required
-            />
-          </div>
-          <div class="row mb-3">
-            <div class="col">
-              <label class="form-label">Category</label>
-              <input type="text" formControlName="category" class="form-control"/>
-            </div>
-            <div class="col">
-              <label class="form-label">Description</label>
-              <input type="text" formControlName="description" class="form-control"/>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col">
-              <label class="form-label">Price</label>
-              <input
-                type="number"
-                formControlName="price"
-                class="form-control"
-                placeholder="0.00"
-                required
-              />
-            </div>
-            <div class="col">
-              <label class="form-label">Barcode</label>
-              <input type="text" formControlName="barcode" class="form-control"/>
-            </div>
-          </div>
-          <div class="form-check form-switch mb-3">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              formControlName="isActive"
-              id="isActive{{ i }}"
-            />
-            <label class="form-check-label" for="isActive{{ i }}">
-              Active
-            </label>
-          </div>
-          <div class="text-end">
-            <button
-              type="button"
-              class="btn btn-danger"
-              (click)="removeProductRow(i)"
-              *ngIf="productsArray.length > 1"
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="d-flex justify-content-between mb-3">
-      <button type="button" class="btn btn-secondary" (click)="addProductRow()">
-        + Add Another Product
-      </button>
-      <button type="submit" class="btn btn-primary">
-        Submit Products
-      </button>
-    </div>
-  </form>
 </div>
