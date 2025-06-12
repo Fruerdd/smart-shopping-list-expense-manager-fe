@@ -4,17 +4,21 @@ import {Router, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 
 import {AuthService} from '@app/services/auth.service';
+import {PopupComponent} from '@app/features/shared-popup/popup.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, PopupComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   imageUrl: string = 'assets/images/login_image.png';
   errorMessage: string = '';
+  showPopup: boolean = false;
+  popupTitle: string = '';
+  popupMessage: string = '';
 
   loginForm: FormGroup;
 
@@ -44,8 +48,18 @@ export class LoginComponent {
       },
 
       error: () => {
-        this.errorMessage = 'Login failed. Please check your credentials and try again.';
+        this.showErrorPopup('Login Failed', 'Please check your credentials and try again.');
       }
     });
+  }
+
+  private showErrorPopup(title: string, message: string) {
+    this.popupTitle = title;
+    this.popupMessage = message;
+    this.showPopup = true;
+  }
+
+  onPopupClose() {
+    this.showPopup = false;
   }
 }

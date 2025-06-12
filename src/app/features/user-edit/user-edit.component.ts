@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserProfileService} from '@app/services/user-profile.service';
 import {ImageUrlService} from '@app/services/image-url.service';
-import {PopupComponent} from '@app/features/user-profile/popup/popup.component';
+import {PopupComponent} from '@app/features/shared-popup/popup.component';
 
 @Component({
   selector: 'app-user-edit',

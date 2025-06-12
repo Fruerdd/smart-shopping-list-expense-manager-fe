@@ -9,6 +9,7 @@
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <label for="email"></label>
       <input
         type="text"
         formControlName="email"
@@ -21,6 +22,7 @@
         Email is required.
       </div>
 
+      <label for="password"></label>
       <input
         type="password"
         formControlName="password"
@@ -36,10 +38,6 @@
       <button type="submit" [disabled]="loginForm.invalid">Log in</button>
     </form>
 
-    <div *ngIf="errorMessage" class="login-error">
-      {{ errorMessage }}
-    </div>
-
     <div class="or-divider">OR</div>
 
     <p class="signup-text">
@@ -49,3 +47,9 @@
   </div>
 </div>
 
+<app-popup
+  [isVisible]="showPopup"
+  [title]="popupTitle"
+  [message]="popupMessage"
+  (closePopup)="onPopupClose()">
+</app-popup>
