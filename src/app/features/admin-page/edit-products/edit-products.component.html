@@ -1,7 +1,6 @@
-
+<!-- src/app/features/admin-page/edit-products/edit-products.component.html -->
 <div class="container mt-4">
   <h2>Edit Products</h2>
-
   <div class="mb-3 col-md-4">
     <label class="form-label">Store</label>
     <select
@@ -42,6 +41,7 @@
               class="form-control form-control-sm"
               [(ngModel)]="p.category"
               name="category{{i}}"
+              placeholder="Enter category"
             />
           </td>
           <td class="d-none d-xs-table-cell d-sm-table-cell">

@@ -1,130 +1,133 @@
-<div class="mb-4">
-  <h4>Import Users via CSV</h4>
-  <input type="file" accept=".csv" class="form-control"
-         (change)="onCsvFileChange($event)"/>
-  <button *ngIf="isCsvPreviewVisible"
-          class="btn btn-success mt-2"
-          (click)="uploadCsv()">
-    Upload CSV Users
-  </button>
-</div>
 
-<div *ngIf="isCsvPreviewVisible" class="mb-4">
-  <h5>Preview CSV Data</h5>
-  <div class="table-responsive">
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th *ngFor="let h of csvHeaders">{{ h }}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let u of csvUsers">
-        <td *ngFor="let h of csvHeaders">{{ u[h] }}</td>
-      </tr>
-      </tbody>
-    </table>
+<div class="add-users-container">
+  <div class="mb-4">
+    <h4>Import Users via CSV</h4>
+    <input type="file" accept=".csv" class="form-control"
+           (change)="onCsvFileChange($event)"/>
+    <button *ngIf="isCsvPreviewVisible"
+            class="btn btn-success mt-2"
+            (click)="uploadCsv()">
+      Upload CSV Users
+    </button>
   </div>
-</div>
 
-<form [formGroup]="usersForm" (ngSubmit)="onSubmit()">
-  <div formArrayName="users">
-    <div *ngFor="let userCtrl of users.controls; let i = index"
-         [formGroupName]="i"
-         class="card mb-3 shadow-sm">
-      <div class="card-header">
-        <h5 class="mb-0">User {{ i + 1 }}</h5>
-      </div>
-      <div class="card-body">
-        <div class="row mb-2">
-          <div class="col-md-6">
-            <label>Name</label>
-            <input type="text" formControlName="name" class="form-control"/>
-          </div>
-          <div class="col-md-6">
-            <label>Email</label>
-            <input type="email" formControlName="email" class="form-control"/>
-          </div>
-        </div>
-
-        <div class="row mb-2">
-          <div class="col-md-6">
-            <label>Password</label>
-            <input type="password" formControlName="password" class="form-control"/>
-          </div>
-          <div class="col-md-6">
-            <label>Phone Number</label>
-            <input formControlName="phoneNumber" class="form-control"/>
-          </div>
-        </div>
-
-        <div class="row mb-2">
-          <div class="col-md-4">
-            <label>Referral Code</label>
-            <input formControlName="referralCode" class="form-control"/>
-          </div>
-          <div class="col-md-4">
-            <label>Promo Code</label>
-            <input formControlName="promoCode" class="form-control"/>
-          </div>
-          <div class="col-md-4">
-            <label>Bonus Points</label>
-            <input type="number" formControlName="bonusPoints" class="form-control"/>
-          </div>
-        </div>
-
-        <div class="row mb-2">
-          <div class="col-md-4">
-            <label>Device Info</label>
-            <input formControlName="deviceInfo" class="form-control"/>
-          </div>
-          <div class="col-md-4">
-            <label>Location</label>
-            <input formControlName="location" class="form-control"/>
-          </div>
-          <div class="col-md-4">
-            <label>User Type</label>
-            <select formControlName="userType" class="form-select">
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-check mb-2">
-          <input type="checkbox" class="form-check-input" formControlName="isActive" id="active{{i}}"/>
-          <label class="form-check-label" for="active{{i}}">Active</label>
-        </div>
-
-        <div class="row mb-2">
-          <div class="col-md-6">
-            <label>Review Score</label>
-            <input type="number" min="0" max="5" formControlName="reviewScore" class="form-control"/>
-          </div>
-          <div class="col-md-6">
-            <label>Review Context</label>
-            <input formControlName="reviewContext" class="form-control"/>
-          </div>
-        </div>
-
-        <div class="text-end">
-          <button type="button"
-                  class="btn btn-danger"
-                  (click)="removeUser(i)"
-                  *ngIf="users.length > 1">
-            Remove User
-          </button>
-        </div>
-      </div>
+  <div *ngIf="isCsvPreviewVisible" class="mb-4">
+    <h5>Preview CSV Data</h5>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th *ngFor="let h of csvHeaders">{{ h }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let u of csvUsers">
+          <td *ngFor="let h of csvHeaders">{{ u[h] }}</td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <div class="d-flex justify-content-between mt-3">
-    <button type="button" class="btn btn-primary" (click)="addUser()">
-      + Add Another User
-    </button>
-    <button type="submit" class="btn btn-success">
-      Submit Users
-    </button>
-  </div>
-</form>
+  <form [formGroup]="usersForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="users">
+      <div *ngFor="let userCtrl of users.controls; let i = index"
+           [formGroupName]="i"
+           class="card mb-3 shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0">User {{ i + 1 }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <label>Name</label>
+              <input type="text" formControlName="name" class="form-control"/>
+            </div>
+            <div class="col-md-6">
+              <label>Email</label>
+              <input type="email" formControlName="email" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <label>Password</label>
+              <input type="password" formControlName="password" class="form-control"/>
+            </div>
+            <div class="col-md-6">
+              <label>Phone Number</label>
+              <input formControlName="phoneNumber" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <label>Referral Code</label>
+              <input formControlName="referralCode" class="form-control"/>
+            </div>
+            <div class="col-md-4">
+              <label>Promo Code</label>
+              <input formControlName="promoCode" class="form-control"/>
+            </div>
+            <div class="col-md-4">
+              <label>Bonus Points</label>
+              <input type="number" formControlName="bonusPoints" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <label>Device Info</label>
+              <input formControlName="deviceInfo" class="form-control"/>
+            </div>
+            <div class="col-md-4">
+              <label>Location</label>
+              <input formControlName="location" class="form-control"/>
+            </div>
+            <div class="col-md-4">
+              <label>User Type</label>
+              <select formControlName="userType" class="form-select">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-check mb-2">
+            <input type="checkbox" class="form-check-input" formControlName="isActive" id="active{{i}}"/>
+            <label class="form-check-label" for="active{{i}}">Active</label>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <label>Review Score</label>
+              <input type="number" min="0" max="5" formControlName="reviewScore" class="form-control"/>
+            </div>
+            <div class="col-md-6">
+              <label>Review Context</label>
+              <input formControlName="reviewContext" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="text-end">
+            <button type="button"
+                    class="btn btn-danger"
+                    (click)="removeUser(i)"
+                    *ngIf="users.length > 1">
+              Remove User
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-3">
+      <button type="button" class="btn btn-primary" (click)="addUser()">
+        + Add Another User
+      </button>
+      <button type="submit" class="btn btn-success">
+        Submit Users
+      </button>
+    </div>
+  </form>
+</div>

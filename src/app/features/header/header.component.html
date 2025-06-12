@@ -13,7 +13,7 @@
             <span *ngIf="isDashboardPage">User Dashboard</span>
             <span *ngIf="isShoppingListPage">Shopping List</span>
             <span *ngIf="isEditProfilePage">Edit Profile</span>
-            <span *ngIf="!isAdminPage && !isMyProfilePage && !isOtherUserProfilePage && !isDashboardPage && !isShoppingListPage && !isEditProfilePage">GroceryMate</span>
+            <span *ngIf="!isAdminSection && !isMyProfilePage && !isOtherUserProfilePage && !isDashboardPage && !isShoppingListPage && !isEditProfilePage">GroceryMate</span>
           </span>
         </div>
       </div>
@@ -141,7 +141,7 @@
 
             <ng-container *ngIf="isAdminSection">
               <li routerLink="/home" routerLinkActive="active" (click)="activatePage('home')">Home</li>
-              <li routerLink="/admin-page" class="admin-button" (click)="activatePage('admin-page')">Admin page</li>         
+              <li routerLink="/admin-page" class="admin-button" (click)="activatePage('admin-page')">Admin Dashboard</li>         
               <li (click)="activatePage('log-out')" [ngClass]="{'active': activePage === 'log-out'}" class="log-out-button">Log Out</li>
               <li *ngIf="!isMobileView">
                 <mat-icon (click)="toggleMusicPopup()" class="music-icon-li">music_note</mat-icon>
