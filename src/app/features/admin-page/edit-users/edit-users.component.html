@@ -1,43 +1,81 @@
 <div class="edit-users-wrapper">
   <h2>Edit Users</h2>
-  <input
-    type="text"
-    [(ngModel)]="filter"
-    placeholder="Search by name or email…"
-    class="form-control mb-3"
-  />
+  <div class="row mb-3">
+    <div class="col-md-6 mb-2">
+      <input
+        type="text"
+        [(ngModel)]="filter"
+        (ngModelChange)="onFilterChange()"
+        placeholder="Search by name or email…"
+        class="form-control"
+      />
+    </div>
+    <div class="col-md-3 mb-2">
+      <select
+        [(ngModel)]="selectedRole"
+        (ngModelChange)="onFilterChange()"
+        class="form-select"
+      >
+        <option *ngFor="let t of userTypes" [value]="t">{{ t }}</option>
+      </select>
+    </div>
+  </div>
 
   <table class="table table-striped">
     <thead>
-    <tr>
-      <th>Name</th>
-      <th>Role</th>
-      <th>Active</th>
-      <th>Actions</th>
-    </tr>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Active</th>
+        <th>Actions</th>
+      </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let u of filteredUsers">
-      <td>{{ u.name }}</td>
-      <td>
-        <select [(ngModel)]="u.userType" class="form-select">
-          <option *ngFor="let t of userTypes" [value]="t">
-            {{ t }}
-          </option>
-        </select>
-      </td>
-      <td>
-        <input type="checkbox" [(ngModel)]="u.isActive"/>
-      </td>
-      <td>
-        <button class="btn btn-sm btn-danger"
-                (click)="deleteUser(u)">
-          Delete
-        </button>
-      </td>
-    </tr>
+      <tr *ngFor="let u of pagedUsers">
+        <td>{{ u.name }}</td>
+        <td>
+          <select [(ngModel)]="u.userType" class="form-select">
+            <option *ngFor="let t of userTypes" [value]="t" [disabled]="t==='ALL'">
+              {{ t }}
+            </option>
+          </select>
+        </td>
+        <td>
+          <input type="checkbox" [(ngModel)]="u.isActive"/>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-danger" (click)="deleteUser(u)">
+            Delete
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="pagedUsers.length === 0">
+        <td colspan="4" class="text-center">No users to display.</td>
+      </tr>
     </tbody>
   </table>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      Page {{ currentPage + 1 }} of {{ totalPages || 1 }}
+    </div>
+    <div>
+      <button
+        class="btn btn-outline-primary me-2"
+        (click)="prevPage()"
+        [disabled]="currentPage === 0"
+      >
+        Previous
+      </button>
+      <button
+        class="btn btn-outline-primary"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages - 1 || totalPages === 0"
+      >
+        Next
+      </button>
+    </div>
+  </div>
 
   <div class="text-end">
     <button class="btn btn-primary" (click)="saveAll()">

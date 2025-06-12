@@ -1,0 +1,12 @@
+
+
+.add-users-container {
+    padding: 20px;           
+    box-sizing: border-box;     
+  }
+  
+  .add-users-container, 
+  .add-users-container * {
+    box-sizing: inherit;
+  }
+  

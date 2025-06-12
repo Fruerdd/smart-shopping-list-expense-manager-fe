@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostBinding, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -20,20 +20,59 @@ import { HtmlSnackComponent } from '@app/html-snack/html-snack.component';
   templateUrl: './edit-products.component.html',
   styleUrls: ['./edit-products.component.css']
 })
-export class EditProductsComponent implements OnInit {
+export class EditProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   stores: StoreDTO[] = [];
   selectedStoreId = '';
   products: StorePriceDTO[] = [];
 
+  // HostBinding to apply `min-height: ...px` inline on the host element
+  @HostBinding('style.minHeight.px') minHeightPx: number | null = null;
+
+  // We use NgZone to manage the resize listener outside Angular zone for performance,
+  // but still update binding inside Angular.
+  private onResizeHandler = () => {
+    this.calculateMinHeight();
+  };
+
   constructor(
     private storeSvc: StoreService,
     private productSvc: ProductService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
     this.storeSvc.getStores()
       .subscribe(list => this.stores = list);
+  }
+
+  ngAfterViewInit(): void {
+    // Initial calculation
+    this.calculateMinHeight();
+
+    // Listen to window resize outside Angular, then re-enter Angular to update binding
+    this.ngZone.runOutsideAngular(() => {
+      window.addEventListener('resize', this.onResizeHandler);
+    });
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.onResizeHandler);
+  }
+
+  private calculateMinHeight(): void {
+    // Query your header and footer. Adjust selectors if needed.
+    const headerEl = document.querySelector('header');
+    const footerEl = document.querySelector('footer');
+
+    const headerHeight = headerEl?.getBoundingClientRect().height || 0;
+    const footerHeight = footerEl?.getBoundingClientRect().height || 0;
+
+    // Compute available height
+    const available = window.innerHeight - headerHeight - footerHeight;
+
+    // In rare cases, available might be negative; guard:
+    this.minHeightPx = available > 0 ? available : 0;
   }
 
   onStoreChange(storeId: string) {
