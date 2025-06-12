@@ -40,3 +40,12 @@
   </div>
 </div>
 
+<app-confirmation-popup
+  [isVisible]="showMarkDoneConfirmation"
+  title="Mark List as Done"
+  message="Are you sure you want to mark this list as done? This will archive the list."
+  confirmText="Mark as Done"
+  (confirmed)="onConfirmMarkAsDone()"
+  (cancelled)="onCancelMarkAsDone()">
+</app-confirmation-popup>
+

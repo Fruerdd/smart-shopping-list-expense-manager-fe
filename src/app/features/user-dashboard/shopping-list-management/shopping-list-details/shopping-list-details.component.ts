@@ -6,11 +6,12 @@ import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
 import {PermissionEnum} from '@app/models/collaborator.dto';
 import {AuthService} from '@app/services/auth.service';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
+import {ConfirmationPopupComponent} from '../shared/confirmation-popup.component';
 
 @Component({
   selector: 'app-shopping-list-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatIcon],
+  imports: [CommonModule, FormsModule, MatIconModule, MatIcon, ConfirmationPopupComponent],
   templateUrl: './shopping-list-details.component.html',
   styleUrls: ['./shopping-list-details.component.css']
 })
@@ -26,6 +27,7 @@ export class ShoppingListDetailsComponent {
   }>();
 
   private readonly userId: string;
+  showDeleteConfirmation = false;
 
   constructor(private authService: AuthService) {
     const currentUserId = this.authService.getCurrentUserId();
@@ -87,10 +89,15 @@ export class ShoppingListDetailsComponent {
   }
 
   onDeleteList(): void {
-    console.log('Delete button clicked for list:', this.list.id);
-    if (confirm('Are you sure you want to delete this list?')) {
-      console.log('Delete confirmed, emitting event');
-      this.deleteList.emit(this.list.id);
-    }
+    this.showDeleteConfirmation = true;
+  }
+
+  onConfirmDelete(): void {
+    this.showDeleteConfirmation = false;
+    this.deleteList.emit(this.list.id);
+  }
+
+  onCancelDelete(): void {
+    this.showDeleteConfirmation = false;
   }
 }

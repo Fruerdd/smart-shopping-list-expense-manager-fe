@@ -5,7 +5,6 @@
   overflow-x: hidden;
 }
 
-/* Blue Header Section */
 .profile-banner {
   background-color: #083a5e;
   color: white;
@@ -69,7 +68,6 @@
   background-color: #FCACC4;
 }
 
-/* Content Wrapper */
 .profile-content-wrapper {
   max-width: 1200px;
   margin: 0 auto;
@@ -77,7 +75,6 @@
   overflow-x: hidden;
 }
 
-/* Grid Layout */
 .profile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -85,7 +82,6 @@
   margin-top: 20px;
 }
 
-/* Card Styling */
 .card {
   background: white;
   border-radius: 12px;
@@ -101,7 +97,6 @@
   font-weight: 600;
 }
 
-/* Grid Item Order */
 .about-me {
   order: 1;
 }
@@ -123,7 +118,6 @@
   grid-column: 1 / -2;
 }
 
-/* About Me Section */
 .about-me .info-item {
   display: flex;
   align-items: center;
@@ -143,7 +137,6 @@
   font-size: 14px;
 }
 
-/* Coupon Section */
 .coupon-section h3 {
   font-size: 14px;
   margin-bottom: 12px;
@@ -173,12 +166,12 @@
 }
 
 .copy-btn {
-  background: #6c7b7f;
+  background: #083a5e;
   color: white;
 }
 
 .submit-btn {
-  background: #6c7b7f;
+  background: #083a5e;
   color: white;
 }
 
@@ -200,7 +193,6 @@
   font-size: 14px;
 }
 
-/* Friends Section */
 .friends-list {
   display: flex;
   flex-direction: column;
@@ -241,7 +233,6 @@
   font-size: 14px;
 }
 
-/* Review Section */
 .review-section .review-textarea {
   width: 100%;
   height: 120px;
@@ -291,7 +282,6 @@
   color: #083a5e;
 }
 
-/* Friends Section Additions */
 .no-friends {
   text-align: center;
   color: #083a5e;
@@ -304,7 +294,6 @@
   font-size: 14px;
 }
 
-/* Loyalty Section */
 .points-info {
   display: flex;
   align-items: center;
@@ -421,7 +410,6 @@
   height: 140px !important;
 }
 
-/* Analytics Grid */
 .analytics-grid {
   margin-top: 2rem;
   max-width: 1200px;
@@ -435,7 +423,6 @@
   margin-bottom: 1rem;
 }
 
-/* 2-column responsive grid with specific ordering for desktop */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -476,12 +463,10 @@
   }
 }
 
-/* Utility class: spans full width */
 .grid-span-full {
   grid-column: 1 / -1;
 }
 
-/* Make each chart fill its card */
 .chart-wrapper {
   flex: 1;
   min-height: 300px;
@@ -489,7 +474,6 @@
   overflow: hidden;
 }
 
-/* make every IgniteUI chart fill that wrapper */
 .chart-wrapper igx-category-chart,
 .chart-wrapper igx-pie-chart {
   position: absolute;
@@ -507,16 +491,12 @@
   overflow: hidden;
 }
 
-/* Loading State */
 .loading {
   text-align: center;
   padding: 40px;
   color: #666;
 }
 
-/* Responsive Design */
-
-/* Large tablets and small laptops (992px and below) */
 @media (max-width: 992px) {
   .banner-inner {
     padding: 25px 15px;
@@ -542,7 +522,6 @@
   }
 }
 
-/* Tablets (768px and below) */
 @media (max-width: 768px) {
   .banner-inner {
     flex-direction: column;
@@ -643,7 +622,6 @@
   }
 }
 
-/* Large mobile devices (576px and below) */
 @media (max-width: 576px) {
   .profile-container {
     font-size: 14px;
@@ -708,7 +686,6 @@
   }
 }
 
-/* Small mobile devices (480px and below) */
 @media (max-width: 480px) {
   .banner-inner {
     padding: 15px 10px;
@@ -768,7 +745,6 @@
   }
 }
 
-/* Extra small mobile devices (360px and below) */
 @media (max-width: 360px) {
   .banner-inner {
     padding: 12px 8px;
@@ -838,7 +814,6 @@
   }
 }
 
-/* Friends Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -944,7 +919,6 @@
   color: #083a5e;
 }
 
-/* Review Editing */
 .stars.editable i {
   cursor: pointer;
   transition: color 0.2s ease;
@@ -989,7 +963,6 @@
   background-color: #c82333;
 }
 
-/* Mobile responsiveness for modal */
 @media (max-width: 768px) {
   .friends-modal {
     width: 95%;
@@ -1014,7 +987,6 @@
   }
 }
 
-/* Profile welcome and tier */
 .loyalty-tier {
   display: flex;
   align-items: center;
@@ -1028,7 +1000,6 @@
   text-transform: uppercase;
 }
 
-/* Friend buttons */
 .friend-button {
   display: flex;
   align-items: center;
@@ -1060,7 +1031,6 @@
   color: #d97706;
 }
 
-/* Search functionality */
 .search-container {
   margin-bottom: 20px;
 }
@@ -1175,7 +1145,6 @@
   font-size: 12px;
 }
 
-/* Tier display in loyalty section */
 .tier-display {
   display: flex;
   align-items: center;
@@ -1227,7 +1196,6 @@
   }
 }
 
-/* Standalone Search Section */
 .search-section {
   max-width: 1200px;
   margin: 30px auto;
@@ -1280,7 +1248,7 @@
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  background: #6c7b7f;
+  background: #083a5e;
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -1293,7 +1261,7 @@
 }
 
 .search-section .clear-search-btn:hover {
-  background: #5a676b;
+  background: #083a5e;
 }
 
 .search-section .search-results {
@@ -1311,7 +1279,7 @@
 .search-section .no-results {
   padding: 20px;
   text-align: center;
-  color: #6c7b7f;
+  color: #083a5e;
   font-style: italic;
 }
 
@@ -1361,7 +1329,7 @@
 }
 
 .search-section .search-user-email {
-  color: #6c7b7f;
+  color: #083a5e;
   font-size: 14px;
 }
 
@@ -1387,15 +1355,11 @@
 }
 
 @media (max-width: 768px) {
-  /* 1. Target only your analytics grid's card-grid */
   .analytics-grid .card-grid {
-    /* always one column */
     grid-template-columns: 1fr !important;
   }
 
-  /* 2. Prevent any "span-2" from spanning two columns */
   .analytics-grid .grid-span-2 {
     grid-column: span 1 !important;
   }
 }
-

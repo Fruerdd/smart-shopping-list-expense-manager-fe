@@ -50,11 +50,8 @@
     <div class="products-section">
       <app-product-list
         [categories]="categories"
-        [filteredProducts]="filteredProducts"
         [selectedProducts]="selectedProducts"
-        [searchTerm]="searchTerm"
         [preferredStore]="preferredStore"
-        (searchChange)="onSearchInput($event)"
         (toggleCategoryEvent)="toggleCategory($event)"
         (selectProductEvent)="selectProduct($event)"
         (comparePricesEvent)="showPriceComparison($event)">
@@ -83,7 +80,6 @@
   </ng-template>
 </div>
 
-<!-- Scroll to top button -->
 <button class="scroll-to-top" 
         [class.hidden]="!showScrollToTop" 
         (click)="scrollToTop()"

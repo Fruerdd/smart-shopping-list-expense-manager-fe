@@ -504,7 +504,7 @@
   
   .search-icon {
     right: 8px;
-    font-size: 14px;
+    font-size: 23px;
   }
   
   .category-header {
@@ -517,7 +517,7 @@
   
   .category-icon {
     margin-right: 5px;
-    font-size: 14px;
+    font-size: 22px;
   }
   
   .expand-icon {
@@ -615,8 +615,8 @@
   }
   
   .category-icon {
-    margin-right: 4px;
-    font-size: 12px;
+    margin-right: 5px;
+    font-size: 22px;
   }
   
   .expand-icon {
@@ -678,4 +678,19 @@
     top: 2px;
     right: 2px;
   }
+}
+
+.search-results {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-results-title {
+  margin: 0 0 15px 0;
+  color: #0B3B5B;
+  font-size: 1.2em;
+  font-weight: 500;
 }
