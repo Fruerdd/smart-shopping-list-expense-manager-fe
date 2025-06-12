@@ -76,7 +76,6 @@
 <div class="container mt-4">
   <h4>Edit Existing Store</h4>
 
-  <!-- 1) Store selector -->
   <div class="mb-3 col-md-4">
     <label for="storeSelect" class="form-label">Store</label>
     <select
@@ -93,7 +92,6 @@
     </select>
   </div>
 
-  <!-- 2) Edit Form -->
   <form
     *ngIf="selectedStoreId"
     [formGroup]="editForm"
@@ -163,7 +161,6 @@
     </div>
   </form>
 
-  <!-- 3) Fallback when no stores exist -->
   <div *ngIf="!stores.length" class="alert alert-info">
     No stores to edit yet.
   </div>

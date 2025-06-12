@@ -41,7 +41,7 @@
 
     .table-responsive {
       width: 100%;
-      overflow-x: auto; /* allow horizontal scroll on narrow screens if needed */
+      overflow-x: auto;
     }
 
     .customers-table {
@@ -65,7 +65,6 @@
     }
   }
 
-  /* Tablet breakpoint: adjust padding and font-sizes */
   @media screen and (max-width: 1024px) {
     .all-customers-container {
       padding: 0.8rem;
@@ -90,11 +89,9 @@
       .customers-table td {
         padding: 0.4rem;
       }
-      /* Do not hide columns on tablet unless desired. */
     }
   }
 
-  /* Mobile breakpoint: hide Phone, Email, City columns */
   @media screen and (max-width: 768px) {
     .all-customers-container {
       padding: 0.6rem;
@@ -123,8 +120,6 @@
         padding: 0.3rem;
       }
 
-      /* Hide columns: nth-child indices based on column order:
-         1: Name, 2: Phone Number, 3: Email, 4: City, 5: Status */
       .customers-table th:nth-child(2),
       .customers-table th:nth-child(3),
       .customers-table th:nth-child(4),

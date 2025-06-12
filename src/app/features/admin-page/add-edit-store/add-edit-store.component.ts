@@ -1,4 +1,3 @@
-// add-edit-store.component.ts
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -18,7 +17,7 @@ import {
 } from '@app/services/store.service';
 
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { HtmlSnackComponent } from '@app/html-snack/html-snack.component'; // still needed for dynamic snack
+import { HtmlSnackComponent } from '@app/html-snack/html-snack.component'; 
 
 @Component({
   selector: 'app-add-edit-store',
@@ -29,8 +28,7 @@ import { HtmlSnackComponent } from '@app/html-snack/html-snack.component'; // st
     FormsModule,
     RouterModule,
     MatSnackBarModule
-    // --- removed HtmlSnackComponent from imports because it's only used dynamically,
-    //     not in this component's template
+
   ],
   templateUrl: './add-edit-store.component.html',
   styleUrls: ['./add-edit-store.component.css']
@@ -42,11 +40,9 @@ export class AddEditStoreComponent implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
-  // — Add / Create form
   storeForm!: FormGroup;
   storeId: string | null = null;
 
-  // — Edit existing
   stores: StoreDTO[] = [];
   selectedStoreId = '';
   editForm!: FormGroup;
@@ -83,7 +79,6 @@ export class AddEditStoreComponent implements OnInit {
     });
   }
 
-  // Create or update on top form
   onSubmit(): void {
     if (this.storeForm.invalid) return;
 
@@ -111,7 +106,6 @@ export class AddEditStoreComponent implements OnInit {
     });
   }
 
-  // When user selects a store to edit
   onStoreSelect(storeId: string): void {
     if (!storeId) {
       this.selectedStoreId = '';
@@ -126,12 +120,10 @@ export class AddEditStoreComponent implements OnInit {
         icon: d.icon,
         location: d.location,
         contact: d.contact
-        // —— likewise removed `isActive: d.isActive`
       });
     });
   }
 
-  // Submit edited store
   onEditSubmit(): void {
     if (this.editForm.invalid || !this.selectedStoreId) return;
 

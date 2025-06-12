@@ -1,4 +1,3 @@
-// edit-users.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { UserDTO, UsersService } from '@app/services/users.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { HtmlSnackComponent } from '@app/html-snack/html-snack.component' // adjust path as needed
+import { HtmlSnackComponent } from '@app/html-snack/html-snack.component' 
 
 @Component({
   selector: 'app-edit-users',
@@ -39,7 +38,6 @@ export class EditUsersComponent implements OnInit {
     });
   }
 
-  /** filtered by name/email */
   get filteredUsers() {
     const term = this.filter.trim().toLowerCase();
     if (!term) return this.users;
@@ -49,7 +47,6 @@ export class EditUsersComponent implements OnInit {
     );
   }
 
-  /** just set isActive=false */
   deleteUser(u: UserDTO) {
     u.isActive = false;
   }

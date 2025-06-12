@@ -23,17 +23,14 @@ import {IDailySearch, IMonthlyProductAdd, ITopProduct, ProductService} from '@ap
     CommonModule,
     RouterModule,
 
-    // spline chart
     IgxCategoryChartModule,
 
-    // data‐chart + category support
     IgxDataChartCoreModule,
-    IgxDataChartCategoryModule,         // ← **don't omit this**
+    IgxDataChartCategoryModule, 
     IgxDataChartInteractivityModule,
     IgxDataToolTipLayerModule,
     IgxCalloutLayerModule,
 
-    // column chart pieces
     IgxCategoryXAxisModule,
     IgxNumericYAxisModule,
     IgxColumnSeriesModule
@@ -59,11 +56,9 @@ export class ProductAnalyticsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // 1) top‐sellers table
     this.productSvc.getTopProducts()
       .subscribe(list => this.topProducts = list);
 
-    // 2) daily searches spline + total
     this.productSvc.getDailySearches()
       .subscribe(data => {
         this.dailySearches = data;
@@ -71,7 +66,6 @@ export class ProductAnalyticsComponent implements OnInit, AfterViewInit {
           data.reduce((sum, d) => sum + d.searches, 0);
       });
 
-    // 3) weekly searches → “new added” stat
     this.productSvc.getWeeklySearches()
       .subscribe(data => {
         this.weeklySearches = data;
@@ -79,13 +73,11 @@ export class ProductAnalyticsComponent implements OnInit, AfterViewInit {
           data.reduce((sum, d) => sum + d.searches, 0);
       });
 
-    // 4) monthly adds column chart
     this.productSvc.getMonthlyAdds()
       .subscribe(data => this.monthlyAdds = data);
 
   }
 
   ngAfterViewInit(): void {
-    // no extra tweaks needed
   }
 }

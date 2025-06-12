@@ -9,7 +9,6 @@
   </button>
 </div>
 
-<!-- CSV preview -->
 <div *ngIf="isCsvPreviewVisible" class="mb-4">
   <h5>Preview CSV Data</h5>
   <div class="table-responsive">
@@ -28,7 +27,6 @@
   </div>
 </div>
 
-<!-- Manual form -->
 <form [formGroup]="usersForm" (ngSubmit)="onSubmit()">
   <div formArrayName="users">
     <div *ngFor="let userCtrl of users.controls; let i = index"

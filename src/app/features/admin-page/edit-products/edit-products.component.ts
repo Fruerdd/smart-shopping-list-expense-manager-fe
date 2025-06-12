@@ -1,4 +1,3 @@
-// edit-products.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { StoreDTO, StorePriceDTO, StoreService } from '@app/services/store.service';
 import { AddProductPayload, BulkResultDTO, ProductService } from '@app/services/product.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { HtmlSnackComponent } from '@app/html-snack/html-snack.component'; // adjust path as needed
+import { HtmlSnackComponent } from '@app/html-snack/html-snack.component';
 
 @Component({
   selector: 'app-edit-products',

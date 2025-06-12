@@ -43,7 +43,6 @@ export class LoginComponent {
         }
       },
       error: (err) => {
-        // Handle specific error cases
         if (err.status === 401) {
           this.errorMessage = 'Invalid email or password. Please try again.';
         } else if (err.error && typeof err.error === 'string') {

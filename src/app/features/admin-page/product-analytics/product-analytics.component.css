@@ -77,10 +77,8 @@
         }
       }
       .chart-container {
-        /* Desktop/base height: defined explicitly so chart has room */
         width: 100%;
         height: 300px;
-        /* Remove flex:1 on desktop to avoid auto-collapse issues */
         flex: none;
       }
     }
@@ -121,7 +119,6 @@
     }
   }
 
-  /* ---------- Tablet (<=1024px) ---------- */
   @media screen and (max-width: 1024px) {
     .product-analytics-wrapper {
       padding: 1rem;
@@ -140,13 +137,11 @@
         }
       }
 
-      /* Stack charts vertically */
       .charts-row {
         flex-direction: column;
       }
       .chart-card {
         .chart-container {
-          /* Explicit height on tablet so chart shows */
           width: 100%;
           height: 250px;
           flex: none;
@@ -177,12 +172,10 @@
         .table-compact td {
           padding: 0.5rem;
         }
-        /* On tablet, keep all columns visible */
       }
     }
   }
 
-  /* ---------- Mobile (<=768px) ---------- */
   @media screen and (max-width: 768px) {
     .product-analytics-wrapper {
       padding: 0.6rem;
@@ -196,18 +189,15 @@
           font-size: 1.2rem;
         }
         .add-product-btn {
-          padding: 0.4rem 0.6rem;    /* same smaller style as all-customers */
+          padding: 0.4rem 0.6rem; 
           font-size: 0.85rem;
         }
       }
-
-      /* Stack charts vertically */
       .charts-row {
         flex-direction: column;
       }
       .chart-card {
         .chart-container {
-          /* Explicit height on mobile so chart renders */
           width: 100%;
           height: 200px;
           flex: none;
@@ -242,14 +232,12 @@
           padding: 0.4rem;
         }
 
-        /* Hide columns: Total Searches (2nd) and Price (4th) */
         .table-compact th:nth-child(2),
         .table-compact th:nth-child(4),
         .table-compact td:nth-child(2),
         .table-compact td:nth-child(4) {
           display: none;
         }
-        /* Remains: SN (1), Name (3), Shop (5) */
       }
     }
   }

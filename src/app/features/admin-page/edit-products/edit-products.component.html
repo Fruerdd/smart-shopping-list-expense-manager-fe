@@ -1,8 +1,7 @@
-<!-- 1) Container for Edit Products -->
+
 <div class="container mt-4">
   <h2>Edit Products</h2>
 
-  <!-- 2) Store selector -->
   <div class="mb-3 col-md-4">
     <label class="form-label">Store</label>
     <select
@@ -18,16 +17,11 @@
     </select>
   </div>
 
-  <!-- 3) Responsive wrapper for the table -->
-  <!-- Wrapping the table in .table-responsive makes it scroll horizontally on small screens rather than overflow -->
-  <!-- Reference: Bootstrap Responsive Tables: https://getbootstrap.com/docs/5.3/content/tables/#responsive-tables -->
   <div *ngIf="products.length" class="table-responsive mt-3">
     <table class="table table-striped">
       <thead>
         <tr>
           <th>Name</th>
-          <!-- Example: Hide less-critical columns on very small screens if desired -->
-          <!-- <th class="d-none d-sm-table-cell">Category</th> -->
           <th>Category</th>
           <th class="d-none d-xs-table-cell d-sm-table-cell">Description</th>
           <th class="text-center">Active</th>
@@ -38,7 +32,6 @@
       <tbody>
         <tr *ngFor="let p of products; let i = index">
           <td>
-            <!-- If productName is long, ensure it wraps or truncates -->
             <div class="text-truncate" style="max-width: 150px;">
               {{ p.productName }}
             </div>
@@ -87,8 +80,6 @@
       </tbody>
     </table>
   </div>
-
-  <!-- 4) Submit button -->
   <button
     *ngIf="products.length"
     class="btn btn-primary mt-2"
@@ -97,7 +88,6 @@
     Submit Changes
   </button>
 
-  <!-- 5) No products message -->
   <div
     *ngIf="selectedStoreId && !products.length"
     class="alert alert-info mt-2"

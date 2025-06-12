@@ -55,9 +55,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.usersSvc.getTestimonials().subscribe({
       next: dtos => {
         this.loadWithAvatars(dtos);
-        // Start auto-advance after testimonials are loaded
         if (this.isBrowser) {
-          setTimeout(() => this.startAutoAdvance(), 3000); // Start after 3 seconds
+          setTimeout(() => this.startAutoAdvance(), 3000);
         }
       },
       error: err => {
