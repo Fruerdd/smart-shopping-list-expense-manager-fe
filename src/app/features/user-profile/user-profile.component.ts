@@ -15,7 +15,7 @@ import {AverageSavedChartComponent} from './average-saved-chart/average-saved-ch
 import {CategorySpendingChartComponent} from './category-spending-chart/category-spending-chart.component';
 import {ImageUrlService} from '@app/services/image-url.service';
 import {LoyaltyPointsService, PointsNotification} from '@app/services/loyalty-points.service';
-import {PopupComponent} from '@app/features/user-profile/popup/popup.component';
+import {PopupComponent} from '@app/features/shared-popup/popup.component';
 
 @Component({
   selector: 'app-user-profile',

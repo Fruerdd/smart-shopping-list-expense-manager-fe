@@ -9,6 +9,7 @@
     </div>
 
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <label for="email"></label>
       <input
         type="email"
         formControlName="email"
@@ -20,6 +21,7 @@
       >
         Valid email is required.
       </div>
+      <label for="password"></label>
       <input
         type="password"
         formControlName="password"
@@ -42,6 +44,7 @@
       >
         Confirming password is required.
       </div>
+      <label for="name"></label>
       <input
         type="text"
         formControlName="name"
@@ -54,19 +57,8 @@
         Name is required.
       </div>
 
-      <!-- Submit Button -->
       <button type="submit" [disabled]="signupForm.invalid">Sign up</button>
     </form>
-
-    <!-- Error message display -->
-    <div *ngIf="errorMessage" class="signup-error">
-      {{ errorMessage }}
-    </div>
-
-    <!-- Success message display -->
-    <div *ngIf="successMessage" class="signup-success">
-      {{ successMessage }}
-    </div>
 
     <div class="or-divider">OR</div>
 
@@ -76,3 +68,11 @@
     </p>
   </div>
 </div>
+
+<app-popup
+  [isVisible]="showPopup"
+  [title]="popupTitle"
+  [message]="popupMessage"
+  (closePopup)="onPopupClose()">
+</app-popup>
+
