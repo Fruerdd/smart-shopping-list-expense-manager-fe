@@ -6,11 +6,12 @@ import {AuthService} from '@app/services/auth.service';
 import {UserProfileService} from '@app/services/user-profile.service';
 import {CommonModule} from '@angular/common';
 import {ImageUrlService} from '@app/services/image-url.service';
+import {ConfirmationPopupComponent} from '../shared/confirmation-popup.component';
 
 @Component({
   selector: 'app-shopping-list-card',
   standalone: true,
-  imports: [MatIcon, MatIconModule, CommonModule],
+  imports: [MatIcon, MatIconModule, CommonModule, ConfirmationPopupComponent],
   templateUrl: './shopping-list-card.component.html',
   styleUrls: ['./shopping-list-card.component.css']
 })
@@ -27,6 +28,7 @@ export class ShoppingListCardComponent implements OnInit {
   protected userId: string;
   ownerAvatarUrl: string | null = null;
   randomListImageUrl: string;
+  showMarkDoneConfirmation = false;
 
   constructor(
     private authService: AuthService,
@@ -55,7 +57,6 @@ export class ShoppingListCardComponent implements OnInit {
         this.ownerAvatarUrl = this.getFullImageUrl(ownerProfile.avatar);
       },
       error: (error) => {
-        console.error('Error loading owner avatar:', error);
         this.ownerAvatarUrl = null;
       }
     });
@@ -88,9 +89,16 @@ export class ShoppingListCardComponent implements OnInit {
 
   onMarkAsDone(event: Event): void {
     event.stopPropagation();
-    if (confirm('Are you sure you want to mark this list as done? This will archive the list.')) {
-      this.markListAsDone.emit(this.shoppingList.id);
-    }
+    this.showMarkDoneConfirmation = true;
+  }
+
+  onConfirmMarkAsDone(): void {
+    this.showMarkDoneConfirmation = false;
+    this.markListAsDone.emit(this.shoppingList.id);
+  }
+
+  onCancelMarkAsDone(): void {
+    this.showMarkDoneConfirmation = false;
   }
 
   private getRandomListImage(): string {

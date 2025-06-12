@@ -42,18 +42,9 @@ export class LoginComponent {
           this.router.navigate(['/home']);
         }
       },
-      error: (err) => {
-        // Handle specific error cases
-        if (err.status === 401) {
-          this.errorMessage = 'Invalid email or password. Please try again.';
-        } else if (err.error && typeof err.error === 'string') {
-          this.errorMessage = err.error;
-        } else if (err.error?.message) {
-          this.errorMessage = err.error.message;
-        } else {
-          this.errorMessage = 'Login failed. Please check your credentials and try again.';
-        }
-      },
+      error: () => {
+        this.errorMessage = 'Login failed. Please check your credentials and try again.';
+      }
     });
   }
 }
