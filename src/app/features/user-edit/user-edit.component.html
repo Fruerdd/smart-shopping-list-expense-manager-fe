@@ -32,40 +32,38 @@
 </div>
 
 <form *ngIf="user" (ngSubmit)="onSubmit()">
-  <!-- Editable Fields -->
-  <label>
+  <label for="name">
     Name:
     <input type="text" [(ngModel)]="user.name" name="name" required/>
   </label><br/>
 
-  <label>
+  <label for="email">
     Email:
     <input type="email" [(ngModel)]="user.email" name="email" required/>
   </label><br/>
 
-  <label>
+  <label for="phone">
     Phone:
     <input type="text" [(ngModel)]="user.phone" name="phone"/>
   </label><br/>
 
-  <label>
+  <label for="address">
     Address:
     <input type="text" [(ngModel)]="user.address" name="address"/>
   </label><br/>
 
-  <!-- Read-Only Fields (Display Only) -->
   <fieldset disabled>
-    <label>
+    <label for="couponCode">
       Referral/Coupon Code:
       <input type="text" [value]="user.couponCode || 'N/A'"/>
     </label><br/>
 
-    <label>
+    <label for="loyaltyPoints">
       Loyalty Points:
       <input type="number" [value]="user.bonus_points || user.loyaltyPoints || 0"/>
     </label><br/>
 
-    <label>
+    <label for="creditsAvailable">
       Credits Available:
       <input type="number" [value]="user.creditsAvailable || 0"/>
     </label><br/>
@@ -73,3 +71,10 @@
 
   <button type="submit">Save Changes</button>
 </form>
+
+<app-popup
+  [isVisible]="showPopup"
+  [title]="popupTitle"
+  [message]="popupMessage"
+  (closePopup)="onPopupClose()">
+</app-popup>

@@ -107,7 +107,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         this.listId = params.get('id');
       }),
       switchMap(() => {
-        // Load favorite products first
         return this.favoriteProductsService.getFavoriteProducts(this.userId).pipe(
           tap(favorites => {
             this.favoriteProducts = favorites.map(fav => ({
@@ -119,7 +118,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
               storeName: ''
             }));
           }),
-          // Load all products before categories
           switchMap(() => this.shoppingListService.getAllProducts()),
           tap(products => {
             this.filteredProducts = products;
@@ -128,7 +126,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         );
       }),
       tap(categories => {
-        // Add favorites category to sidebar categories
         const favoritesSidebarCategory = {
           id: 'favorite',
           name: 'Favorites',
@@ -142,7 +139,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         const specialCategories = [];
         const existingCategoryIds = categories.map(cat => cat.id);
 
-        // Only add favorites category if user has favorite products
         const favoriteProducts = this.getFavoriteProducts();
         if (favoriteProducts.length > 0 && !existingCategoryIds.includes('favorite')) {
           specialCategories.push({
@@ -237,11 +233,10 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       this.currentStore = {
         id: list.storeId,
         name: list.storeName,
-        icon: '' // You might want to load the actual icon from somewhere
+        icon: ''
       };
     }
 
-    // Update filtered products with selected products' info
     this.filteredProducts = this.filteredProducts.map(p => {
       const selectedProduct = list.items.find(sp => sp.productId === p.productId);
       if (selectedProduct) {
@@ -255,7 +250,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       return p;
     });
 
-    // If we have a store, update prices for all products
     if (this.preferredStore) {
       this.updateProductPricesForStore(this.preferredStore);
     }
@@ -267,7 +261,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
   getAllProducts(): void {
     this.shoppingListService.getAllProducts().subscribe({
       next: (products) => {
-        // Update filtered products with selected products' info
         this.filteredProducts = products.map(p => {
           const selectedProduct = this.selectedProducts.find(sp => sp.id === p.id);
           if (selectedProduct) {
@@ -280,9 +273,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
           return p;
         });
         this.categories = JSON.parse(JSON.stringify(this.originalCategories));
-      },
-      error: (error) => {
-        console.error('Error loading products:', error);
       }
     });
   }
@@ -299,7 +289,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       });
     } else if (this.selectedCategoryId === 'favorite') {
-      // For favorites category, filter the existing products
       this.shoppingListService.getAllProducts().subscribe(products => {
         this.filteredProducts = products;
         const favoriteProducts = this.getFavoriteProducts();
@@ -330,7 +319,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     }
     this.categories.forEach(category => {
       if (category.id === 'favorite') {
-        // Update favorites category with matching search results
         category.products = this.getFavoriteProducts().filter(product =>
           searchResults.some(sr => sr.productId === product.productId)
         );
@@ -344,7 +332,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       const categoryId = (product as any).category || 'general';
       const category = this.categories.find(c => c.id === categoryId);
 
-      if (category && category.id !== 'favorite') {  // Skip favorites category as it's already handled
+      if (category && category.id !== 'favorite') {
         category.products.push(product);
         (category as any).expanded = true;
       } else if (!category) {
@@ -373,13 +361,12 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
 
   onStoreSelected(store: StoreDTO): void {
     if (this.preferredStore === store.name) {
-      return; // Don't do anything if the same store is selected
+      return;
     }
     this.currentStore = store;
     this.preferredStore = store.name;
     this.showStoreSelectionModal = false;
 
-    // Update all selected products with the new store
     this.selectedProducts = this.selectedProducts.map(product => ({
       ...product,
       storeName: store.name,
@@ -393,10 +380,8 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     const index = this.selectedProducts.findIndex(p => p.productId === product.productId);
 
     if (index === -1) {
-      // Product is not selected, add it
       this.shoppingListService.getItemPriceComparisons(product.productId).subscribe({
         next: (prices) => {
-          // Find store with the lowest price
           const lowestPriceStore = prices.reduce((lowest, current) => {
             if (!lowest || (current.price && (!lowest.price || current.price < lowest.price))) {
               return current;
@@ -405,7 +390,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
           }, null as StoreItemDTO | null);
 
           if (lowestPriceStore) {
-            // Set the current store if not already set
             if (!this.currentStore) {
               this.currentStore = {
                 id: lowestPriceStore.storeId,
@@ -415,7 +399,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
               this.preferredStore = lowestPriceStore.storeName;
             }
 
-            // Add product with current store's price info
             const storePrice = prices.find(p => p.storeName === this.currentStore!.name);
             this.selectedProducts = [
               ...this.selectedProducts,
@@ -428,7 +411,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
               }
             ];
           } else {
-            // If no price info available, just add the product
             this.selectedProducts = [
               ...this.selectedProducts,
               {...product, quantity: 1}
@@ -437,7 +419,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      // Product is already selected, remove it
       this.selectedProducts = this.selectedProducts.filter(p => p.productId !== product.productId);
     }
   }
@@ -472,9 +453,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Validate store selection
     if (!this.currentStore?.id) {
-      console.error('Please select a store before saving the list');
       return;
     }
 
@@ -504,7 +483,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     let saveObservable: Observable<ShoppingListDTO>;
 
     if (this.isEditMode && this.listId && this.currentList) {
-      // For updates, maintain the existing list ID and merge with current list data
       saveObservable = this.shoppingListService.updateList(this.listId, {
         id: this.listId,
         name: formData.name,
@@ -521,7 +499,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         storeName: this.currentStore.name
       });
     } else {
-      // For new lists
       saveObservable = this.shoppingListService.createList(listData);
     }
 
@@ -533,13 +510,8 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       next: (result) => {
         if (result) {
           this.router.navigate(['/dashboard']);
-          // Award points for creating a shopping list
           this.loyaltyPointsService.awardPointsWithNotification('create_list', 1, true);
         }
-      },
-      error: (error) => {
-        console.error('Failed to save shopping list:', error);
-        // TODO: Show error message to user
       }
     });
   }
@@ -549,13 +521,11 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
   }
 
   findProductById(productId: string): ShoppingListItemDTO | null {
-    // First check in selected products
     const selectedProduct = this.selectedProducts.find(p => p.productId === productId);
     if (selectedProduct) {
       return selectedProduct;
     }
 
-    // Then check in filtered products
     return this.filteredProducts.find(p => p.productId === productId) || null;
   }
 
@@ -574,7 +544,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       icon: store.storeIcon
     };
 
-    // If we have a selected comparison product, add it to selected products
     if (this.selectedComparisonProduct) {
       const isAlreadySelected = this.selectedProducts.some(p => p.productId === this.selectedComparisonProduct!.productId);
       if (!isAlreadySelected) {
@@ -591,7 +560,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Update all selected products with the new store
     this.selectedProducts = this.selectedProducts.map(product => ({
       ...product,
       storeName: store.storeName,
@@ -626,7 +594,7 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
 
   showPriceComparison(productId: string): void {
     if (this.isLoadingComparisons) {
-      return; // Prevent multiple simultaneous requests
+      return;
     }
 
     this.isLoadingComparisons = true;
@@ -654,12 +622,11 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
     if (!storeName || !this.currentStore) return;
 
     if (this.isLoading) {
-      return; // Prevent multiple simultaneous updates
+      return;
     }
 
     this.isLoading = true;
 
-    // Update selected products
     const selectedProductUpdates = this.selectedProducts.length > 0 ?
       this.selectedProducts.map(product =>
         this.shoppingListService.getItemPriceComparisons(product.productId).pipe(
@@ -676,7 +643,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
         )
       ) : [];
 
-    // Update all products in categories
     const categoryProductUpdates: Observable<any>[] = [];
     this.categories.forEach(category => {
       if (category.products && category.products.length > 0) {
@@ -712,12 +678,10 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (updatedProducts) => {
-        // Update selected products
         if (selectedProductUpdates.length > 0) {
           this.selectedProducts = [...updatedProducts.slice(0, selectedProductUpdates.length)];
         }
 
-        // Update category products
         const categoryUpdates = updatedProducts.slice(selectedProductUpdates.length);
         const categoryUpdateMap = new Map<string, ShoppingListItemDTO[]>();
 
@@ -748,7 +712,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
           }
         });
 
-        // Force update of filtered products to reflect new store
         this.filteredProducts = this.filteredProducts.map(p => {
           const updatedProduct = updatedProducts.find((up: any) => up.productId === p.productId);
           if (updatedProduct) {
@@ -761,9 +724,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
           }
           return p;
         });
-      },
-      error: (error) => {
-        console.error('Error updating product prices:', error);
       }
     });
   }
@@ -777,12 +737,10 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // Owner always has edit permission
     if (this.currentList.ownerId === this.userId) {
       return true;
     }
 
-    // Check collaborator permissions
     const userCollaborator = this.currentList.collaborators.find(c => c.userId === this.userId);
     return userCollaborator?.permission === PermissionEnum.EDIT;
   }
@@ -794,14 +752,11 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
   }
 
   private loadSpecialCategories(): void {
-    // Load People's Choice category
     this.productService.getTopProducts().subscribe(topProducts => {
       const peoplesChoiceCategory = this.categories.find(cat => cat.id === 'peoples-choice');
       if (peoplesChoiceCategory && topProducts.length > 0) {
-        // Get all available products to match with top products
         this.shoppingListService.getAllProducts().subscribe(allProducts => {
           const matchedProducts = topProducts.map(topProduct => {
-            // Find matching product in available products by name
             const matchingProduct = allProducts.find(p =>
               p.productName.toLowerCase().trim() === topProduct.productName.toLowerCase().trim()
             );
@@ -818,7 +773,6 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
                 quantity: 1
               };
             } else {
-              // If no matching product found, create a placeholder
               return {
                 id: this.generateProductId(topProduct.productName),
                 productId: this.generateProductId(topProduct.productName),
@@ -838,18 +792,15 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Load Best Price category
     this.priceComparisonService.getAllItems(this.userId).subscribe(allProducts => {
       const bestPriceCategory = this.categories.find(cat => cat.id === 'best-price');
       if (bestPriceCategory) {
 
         if (allProducts && allProducts.length > 0) {
-          // Get price information for each product
           const priceRequests = allProducts.map(product =>
             this.priceComparisonService.getItemPrices(this.userId, product.id).pipe(
               map(prices => {
                 if (prices && prices.length > 0) {
-                  // Find the cheapest price across all stores
                   const cheapestPrice = prices.reduce((min, current) =>
                     (!min || (current.price && current.price < min.price)) ? current : min
                   );
@@ -873,15 +824,12 @@ export class ShoppingListPageComponent implements OnInit, OnDestroy {
           );
 
           forkJoin(priceRequests).subscribe(productsWithPrices => {
-            // Filter out null results and products without valid prices
             const validProducts = productsWithPrices.filter(product =>
               product && product.price && product.price > 0
             ) as ShoppingListItemDTO[];
 
-            // Deduplicate by product name and keep cheapest
             const uniqueProducts = this.deduplicateProductsByPrice(validProducts);
 
-            // Sort by price and take top 10
             bestPriceCategory.products = uniqueProducts
               .sort((a, b) => (a.price || 0) - (b.price || 0))
               .slice(0, 10);
