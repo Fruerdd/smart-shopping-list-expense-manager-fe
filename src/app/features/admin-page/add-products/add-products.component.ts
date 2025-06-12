@@ -1,21 +1,36 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+// add-products.component.ts
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import {StoreDetailsDTO, StoreDTO, StorePriceDTO, StoreService} from '@app/services/store.service';
-import {AddProductPayload, ProductService} from '@app/services/product.service';
+import {
+  StoreDetailsDTO,
+  StoreDTO,
+  StorePriceDTO,
+  StoreService
+} from '@app/services/store.service';
+import { AddProductPayload, ProductService } from '@app/services/product.service';
+
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HtmlSnackComponent } from '@app/html-snack/html-snack.component'; // adjust path as needed
 
 @Component({
   selector: 'app-add-products',
   standalone: true,
-
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
-
   templateUrl: './add-products.component.html',
   styleUrls: ['./add-products.component.css']
 })
@@ -33,20 +48,17 @@ export class AddProductsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private storeSvc: StoreService,
-    private productSvc: ProductService
-  ) {
-  }
+    private productSvc: ProductService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
-    // 1) build form before subscribing
     this.productsForm = this.fb.group({
       products: this.fb.array([this.createProductGroup()])
     });
 
-    // 2) load store list
     this.storeSvc.getStores().subscribe(list => this.stores = list);
 
-    // 3) react to route changes
     this.route.paramMap.subscribe(params => {
       const id = params.get('storeId');
       if (id) {
@@ -80,13 +92,15 @@ export class AddProductsComponent implements OnInit {
 
   private patchStoreIdToForm(storeId: string) {
     this.productsArray.controls.forEach(ctrl =>
-      ctrl.patchValue({storeId})
+      ctrl.patchValue({ storeId })
     );
   }
 
   addProductRow(): void {
     const group = this.createProductGroup();
-    if (this.storeId) group.patchValue({storeId: this.storeId});
+    if (this.storeId) {
+      group.patchValue({ storeId: this.storeId });
+    }
     this.productsArray.push(group);
   }
 
@@ -105,9 +119,22 @@ export class AddProductsComponent implements OnInit {
   onSubmit(): void {
     if (!this.productsForm.valid) return;
     const payload: AddProductPayload[] = this.productsForm.value.products;
+
     this.productSvc.bulkAddProducts(payload).subscribe({
-      next: () => alert('Manual products added'),
-      error: e => alert('Error: ' + e.message)
+      next: () => {
+        this.showNotification(
+          `<b>Manual products added</b> successfully!`,
+          3000
+        );
+        this.productsArray.clear();
+        this.productsArray.push(this.createProductGroup());
+      },
+      error: e => {
+        this.showNotification(
+          `Error: <i>${e.message}</i>`,
+          5000
+        );
+      }
     });
   }
 
@@ -143,10 +170,18 @@ export class AddProductsComponent implements OnInit {
     if (!this.csvProducts.length) return;
     this.productSvc.bulkAddProducts(this.csvProducts).subscribe({
       next: () => {
-        alert('CSV products uploaded');
+        this.showNotification(
+          `<b>CSV products uploaded</b> successfully!`,
+          3000
+        );
         this.csvProducts = [];
       },
-      error: e => alert('CSV upload error: ' + e.message)
+      error: e => {
+        this.showNotification(
+          `CSV upload error:<br>${e.message}`,
+          5000
+        );
+      }
     });
   }
 
@@ -155,7 +190,13 @@ export class AddProductsComponent implements OnInit {
   }
 
   private loadExisting(id: string) {
-    this.storeSvc.getStoreProducts(id)
-      .subscribe(list => this.existingProducts = list);
+    this.storeSvc.getStoreProducts(id).subscribe(list => this.existingProducts = list);
+  }
+
+  private showNotification(message: string, duration = 3000) {
+    this.snackBar.openFromComponent(HtmlSnackComponent, {
+      data: { message },
+      duration
+    });
   }
 }

@@ -1,9 +1,24 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+// add-edit-store.component.ts
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
-import {StoreDetailsDTO, StoreDTO, StoreService, StoreUpsertPayload} from '@app/services/store.service';
+import {
+  StoreDetailsDTO,
+  StoreDTO,
+  StoreService,
+  StoreUpsertPayload
+} from '@app/services/store.service';
+
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HtmlSnackComponent } from '@app/html-snack/html-snack.component'; // still needed for dynamic snack
 
 @Component({
   selector: 'app-add-edit-store',
@@ -12,7 +27,10 @@ import {StoreDetailsDTO, StoreDTO, StoreService, StoreUpsertPayload} from '@app/
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    MatSnackBarModule
+    // --- removed HtmlSnackComponent from imports because it's only used dynamically,
+    //     not in this component's template
   ],
   templateUrl: './add-edit-store.component.html',
   styleUrls: ['./add-edit-store.component.css']
@@ -22,6 +40,7 @@ export class AddEditStoreComponent implements OnInit {
   private svc = inject(StoreService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   // — Add / Create form
   storeForm!: FormGroup;
@@ -33,7 +52,6 @@ export class AddEditStoreComponent implements OnInit {
   editForm!: FormGroup;
 
   ngOnInit(): void {
-    // 1) Initialize “Add Store” form
     this.storeId = this.route.snapshot.paramMap.get('id');
     this.storeForm = this.fb.group({
       name: ['', Validators.required],
@@ -44,22 +62,18 @@ export class AddEditStoreComponent implements OnInit {
     });
 
     if (this.storeId) {
-      this.svc.getStore(this.storeId)
-        .subscribe((d: StoreDetailsDTO) => {
-          this.storeForm.patchValue({
-            name: d.name,
-            icon: d.icon,
-            location: d.location,
-            contact: d.contact,
-            isActive: true
-          });
+      this.svc.getStore(this.storeId).subscribe((d: StoreDetailsDTO) => {
+        this.storeForm.patchValue({
+          name: d.name,
+          icon: d.icon,
+          location: d.location,
+          contact: d.contact
         });
+      });
     }
 
-    // 2) Load stores for the edit selector
-    this.svc.getStores().subscribe(list => this.stores = list);
+    this.svc.getStores().subscribe(list => (this.stores = list));
 
-    // 3) Initialize “Edit Store” form
     this.editForm = this.fb.group({
       name: ['', Validators.required],
       icon: [''],
@@ -78,7 +92,23 @@ export class AddEditStoreComponent implements OnInit {
       ? this.svc.updateStore(this.storeId, payload)
       : this.svc.createStore(payload);
 
-    obs.subscribe(() => this.router.navigate(['/admin-page/product-analytics']));
+    obs.subscribe({
+      next: () => {
+        this.showNotification(
+          this.storeId
+            ? `<b>Store updated</b> successfully!`
+            : `<b>Store created</b> successfully!`,
+          3000
+        );
+        this.router.navigate(['/admin-page/product-analytics']);
+      },
+      error: e => {
+        this.showNotification(
+          `Error (${e.status || ''}):<br>${e.message || 'Unknown error'}`,
+          5000
+        );
+      }
+    });
   }
 
   // When user selects a store to edit
@@ -90,23 +120,39 @@ export class AddEditStoreComponent implements OnInit {
     }
 
     this.selectedStoreId = storeId;
-    this.svc.getStore(storeId)
-      .subscribe((d: StoreDetailsDTO) => {
-        this.editForm.patchValue({
-          name: d.name,
-          icon: d.icon,
-          location: d.location,
-          contact: d.contact,
-          isActive: true
-        });
+    this.svc.getStore(storeId).subscribe((d: StoreDetailsDTO) => {
+      this.editForm.patchValue({
+        name: d.name,
+        icon: d.icon,
+        location: d.location,
+        contact: d.contact
+        // —— likewise removed `isActive: d.isActive`
       });
+    });
   }
 
   // Submit edited store
   onEditSubmit(): void {
     if (this.editForm.invalid || !this.selectedStoreId) return;
 
-    this.svc.updateStore(this.selectedStoreId, this.editForm.value)
-      .subscribe(() => alert('Store updated!'));
+    this.svc.updateStore(this.selectedStoreId, this.editForm.value).subscribe({
+      next: () =>
+        this.showNotification(
+          `<b>Store updated</b> successfully!`,
+          3000
+        ),
+      error: e =>
+        this.showNotification(
+          `Error (${e.status || ''}):<br>${e.message || 'Unknown error'}`,
+          5000
+        )
+    });
+  }
+
+  private showNotification(message: string, duration = 3000) {
+    this.snackBar.openFromComponent(HtmlSnackComponent, {
+      data: { message },
+      duration
+    });
   }
 }

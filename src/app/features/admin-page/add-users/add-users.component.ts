@@ -1,11 +1,25 @@
-import {Component} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormArray, FormBuilder, FormGroup,
+  FormsModule, ReactiveFormsModule, Validators
+} from '@angular/forms';
+import { EMPTY } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
-import {EMPTY} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import { UserDTO, UsersService } from '@app/services/users.service';
+import { MatSnackBar, MatSnackBarModule, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 
-import {UserDTO, UsersService} from '@app/services/users.service';
+@Component({
+  selector: 'app-html-snack',
+  standalone: true,
+  imports: [CommonModule],
+  template: `<div [innerHTML]="data.message"></div>`,
+  styles: [`div { font-size: 14px; }`]
+})
+export class HtmlSnackComponent {
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: { message: string }) {}
+}
 
 @Component({
   selector: 'app-add-users',
@@ -13,7 +27,8 @@ import {UserDTO, UsersService} from '@app/services/users.service';
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
   templateUrl: './add-users.component.html',
   styleUrls: ['./add-users.component.css']
@@ -26,7 +41,8 @@ export class AddUsersComponent {
 
   constructor(
     private fb: FormBuilder,
-    private usersSvc: UsersService
+    private usersSvc: UsersService,
+    private snackBar: MatSnackBar    
   ) {
     this.usersForm = this.fb.group({
       users: this.fb.array([this.createUserGroup()])
@@ -69,8 +85,18 @@ export class AddUsersComponent {
     }
     const payload: UserDTO[] = this.usersForm.value.users;
     this.usersSvc.bulkAddUsers(payload).subscribe({
-      next: () => alert('Users added successfully'),
-      error: e => alert(`Error: ${e.message || e.status}`)
+      next: () => {
+        this.showNotification(
+          '<b>Users added</b> successfully!',
+          3000
+        );
+      },
+      error: e => {
+        this.showNotification(
+          `Error: <i>${e.message || e.status}</i>`,
+          5000
+        );
+      }
     });
   }
 
@@ -106,11 +132,6 @@ export class AddUsersComponent {
     reader.readAsText(input.files[0]);
   }
 
-  /**
-   * 1) GET existing users
-   * 2) Filter out any CSV-email that already exists
-   * 3) POST only the truly new users
-   */
   uploadCsv() {
     if (!this.csvUsers.length) {
       return;
@@ -123,15 +144,20 @@ export class AddUsersComponent {
       }),
       switchMap(newUsers => {
         if (!newUsers.length) {
-          alert('No new users to add');
+          this.showNotification(
+            '<b>No new users</b> to add',
+            2500
+          );
           return EMPTY;
         }
         return this.usersSvc.bulkAddUsers(newUsers);
       })
     ).subscribe({
       next: () => {
-        alert('CSV users uploaded successfully');
-        // reset preview & manual form:
+        this.showNotification(
+          '<b>CSV upload</b> successful!',
+          3000
+        );
         this.csvUsers = [];
         this.csvHeaders = [];
         this.isCsvPreviewVisible = false;
@@ -139,9 +165,18 @@ export class AddUsersComponent {
         this.users.push(this.createUserGroup());
       },
       error: err => {
-        console.error('CSV upload error:', err);
-        alert(`CSV upload error: ${err.status} – ${err.error?.message || err.message}`);
+        this.showNotification(
+          `CSV upload error:<br><i>${err.status} – ${err.error?.message || err.message}</i>`,
+          5000
+        );
       }
+    });
+  }
+
+  private showNotification(message: string, duration = 3000) {
+    this.snackBar.openFromComponent(HtmlSnackComponent, {
+      data: { message },
+      duration
     });
   }
 }
