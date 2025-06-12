@@ -55,12 +55,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.usersSvc.getTestimonials().subscribe({
       next: dtos => {
         this.loadWithAvatars(dtos);
-        if (this.isBrowser) {
-          setTimeout(() => this.startAutoAdvance(), 3000);
-        }
       },
       error: err => {
-        console.error('Failed to load testimonials:', err);
         this.testimonials = [];
       }
     });
@@ -103,33 +99,51 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadWithAvatars(dtos: TestimonialDTO[]) {
-    const calls = dtos.map(dto =>
-      this.userProfileService.searchUsers(dto.name).pipe(
+    let filtered = dtos
+      .filter(dto => dto.reviewScore >= 4)
+      .slice(0, 15);
+
+    if (!this.auth.isLoggedIn()) {
+      this.testimonials = filtered.map(dto => this.toView(dto, dto.avatar));
+      this.startIndex = 0;
+      if (this.isBrowser) {
+        setTimeout(() => this.startAutoAdvance(), 2000);
+      }
+      return;
+    }
+
+    const uniqueNames = [...new Set(filtered.map(dto => dto.name.toLowerCase()))];
+    const userProfileCalls = uniqueNames.map(name =>
+      this.userProfileService.searchUsers(name).pipe(
         map(users => {
-          const match = users.find(u =>
-            u.name.toLowerCase() === dto.name.toLowerCase()
-          );
-          return this.toView(dto, match?.avatar);
+          const match = users.find(u => u.name.toLowerCase() === name);
+          return { name, avatar: match?.avatar };
         }),
-        catchError(() => of(this.toView(dto, dto.avatar)))
+        catchError(() => of({ name, avatar: null }))
       )
     );
-  
-    forkJoin(calls).subscribe({
-      next: views => {
-        let filtered = views.filter(v => v.score >= 4);
-  
-        filtered = filtered.slice(0, 15);
-  
-        this.testimonials = filtered;
+
+    forkJoin(userProfileCalls).subscribe({
+      next: userProfiles => {
+        const avatarMap = new Map(
+          userProfiles.map(profile => [profile.name, profile.avatar])
+        );
+
+        this.testimonials = filtered.map(dto => 
+          this.toView(dto, avatarMap.get(dto.name.toLowerCase()))
+        );
         this.startIndex = 0;
+
+        if (this.isBrowser) {
+          setTimeout(() => this.startAutoAdvance(), 2000);
+        }
       },
       error: () => {
-        let fallback = dtos.map(dto => this.toView(dto, dto.avatar))
-                          .filter(v => v.score >= 4)
-                          .slice(0, 15);
-        this.testimonials = fallback;
+        this.testimonials = filtered.map(dto => this.toView(dto, dto.avatar));
         this.startIndex = 0;
+        if (this.isBrowser) {
+          setTimeout(() => this.startAutoAdvance(), 2000);
+        }
       }
     });
   }
