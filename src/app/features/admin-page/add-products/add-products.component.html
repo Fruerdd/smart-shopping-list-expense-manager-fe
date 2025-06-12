@@ -1,5 +1,4 @@
 <div class="container">
-  <!-- 1) Store selector -->
   <div class="mb-4">
     <label for="storeSelect" class="form-label">Choose Store:</label>
     <select
@@ -17,6 +16,36 @@
 
   <div *ngIf="storeId && store" class="mb-4">
     <h2>Add Products to {{ store.name }}</h2>
+
+    <div class="row mb-3">
+      <div class="col-md-6 mb-2">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by name..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchTermChange()"
+        />
+      </div>
+      <div class="col-md-4 mb-2">
+        <select
+          class="form-select"
+          [(ngModel)]="filterCategory"
+          (ngModelChange)="onFilterCategoryChange()"
+        >
+          <option value="">All Categories</option>
+          <option *ngFor="let cat of categories" [value]="cat">
+            {{ cat }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2 text-end">
+        <small class="text-muted">
+          {{ filteredProducts.length }} found
+        </small>
+      </div>
+    </div>
+
     <h4>Existing Products</h4>
     <table class="table table-striped">
       <thead>
@@ -29,7 +58,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of availableProducts">
+        <tr *ngFor="let item of pagedProducts">
           <td>{{ item.productName }}</td>
           <td>{{ item.category }}</td>
           <td>{{ item.description }}</td>
@@ -43,8 +72,31 @@
             >+</button>
           </td>
         </tr>
+        <tr *ngIf="pagedProducts.length === 0">
+          <td colspan="5" class="text-center">No products found.</td>
+        </tr>
       </tbody>
     </table>
+
+    <div class="d-flex justify-content-between align-items-center">
+      <button
+        class="btn btn-secondary"
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+      >
+        Previous
+      </button>
+      <div>
+        Page {{ currentPage }} of {{ totalPages }}
+      </div>
+      <button
+        class="btn btn-secondary"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages"
+      >
+        Next
+      </button>
+    </div>
   </div>
 
   <div class="mb-4">

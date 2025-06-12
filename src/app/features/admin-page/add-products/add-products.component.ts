@@ -31,6 +31,11 @@ export class AddProductsComponent implements OnInit {
   availableProducts: AvailableProductDTO[] = [];
   csvProducts: AddProductPayload[] = [];
 
+  searchTerm: string = '';
+  filterCategory: string = '';
+  currentPage: number = 1;
+  readonly pageSize: number = 10;
+
   constructor(
     private storeSvc: StoreService,
     private productSvc: ProductService,
@@ -77,7 +82,64 @@ export class AddProductsComponent implements OnInit {
     this.storeSvc.getAvailableProducts(id)
       .subscribe((list: AvailableProductDTO[]) => {
         this.availableProducts = list;
+        this.searchTerm = '';
+        this.filterCategory = '';
+        this.currentPage = 1;
       });
+  }
+
+  get categories(): string[] {
+    const cats = Array.from(
+      new Set(
+        this.availableProducts
+          .map(p => p.category)
+          .filter(c => !!c)
+      )
+    );
+    return cats.sort((a, b) => a.localeCompare(b));
+  }
+
+  get filteredProducts(): AvailableProductDTO[] {
+    let items = this.availableProducts;
+    if (this.searchTerm && this.searchTerm.trim()) {
+      const term = this.searchTerm.trim().toLowerCase();
+      items = items.filter(p =>
+        p.productName.toLowerCase().includes(term)
+      );
+    }
+    if (this.filterCategory && this.filterCategory !== '') {
+      items = items.filter(p => p.category === this.filterCategory);
+    }
+    return items;
+  }
+
+  get totalPages(): number {
+    const len = this.filteredProducts.length;
+    const tp = Math.ceil(len / this.pageSize);
+    return tp > 0 ? tp : 1;
+  }
+
+  get pagedProducts(): AvailableProductDTO[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.filteredProducts.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  onSearchTermChange(): void {
+    this.currentPage = 1;
+  }
+  onFilterCategoryChange(): void {
+    this.currentPage = 1;
   }
 
   addToStore(item: AvailableProductDTO): void {
