@@ -24,3 +24,12 @@
     <button class="delete-button" *ngIf="isOwner()" type="button" (click)="onDeleteList()">Delete List</button>
   </div>
 </div>
+
+<app-confirmation-popup
+  [isVisible]="showDeleteConfirmation"
+  title="Delete Shopping List"
+  message="Are you sure you want to delete this shopping list? This action cannot be undone."
+  confirmText="Delete List"
+  (confirmed)="onConfirmDelete()"
+  (cancelled)="onCancelDelete()">
+</app-confirmation-popup>

@@ -6,13 +6,12 @@
   </div>
 </div>
 
-<!-- Categories and Products -->
 <div class="categories-container">
-  <!-- Categories -->
-  <div class="category" *ngFor="let category of categories">
-    <div class="category-header" (click)="toggleCategory(category)">
+  <div class="category" *ngFor="let category of getDisplayCategories()">
+    <div class="category-header" (click)="toggleCategory(category)" [class.search-results]="category.id === 'search-results'">
       <h3 class="category-title">
         <ng-container [ngSwitch]="category.id">
+          <mat-icon *ngSwitchCase="'search-results'" class="category-icon">search</mat-icon>
           <mat-icon *ngSwitchCase="'favorite'" class="category-icon">favorite</mat-icon>
           <mat-icon *ngSwitchCase="'best-price'" class="category-icon">attach_money</mat-icon>
           <mat-icon *ngSwitchCase="'peoples-choice'" class="category-icon">group</mat-icon>
@@ -20,10 +19,11 @@
         </ng-container>
         {{ category.name }}
       </h3>
-      <mat-icon class="expand-icon">{{ isCategoryExpanded(category) ? 'expand_less' : 'expand_more' }}</mat-icon>
+      <mat-icon class="expand-icon" *ngIf="category.id !== 'search-results'">
+        {{ isCategoryExpanded(category) ? 'expand_less' : 'expand_more' }}
+      </mat-icon>
     </div>
-    <!--Products-->
-    <div class="products-container" *ngIf="isCategoryExpanded(category)">
+    <div class="products-container" [class.always-expanded]="category.id === 'search-results'" *ngIf="category.id === 'search-results' || isCategoryExpanded(category)">
       <div class="product-row">
         <div class="product-item" *ngFor="let product of category.products"
              [class.selected]="isProductSelected(product.productId)"
@@ -38,9 +38,7 @@
           <div class="product-details">
             <p class="product-name">{{ product.productName }}</p>
 
-            <!-- Price/Store Information Container -->
             <div class="price-store-container">
-              <!-- Best Price Category Special Display -->
               <ng-container *ngIf="category.id === 'best-price'; else regularDisplay">
                 <div *ngIf="getBestPriceInfo(product) as bestInfo" class="best-price-info">
                   <p class="best-price-label">
@@ -52,7 +50,6 @@
                 </div>
               </ng-container>
 
-              <!-- Regular Display for All Other Categories -->
               <ng-template #regularDisplay>
                 <div class="price-info-area">
                   <p class="product-store-regular">{{ getDisplayStoreName(product) }}</p>

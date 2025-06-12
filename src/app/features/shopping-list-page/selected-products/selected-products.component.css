@@ -16,6 +16,7 @@
   max-height: auto;
   scroll-behavior: smooth;
   scrollbar-color: #FCACC4 white;
+  scrollbar-width: none;
   overflow-x: hidden;
   position: relative;
 }
@@ -148,7 +149,7 @@
 }
 
 .remove-item-btn:hover {
-  background: #e199b4;
+  background: #ff99b8;
 }
 
 .list-total {

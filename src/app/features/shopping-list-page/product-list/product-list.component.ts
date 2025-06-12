@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {CategoryDTO} from '@app/models/category.dto';
 import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
+import {Subject, debounceTime, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -12,22 +13,96 @@ import {ShoppingListItemDTO} from '@app/models/shopping-list-item.dto';
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
 })
-export class ProductListComponent {
-  @Input() filteredProducts: ShoppingListItemDTO[] = [];
+export class ProductListComponent implements OnInit, OnDestroy {
+  @Input() set categories(value: CategoryDTO[]) {
+    this._categories = value;
+    this.originalCategories = [...value];
+    this.updateFilteredProducts();
+  }
+  get categories(): CategoryDTO[] {
+    return this._categories;
+  }
+  private _categories: CategoryDTO[] = [];
+
   @Input() selectedProducts: ShoppingListItemDTO[] = [];
-  @Input() categories: CategoryDTO[] = [];
-  @Input() searchTerm = '';
   @Input() preferredStore: string | null = null;
 
-  @Output() searchChange = new EventEmitter<string>();
-  @Output() toggleCategoryEvent = new EventEmitter<CategoryDTO>();
   @Output() selectProductEvent = new EventEmitter<ShoppingListItemDTO>();
   @Output() comparePricesEvent = new EventEmitter<string>();
+  @Output() toggleCategoryEvent = new EventEmitter<CategoryDTO>();
 
+  searchTerm = '';
+  filteredProducts: ShoppingListItemDTO[] = [];
   private collapsedCategories = new Set<string>();
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+  private originalCategories: CategoryDTO[] = [];
+
+  ngOnInit(): void {
+    this.searchSubject.pipe(
+      debounceTime(300),
+      takeUntil(this.destroy$)
+    ).subscribe(term => {
+      this.updateFilteredProducts();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   onSearchInput(): void {
-    this.searchChange.emit(this.searchTerm);
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  private updateFilteredProducts(): void {
+    if (!this.searchTerm) {
+      this.filteredProducts = [];
+      return;
+    }
+
+    const searchTermLower = this.searchTerm.toLowerCase();
+    const uniqueProducts = new Map<string, ShoppingListItemDTO>();
+    
+    this.originalCategories
+      .flatMap(category => category.products)
+      .forEach(product => {
+        if (product.productName.toLowerCase().includes(searchTermLower)) {
+          if (!uniqueProducts.has(product.productId)) {
+            uniqueProducts.set(product.productId, product);
+          }
+        }
+      });
+
+    this.filteredProducts = Array.from(uniqueProducts.values());
+  }
+
+  getDisplayCategories(): CategoryDTO[] {
+    if (!this.searchTerm) {
+      return this.categories;
+    }
+
+    const searchResultsCategory: CategoryDTO = {
+      id: 'search-results',
+      name: 'Search Results',
+      products: this.filteredProducts.map(product => {
+        const originalProduct = this.findOriginalProduct(product.productId);
+        return originalProduct || product;
+      })
+    };
+
+    return [searchResultsCategory];
+  }
+
+  private findOriginalProduct(productId: string): ShoppingListItemDTO | undefined {
+    for (const category of this.originalCategories) {
+      const found = category.products.find(p => p.productId === productId);
+      if (found) {
+        return found;
+      }
+    }
+    return undefined;
   }
 
   toggleCategory(category: CategoryDTO): void {
